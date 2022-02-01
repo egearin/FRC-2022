@@ -5,8 +5,8 @@
 package frc.team6429.periodics.Teleop;
 
 
-import frc.robot.Subsystems.Drive;
-import frc.robot.Subsystems.Gamepad;
+import frc.team6429.subsystems.Drive;
+import frc.team6429.util.Gamepad;
 
 /** Teleop: Robot Drive*/
 public class DriveTeleop {

@@ -2,31 +2,32 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.team6429.R4D9;
+package frc.team6429.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
 /** Constants */
 public class Constants {
 
     //Drive Motor Ports with "VictorSPX"
-    public static final int driveOneLeftMotorPort = 1;
-    public static final int driveTwoLeftMotorPort = 2;
-    public static final int driveOneRightMotorPort = 4;
-    public static final int driveTwoRightMotorPort = 5;
+    public static final int driveOneLeftMotorID = 1;
+    public static final int driveTwoLeftMotorID = 2;
+    public static final int driveOneRightMotorID = 3;
+    public static final int driveTwoRightMotorID = 4;
 
     //Drive Motor Ports with "TalonFX"
-    public static final int rightOneMotorPort = 0;
-    public static final int rightTwoMotorPort = 0;
+    public static final int rightOneMotorID = 0;
+    public static final int rightTwoMotorID = 0;
 
-    public static final int leftOneMotorPort = 0;
-    public static final int leftTwoMotorPort = 0;
+    public static final int leftOneMotorID = 0;
+    public static final int leftTwoMotorID = 0;
     
     //Elevator Motor Ports 
     public static final int elevator1MotorPort = 1;
     public static final int elevator2MotorPort = 2;
 
     //Pigeon port 
-    public static final int pigeonPort = 1;
+    public static final int pigeonID = 1;
     
     //PID Constants
     public static final double kDriveP = 0;
@@ -60,6 +61,10 @@ public class Constants {
     public static final double kUpwardsElevatorA = 0;
     public static final double kUpwardsElevatorG = 0;
 
+    public static final double kDriveS = 0;
+    public static final double kDriveV = 0;
+    public static final double kDriveA = 0;
+
     public static final double maxVoltageInput = 12;
    
 
@@ -77,7 +82,24 @@ public class Constants {
     public static boolean elevatorEncDirection = true;
 
     //CANcoder Ports
-    public static final int CANcoder = 0;
+    public static final int driveLeftCANcoderID = 0;
+    public static final int driveRightCANcoderID = 0;
+
+    public static final int climbCANcoderID = 0;
+
+    //Drive Constants
+    public static final double kTrackWidth = 0;
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
+    public static final double kMaxSpeed = 0;
+    public static final double kMaxAcceleration = 0;
+    public static final double kRamseteB = 0;
+    public static final double kRamseteZeta = 0;
+    public static final double kTrajectoryP = 0;
+    //Gamepad Constants
+    public static final int axis_forward = 3;
+    public static final int axis_reverse = 2;
+    public static final int axis_steering = 0;
+    public static final int axis_sensetiveSteering = 4;
 
     //Distance Per Pulse Values 
     public static final double elevatorEncDistancePerPulse = 0;

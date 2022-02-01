@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.Auto.Action;
+package frc.team6429.periodics.Auto.Action;
 
 import java.util.ArrayList;
 import java.util.Arrays;

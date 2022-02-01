@@ -5,9 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Autoodics.Auto;
+package frc.team6429.periodics.Auto;
 
-import frc.robot.Periodics.Auto.Modes.AutoModeBase;
+import frc.team6429.periodics.Auto.Modes.AutoModeBase;
 
 /**
  * This class selects, runs, and (if necessary) stops a specified autonomous mode.

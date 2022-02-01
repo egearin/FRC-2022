@@ -5,12 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.ModesAuto.Modes;
+package frc.team6429.periodics.Auto.Modes;
 
 import java.util.Arrays;
 
-import frc.robot.Periodics.Auto.AutoModeEndedException;
-import frc.robot.Periodics.Auto.Action.*;
+import frc.team6429.periodics.Auto.AutoModeEndedException;
+import frc.team6429.periodics.Auto.Action.*;
+
 
 /**
  * Add your docs here.

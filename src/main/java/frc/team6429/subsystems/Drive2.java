@@ -1,8 +1,6 @@
-package frc.robot.subsystems;
-package frc.robot.subsystems;
+package frc.team6429.subsystems;
 
 // Default
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -13,7 +11,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.R4D9.Constants;
+import frc.team6429.robot.Constants;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -58,20 +56,25 @@ public class Drive2 {
     
     //Sensors
     PigeonIMU pigeon;
+    private CANCoder driveLeftCANcoder;
+    private CANCoder driveRightCANcoder;
 
     public Drive2(){
-        leftOne = makeTalonFX(Constants.leftOneMotorPort,false);
-        leftTwo = makeTalonFX(Constants.leftTwoMotorPort,false);
+        leftOne = makeTalonFX(Constants.leftOneMotorID,false);
+        leftTwo = makeTalonFX(Constants.leftTwoMotorID,false);
 
-        rightOne = makeTalonFX(Constants.rightOneMotorPort,false);
-        rightTwo = makeTalonFX(Constants.rightTwoMotorPort,false);
+        rightOne = makeTalonFX(Constants.rightOneMotorID,false);
+        rightTwo = makeTalonFX(Constants.rightTwoMotorID,false);
 
         leftMotor = new MotorControllerGroup(leftOne, leftTwo);
         rightMotor = new MotorControllerGroup(rightOne, rightTwo);
 
         chassis = new DifferentialDrive(leftMotor, rightMotor);
 
-        pigeon = new PigeonIMU(Constants.pigeonPort);
+        pigeon = new PigeonIMU(Constants.pigeonID);
+
+        driveLeftCANcoder = new CANCoder(Constants.driveLeftCANcoderID);
+        driveRightCANcoder = new CANCoder(Constants.driveRightCANcoderID);
 
         //rightOne.follow(rightTwo);
         //leftOne.follow(leftTwo);

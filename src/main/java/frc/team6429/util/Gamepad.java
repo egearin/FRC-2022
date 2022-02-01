@@ -2,10 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.team6429.util;
 
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import frc.team6429.robot.Constants;
 /** Add your docs here. */
 
 public class Gamepad {
@@ -18,10 +19,7 @@ public class Gamepad {
 
     public PS4Controller gamepad;
 
-    public static final int axis_forward = 3;
-    public static final int axis_reverse = 2;
-    public static final int axis_steering = 0;
-    public static final int axis_sensetiveSteering = 4;
+    
 
     public void forceFeedback(double speed, double rotation){
         double leftRotation;
@@ -30,6 +28,7 @@ public class Gamepad {
             leftRotation = 0.5 * (Math.abs(rotation) + speed); 
             rightRotation = 0.5 * (Math.abs(speed));
         }
+
         else{
             leftRotation = 0.5 * Math.abs(speed);
             rightRotation = 0.5 * (Math.abs(rotation) + speed);
@@ -39,19 +38,19 @@ public class Gamepad {
     }
 
     public double getForward(){
-        return gamepad.getRawAxis(axis_forward);
+        return gamepad.getRawAxis(Constants.axis_forward);
     }
 
     public double getReverse(){
-        return gamepad.getRawAxis(axis_reverse);
+        return gamepad.getRawAxis(Constants.axis_reverse);
     }
 
     public double getSteering(){
-        return gamepad.getRawAxis(axis_steering);
+        return gamepad.getRawAxis(Constants.axis_steering);
     }
 
     public double getSensetiveSteering(){
-        return gamepad.getRawAxis(axis_sensetiveSteering);
+        return gamepad.getRawAxis(Constants.axis_sensetiveSteering);
     }
 
     

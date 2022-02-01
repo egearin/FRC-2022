@@ -5,12 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.ModesAuto.Modes;
+package frc.team6429.periodics.Auto.Modes;
  
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Periodics.Auto.AutoModeEndedException;
-import frc.robot.Periodics.Auto.Action.Action;
-import frc.robot.Periodics.Auto.Action.NoopAction;
+import frc.team6429.periodics.Auto.AutoModeEndedException;
+import frc.team6429.periodics.Auto.Action.Action;
+import frc.team6429.periodics.Auto.Action.NoopAction;
 /**
  * An abstract class that is the basis of the robot's autonomous routines. This is implemented in auto modes (which are
  * routines that do actions).

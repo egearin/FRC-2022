@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Autoodics.Auto;
+package frc.team6429.periodics.Auto;
 
 /**
  * Exception thrown when an auto mode ends unexpectedly

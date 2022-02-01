@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.Actionuto.Action;
+package frc.team6429.periodics.Auto.Action;
 
 /**
  * Add your docs here.

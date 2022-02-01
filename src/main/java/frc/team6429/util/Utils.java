@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.util;
+package frc.team6429.util;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import frc.robot.R4D9.RobotData;
+import frc.team6429.robot.RobotData;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 
@@ -66,6 +66,7 @@ public final class Utils {
      * @param outputEnd
      * @return
      */
+    /*
     public static double map(double value, double inputStart, double inputEnd, double outputStart, double outputEnd){
         double deltaIn = inputEnd - inputStart;
         double deltaOut = outputEnd - outputStart;
@@ -98,11 +99,12 @@ public final class Utils {
             RobotData.fieldSim.getObject(objectApexName + a).setPoses(partitions.get(a));
         }
     }
-
+    
     /**
      * Print Trajectory But Multiple of Them @see {@link #printTrajectoryToDashboard(Trajectory)}
      * @param trajectory
      */
+    /*
     public static void printTrajectoriesToDashboard(List<Trajectory> trajectories, Field2d fieldSim){
         String apexName = "Trajectory";
         int partitionSize = 16;
@@ -138,5 +140,5 @@ public final class Utils {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryLocation, ex.getStackTrace());
             return null;
         }
-    }
+    }*/
 }
