@@ -5,6 +5,7 @@
 package frc.team6429.util;
 
 import edu.wpi.first.wpilibj.Joystick;
+import frc.team6429.robot.Constants;
 
 /** Add your docs here. */
 public class Drivepanel {
@@ -15,8 +16,11 @@ public class Drivepanel {
         return mInstance;
     }
 
-    Joystick panelA;
-    Joystick panelM;
+    Joystick panel1;
+    Joystick panel2;
 
-    
+    public Drivepanel(){
+        panel1 = new Joystick(Constants.panel1Joystick);
+        panel2 = new Joystick(Constants.panel2Joystick);
+    }
 }

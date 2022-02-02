@@ -12,8 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 
 /** Add your docs here. */
 public class RobotData {
-    public enum EncoderMode{
-        
+    public enum CANcoderMode{
         
     }
     

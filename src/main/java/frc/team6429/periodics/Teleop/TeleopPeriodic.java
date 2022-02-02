@@ -4,6 +4,10 @@
 
 package frc.team6429.periodics.Teleop;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team6429.subsystems.Drive;
+import frc.team6429.util.Gamepad;
+
 /** Add your docs here. */
 public class TeleopPeriodic {
 
@@ -12,4 +16,21 @@ public class TeleopPeriodic {
     public static TeleopPeriodic getInstance(){
         return mInstance;
     }
+
+    public Drive mDrive;
+    public Gamepad mGamepad;
+
+
+
+    public TeleopPeriodic(){
+        mDrive = Drive.getInstance();
+        mGamepad = Gamepad.getInstance();
+    }
+
+    public void teleopPeriodic(){
+        
+    }
+
 }
+
+

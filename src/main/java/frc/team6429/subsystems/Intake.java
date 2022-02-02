@@ -4,6 +4,10 @@
 
 package frc.team6429.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import frc.team6429.robot.Constants;
+
 /** Add your docs here. */
 public class Intake {
 
@@ -11,5 +15,13 @@ public class Intake {
 
     public static Intake getInstance(){
         return mInstance;
+    }
+
+    public WPI_VictorSPX intakeMotor;
+    public WPI_VictorSPX conveyorMotor;
+
+    public Intake(){
+        intakeMotor = new WPI_VictorSPX(Constants.intakeMotorID);
+        conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
     }
 }

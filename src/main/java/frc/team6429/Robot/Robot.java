@@ -12,7 +12,6 @@ import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
-import frc.team6429.subsystems.Elevator;
 import frc.team6429.subsystems.Intake;
 import frc.team6429.util.Drivepanel;
 import frc.team6429.util.Gamepad;
@@ -34,7 +33,6 @@ public class Robot extends TimedRobot {
   private Drivepanel mDrivepanel;
 
   private Drive mDrive;
-  private Elevator mElevator; 
   private Intake mIntake;
 
   private DriveTeleop mDriveTeleop;
@@ -117,7 +115,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
     mDriveTeleop.driveTeleop();
+    mTeleopPeriodic.teleopPeriodic();
     /* Teleop: Robot drive
     double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
@@ -146,7 +146,6 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-    mDrive.driveLOne.set(0.3);
-  }
+  public void testPeriodic() {}
+
 }

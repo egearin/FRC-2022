@@ -4,6 +4,10 @@
 
 package frc.team6429.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import frc.team6429.robot.Constants;
+
 /** Add your docs here. */
 public class Roller {
 
@@ -11,5 +15,14 @@ public class Roller {
 
     public static Roller getInstance(){
         return mInstance;
+    }
+
+    public WPI_VictorSPX rollerMotor;
+    public WPI_VictorSPX seperatorMotor;
+
+    public Roller(){
+        rollerMotor = new WPI_VictorSPX(Constants.rollerMotorID);
+        seperatorMotor = new WPI_VictorSPX(Constants.seperatorMotorID);
+        
     }
 }

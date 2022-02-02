@@ -7,36 +7,35 @@
 
 package frc.team6429.periodics.Auto.Action;
 
-import edu.wpi.first.wpilibj.Timer;
+import frc.team6429.subsystems.Drive;
 
 /**
- * Robot waits (in milliseconds)
+ * Robot Stops Driving
  */
-public class WaitAction implements Action {
+public class StopAction implements Action {
 
-    double _time;
-    Timer timer;
+    public Drive mDrive;
 
-    public WaitAction(double time){
-        _time = time;
-        timer = new Timer();
-    }
     @Override
     public void start() {
-        timer.reset();
-        timer.start();
+        mDrive = Drive.getInstance();
+        mDrive.stopDrive();
     }
 
     @Override
     public void update() {
+        mDrive.stopDrive();
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() > _time;
+        return false;
     }
-
+    
     @Override
     public void done() {
     }
+
+ 
+
 }

@@ -33,7 +33,7 @@ import java.lang.Math;
 
 public class Drive2 {
 
-    public static Drive2 mInstance = new Drive2();
+    private static Drive2 mInstance = new Drive2();
 
     public static Drive2 getInstance(){
         return mInstance;
@@ -63,18 +63,21 @@ public class Drive2 {
         leftOne = makeTalonFX(Constants.leftOneMotorID,false);
         leftTwo = makeTalonFX(Constants.leftTwoMotorID,false);
 
-        rightOne = makeTalonFX(Constants.rightOneMotorID,false);
-        rightTwo = makeTalonFX(Constants.rightTwoMotorID,false);
+        rightOne = makeTalonFX(Constants.rightOneMotorID,true);
+        rightTwo = makeTalonFX(Constants.rightTwoMotorID,true);
 
         leftMotor = new MotorControllerGroup(leftOne, leftTwo);
-        rightMotor = new MotorControllerGroup(rightOne, rightTwo);
+        leftMotor.setInverted(false);
 
+        rightMotor = new MotorControllerGroup(rightOne, rightTwo);
+        rightMotor.setInverted(true);
+        
         chassis = new DifferentialDrive(leftMotor, rightMotor);
 
         pigeon = new PigeonIMU(Constants.pigeonID);
 
-        driveLeftCANcoder = new CANCoder(Constants.driveLeftCANcoderID);
-        driveRightCANcoder = new CANCoder(Constants.driveRightCANcoderID);
+        driveLeftCANcoder = new CANCoder(Constants.leftCANcoderID);
+        driveRightCANcoder = new CANCoder(Constants.rightCANcoderID);
 
         //rightOne.follow(rightTwo);
         //leftOne.follow(leftTwo);
@@ -98,12 +101,6 @@ public class Drive2 {
     
         return talon;
       }
-
-
-
-
-
-
 
       
     /**

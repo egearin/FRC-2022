@@ -17,9 +17,11 @@ public class Gamepad {
         return mInstance;
     }
 
-    public PS4Controller gamepad;
+    private PS4Controller gamepad;
 
-    
+    public Gamepad(){
+        gamepad = new PS4Controller(Constants.gamepadJoystick);
+    }
 
     public void forceFeedback(double speed, double rotation){
         double leftRotation;
@@ -53,5 +55,9 @@ public class Gamepad {
         return gamepad.getRawAxis(Constants.axis_sensetiveSteering);
     }
 
+    public boolean getDriveShifterPressed(){
+        return gamepad.getRawButtonReleased(Constants.shifterButton);
+    }
+    
     
 }

@@ -7,6 +7,7 @@ package frc.team6429.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -19,11 +20,14 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.robot.Constants;
+import frc.team6429.util.Sensors;
 import edu.wpi.first.math.MathUtil;
 
 /** Add your docs here. */
@@ -48,16 +52,15 @@ public class Drive {
     //Feedforward
     public SimpleMotorFeedforward driveFeedforward;
 
-    //Encoders
-    public Encoder driveLeftEnc;
-    public Encoder driveRightEnc;
-
     //Sensors 
     public PigeonIMU pigeon;
-    private CANCoder driveLeftCANcoder;
-    private CANCoder driveRightCANcoder;
+    public CANCoder leftCANcoder;
+    public CANCoder rightCANcoder;
 
-    //Master VictorSPX
+    //Solenoid 
+    public Solenoid shifter;
+
+    //Master
     public MotorControllerGroup leftMotor;
     public MotorControllerGroup rightMotor;
 
@@ -78,26 +81,30 @@ public class Drive {
         
         driveLOne = new WPI_VictorSPX(Constants.driveOneLeftMotorID);
         driveLTwo = new WPI_VictorSPX(Constants.driveTwoLeftMotorID);
+
         driveROne = new WPI_VictorSPX(Constants.driveOneRightMotorID);
         driveRTwo = new WPI_VictorSPX(Constants.driveTwoRightMotorID);
 
         leftMotor = new MotorControllerGroup(driveLOne, driveLTwo);
+        leftMotor.setInverted(false);
+        
         rightMotor = new MotorControllerGroup(driveROne, driveRTwo);
+        rightMotor.setInverted(true);
 
         chassis = new DifferentialDrive(leftMotor, rightMotor);
 
         pigeon = new PigeonIMU(Constants.pigeonID);
 
-        driveLeftCANcoder = new CANCoder(Constants.driveLeftCANcoderID);
-        driveRightCANcoder = new CANCoder(Constants.driveRightCANcoderID);
+        shifter = new Solenoid(PneumaticsModuleType.REVPH,Constants.shifterPort);
+        shifter.setPulseDuration(Constants.shifterPulseDuration);
         
-        driveLeftEnc = new Encoder(Constants.driveLeftEncPort1, Constants.driveLeftEncPort2);
-        driveLeftEnc.setSamplesToAverage(10);
-        driveLeftEnc.setDistancePerPulse((1/Constants.EncoderCPR)* Constants.wheelPerimeter);
+        leftCANcoder = new CANCoder(Constants.leftCANcoderID);
+        leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
+
+        rightCANcoder = new CANCoder(Constants.rightCANcoderID);
+        rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
         
-        driveRightEnc = new Encoder(Constants.driveRightEncPort1, Constants.driveRightEncPort2);
-        driveRightEnc.setSamplesToAverage(10);
-        driveRightEnc.setDistancePerPulse((1/Constants.EncoderCPR)* Constants.wheelPerimeter);
+
     
     }
 
@@ -128,144 +135,18 @@ public class Drive {
      * Drive Outputs Using Smartdashboard
      */
     public void driveOutput(){
-
-    }
-
-    public void createRamseteManager(Trajectory trajectory){
-        if (ramseteManager == null){
-            // Paste this variable in
-            /*RamseteController disabledRamsete = new RamseteController() {
-                @Override
-                public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
-                        double angularVelocityRefRadiansPerSecond) {
-                    return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
-                }
-            };*/
-
-            ramseteManager = new RamseteManager(trajectory,
-                                            new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),//disabledRamsete
-                                            new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV, Constants.kDriveA),
-                                            Constants.kDriveKinematics,
-                                            new PIDController(Constants.kTrajectoryP, 0, 0),//leftController
-                                            new PIDController(Constants.kTrajectoryP, 0, 0));//rightController
-            // Reset odometry to the starting pose of the trajectory.
-            ramseteManager.initialize();
-        }
-        else{
-            DriverStation.reportError("Ramsete Manager is already assigned!", false);
-        }
-    }
-
-    public void resetRamsete(){
-        ramseteManager = null;
-    }
-
-    /**
-     * Follow Trajectory
-     * @return false if not finished true if finished
-     */
-    public boolean followTrajectory(){
-        if (!ramseteManager.isFinished()){
-            double[] motorVolts = ramseteManager.calculate(getPose(), getWheelSpeeds());
-            tankDriveVolts(motorVolts[0], motorVolts[1]);
-            return false;
-        }
-        else{
-            ramseteManager.end();
-            System.out.println("Dereference the ramsete");
-            ramseteManager = null; // dereference object for rereference
-            return true;
-        }
-    }
-
-    public void constructOdometry(){
-        constructOdometry(getFusedGyroRotation2D());
-    }
-
-    public void constructOdometry(Rotation2d gyroRotation){
-        odometry = new DifferentialDriveOdometry(gyroRotation);
-    }
-
-    public void constructOdometry(Rotation2d gyroRotation, Pose2d startingPos){
-        odometry = new DifferentialDriveOdometry(gyroRotation, startingPos);
-    }
-
-    public void updateOdometry(){
-        updateOdometry(getFusedGyroRotation2D(), driveLeftEnc.getDistance(), driveRightEnc.getDistance());
-    }
-
-    /**
-     * 
-     * @param gyroRotation
-     * @param leftDistance !IN METERS!
-     * @param rightDistance !IN METERS!
-     */
-    public void updateOdometry(Rotation2d gyroRotation, double leftDistance, double rightDistance){
-        odometry.update(gyroRotation, leftDistance, rightDistance);
-    }
-
-    public Pose2d getPose(){
-        return odometry.getPoseMeters();
-    }
     
-    /**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
-    public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-        return new DifferentialDriveWheelSpeeds(driveLeftEnc.getRate(), driveRightEnc.getRate());
     }
 
-    /**
-     * Resets the odometry to the specified pose.
-     *
-     * @param pose The pose to which to set the odometry.
-     */
-    public void resetOdometry(Pose2d pose) {
-        resetEncoder();
-        odometry.resetPosition(pose, getFusedGyroRotation2D());
-    }
 
-    public double getSpeed(){
-        return (driveLeftEnc.getRate() + driveRightEnc.getRate()) / 2; 
-    }
+    
+    public void driveShift(boolean isShifted) {
 
-    /**
-     * Only get yaw angle
-     */
-    public double getYawAngle(){
-        double[] ypr = new double[3];
-        pigeon.getYawPitchRoll(ypr);
-        return ypr[0];
-    }
+        shifter.set(isShifted);
 
-    public Rotation2d getYawGyroRotation2D(){
-        return Rotation2d.fromDegrees(Math.IEEEremainder(getYawAngle(), 360.0));
-    }
+    } 
 
-    public Rotation2d getFusedGyroRotation2D(){
-        return Rotation2d.fromDegrees(Math.IEEEremainder(getGyroAngle(), 360.0));
-    }
 
-    public void resetYawAngle(){
-        pigeon.setYaw(0);
-    }
-
-    public void resetEncoder(){
-        driveLeftEnc.reset();
-        driveRightEnc.reset();
-    }
-
-    public void resetSensors(){
-        gyroReset();
-        resetEncoder();
-    }
-
-    public boolean isPigeonReady(){
-        PigeonState state = pigeon.getState();
-        return state == PigeonState.Ready;
-    }
     /**
      * Robot Drive Using Arcade Drive
      * @param speed
@@ -289,42 +170,7 @@ public class Drive {
         chassis.curvatureDrive(speed, rotation, isQuickTurn);
     }
     
-    /**
-     * 
-     * Gets Gyro Angle
-     */
-    public double getGyroAngle(){
-        return pigeon.getFusedHeading();
-    }
-
-    /**
-     * Resets Gyro Values
-     */
-    public void gyroReset(){
-        pigeon.setYaw(0);
-        pigeon.setAccumZAngle(0);
-        pigeon.setFusedHeading(0);
-    }
-
-    /**
-     * Resets Encoders
-     */
-    public void encoderReset(){
-        driveLeftEnc.reset();
-        driveRightEnc.reset();
-    }
-
-    /**
-     * Get Encoder Values
-     */
-    public void getDistanceLeft(){
-        driveLeftEnc.getDistance();
-    }
-
-    public void getDistanceRight(){
-        driveRightEnc.getDistance();
-    }
-
+ 
 
     /**
     * Controls the left and right sides of the drive directly with voltages.
@@ -344,7 +190,7 @@ public class Drive {
      * @param rotation_angle
      */
     public void PIDDrive(double speed, double rotation_angle){
-        double drivePID = PID.calculate(getGyroAngle(), rotation_angle);
+        double drivePID = PID.calculate(Sensors.getGyroAngle(), rotation_angle);
         drivePID = MathUtil.clamp(drivePID, -1, 1);
         chassis.curvatureDrive(speed, drivePID, false);
     }
@@ -358,8 +204,8 @@ public class Drive {
      */
     public void reset(){
         resetPID();
-        gyroReset();
-        encoderReset();
+        Sensors.gyroReset();
+    
     }
 
     public double simpleTurnPID(double desired_rotation){

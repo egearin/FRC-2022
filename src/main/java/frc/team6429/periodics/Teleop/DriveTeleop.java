@@ -5,6 +5,7 @@
 package frc.team6429.periodics.Teleop;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.util.Gamepad;
 
@@ -27,14 +28,24 @@ public class DriveTeleop {
     }
     
     public void driveTeleop(){
+      
     double speed = mGamepad.getForward() - mGamepad.getReverse();
-    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
+
+    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
       rotation = mGamepad.getSensetiveSteering() * 0.5;
     }
-    else{
+
+    else {
       rotation = mGamepad.getSteering() * 0.75;
     }
+
+    if(mGamepad.getDriveShifterPressed()) {
+      mDrive.driveShift(!mDrive.shifter.get());
+    } 
+
     mDrive.robotDrive(speed, rotation);
     mGamepad.forceFeedback(speed, rotation);
+
   }
 }
+
