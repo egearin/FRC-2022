@@ -12,6 +12,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.robot.Constants;
+import frc.team6429.util.Utils;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -60,11 +61,11 @@ public class Drive2 {
     private CANCoder driveRightCANcoder;
 
     public Drive2(){
-        leftOne = makeTalonFX(Constants.leftOneMotorID,false);
-        leftTwo = makeTalonFX(Constants.leftTwoMotorID,false);
+        leftOne = Utils.makeTalonFX(Constants.leftOneMotorID,false);
+        leftTwo = Utils.makeTalonFX(Constants.leftTwoMotorID,false);
 
-        rightOne = makeTalonFX(Constants.rightOneMotorID,true);
-        rightTwo = makeTalonFX(Constants.rightTwoMotorID,true);
+        rightOne = Utils.makeTalonFX(Constants.rightOneMotorID,true);
+        rightTwo = Utils.makeTalonFX(Constants.rightTwoMotorID,true);
 
         leftMotor = new MotorControllerGroup(leftOne, leftTwo);
         leftMotor.setInverted(false);
@@ -92,16 +93,6 @@ public class Drive2 {
         rightOne.setNeutralMode(NeutralMode.Brake);*/
     }
     
-    private WPI_TalonFX makeTalonFX(int id, boolean invert) { 
-        WPI_TalonFX talon = new WPI_TalonFX(id);
-    
-        talon.configFactoryDefault();
-        talon.setInverted(invert);
-        talon.stopMotor();
-    
-        return talon;
-      }
-
       
     /**
      * Drive Outputs Using Smartdashboard

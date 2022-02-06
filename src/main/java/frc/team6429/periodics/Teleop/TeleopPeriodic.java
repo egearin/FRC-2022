@@ -8,7 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.util.Gamepad;
 
-/** Add your docs here. */
+/** 
+ * Teleop Period
+ * Robot Subsystems During Teleop Mode
+*/
 public class TeleopPeriodic {
 
     private static TeleopPeriodic mInstance = new TeleopPeriodic();
@@ -21,16 +24,19 @@ public class TeleopPeriodic {
     public Gamepad mGamepad;
 
 
-
-    public TeleopPeriodic(){
+    public TeleopPeriodic() {
         mDrive = Drive.getInstance();
         mGamepad = Gamepad.getInstance();
     }
 
-    public void teleopPeriodic(){
+    public void teleopPeriodic() {
+
+    if(mGamepad.getPTOpressed()) {
+        mDrive.powerTakeOff(!mDrive.pto.get());
         
     }
 
+    }
 }
 
 

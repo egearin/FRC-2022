@@ -7,7 +7,9 @@ package frc.team6429.robot;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
-/** Constants */
+/** 
+ * All Robot Constants 
+*/
 public class Constants {
 
     //Drive Motor Ports with "VictorSPX"
@@ -28,13 +30,17 @@ public class Constants {
     public static final int conveyorMotorID = 0;
 
     public static final int hangMotorPort = 0;
-    //public static final int hangMotorID = 0;
+    public static final int hangMotorID = 0;
     
     public static final int rollerMotorID = 0;
     public static final int seperatorMotorID = 0;
 
     //Solenoid Ports
-    public static final int shifterPort = 15;
+    public static final int shifterPort = 15; //for REVPH
+    public static final int ptoPort = 14; //for REVPH
+
+    public static final int shifter1Port = 0; //for CTREPCM
+    public static final int pto1Port = 1; //for CTREPCM
 
     //Pigeon port 
     public static final int pigeonID = 1;
@@ -65,7 +71,9 @@ public class Constants {
     public static final double kRamseteB = 0;
     public static final double kRamseteZeta = 0;
     public static final double kTrajectoryP = 0;
+
     public static final double shifterPulseDuration = 1;
+    public static final double ptoPulseDuration = 1;
 
     //Gamepad and Drivepanel Constants
     public static final int gamepadJoystick = 0;
@@ -78,6 +86,7 @@ public class Constants {
     public static final int axis_sensetiveSteering = 4;
 
     public static final int shifterButton = 6;
+    public static final int ptoButton = 5;
 
     /*
     public static final int intakeButton = 0;
@@ -87,13 +96,11 @@ public class Constants {
     public static final int conveyorReverseButton = 0;
 
     */
-
-
     
     //Distance Values
-
     public static final double degreeCoefficientCANcoder = 0.087890625;
     public static final double wheelPerimeter = 0.31918581360472299303;
+    public static final double canCoderCPR = 4096;
     
 
     //Necessary Constants

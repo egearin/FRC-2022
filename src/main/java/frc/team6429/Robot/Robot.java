@@ -8,13 +8,27 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.trajectory.Trajectory;
+
 import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
+import frc.team6429.subsystems.Hang;
 import frc.team6429.subsystems.Intake;
 import frc.team6429.util.Drivepanel;
 import frc.team6429.util.Gamepad;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,16 +45,16 @@ public class Robot extends TimedRobot {
 
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
-
   private Drive mDrive;
   private Intake mIntake;
-
+  private Hang mHang;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
+
   private AutoModeExecutor ame;
   private Timer timer;
 
-  private double turnPID = 0.07; 
+
 
   
   /**
@@ -60,7 +74,7 @@ public class Robot extends TimedRobot {
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
     mIntake = Intake.getInstance();
-    SmartDashboard.putNumber("Turn PID", turnPID);
+    mHang = Hang.getInstance();
     timer = new Timer();
     ame = new AutoModeExecutor();
   }
@@ -146,6 +160,24 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+
+    mDriveTeleop.driveTeleop();
+    mTeleopPeriodic.teleopPeriodic();
+
+
+    if(mGamepad.getTest2()){
+    mDrive.rightMotor.set(0.2);
+    }
+
+    else if(mGamepad.getTest1()){
+      mDrive.leftMotor.set(0.2);
+    }
+
+    else{
+
+      mDrive.stopDrive();
+    }
+  }
 
 }

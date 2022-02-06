@@ -59,5 +59,15 @@ public class Gamepad {
         return gamepad.getRawButtonReleased(Constants.shifterButton);
     }
     
+    public boolean getPTOpressed(){
+        return gamepad.getRawButton(Constants.ptoButton);
+    }
     
+    public boolean getTest1(){
+        return gamepad.getRawButton(5);
+    }
+
+    public boolean getTest2(){
+        return gamepad.getRawButton(6);
+    }
 }

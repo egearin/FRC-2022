@@ -14,20 +14,25 @@ import frc.team6429.robot.Constants;
 /** Add your docs here. */
 public class Sensors {
 
+    private static Sensors mInstance = new Sensors();
+
+    public static Sensors getInstance(){
+        return mInstance;
+    }
     //Pigeon
-    public static PigeonIMU pigeon;
+    public PigeonIMU pigeon;
 
     //CANcoder
-    public static CANCoder leftCANcoder;
-    public static CANCoder rightCANcoder;
-    public static CANCoder hangCANcoder;
+    public CANCoder leftCANcoder;
+    public CANCoder rightCANcoder;
+    public CANCoder hangCANcoder;
 
 
     public Sensors(){
         pigeon = new PigeonIMU(Constants.pigeonID);
 
         rightCANcoder = new CANCoder(Constants.rightCANcoderID);
-        rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360 , "meter" , SensorTimeBase.PerSecond );
+        rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360 , "meter" , SensorTimeBase.PerSecond);
 
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
@@ -41,7 +46,7 @@ public class Sensors {
     /**
      * Gets Gyro Angle
      */
-    public static double getGyroAngle(){
+    public double getGyroAngle(){
         return pigeon.getFusedHeading();
     }
     public boolean isPigeonReady(){
@@ -52,7 +57,7 @@ public class Sensors {
     /**
      * Only Get Yaw Angle
      */
-    public static double getYawAngle(){
+    public double getYawAngle(){
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
         return ypr[0];
@@ -62,8 +67,7 @@ public class Sensors {
      * Only Get Left Speed
      * @return Left Speed
      */
-    public static double getLeftSpeed(){
-        //double leftSpeed = leftCANcoder.getPosition();
+    public double getLeftSpeed(){
         double leftSpeed = leftCANcoder.getVelocity();
     
         return leftSpeed;
@@ -73,14 +77,13 @@ public class Sensors {
      * Only Get Right Speed
      * 
      */
-    public static double getRightSpeed(){
-        //double rightSpeed = rightCANcoder.getPosition();
+    public double getRightSpeed(){
         double rightSpeed = rightCANcoder.getVelocity();
 
         return rightSpeed;
     }
 
-    public static double getSpeed(){
+    public double getSpeed(){
         return (getLeftSpeed() + getRightSpeed())/ 2; 
     }
 
@@ -90,7 +93,7 @@ public class Sensors {
     /**
      * Resets all CANcoder values
      */
-    public static void resetCANcoder(){
+    public void resetCANcoder(){
         hangCANcoder.setPosition(0);
         leftCANcoder.setPosition(0);
         rightCANcoder.setPosition(0);
@@ -99,20 +102,20 @@ public class Sensors {
     /**
      * Resets Gyro Values
      */
-    public static void gyroReset(){
+    public void gyroReset(){
         pigeon.setYaw(0);
         pigeon.setAccumZAngle(0);
         pigeon.setFusedHeading(0);
     }
 
-    public static void resetYawAngle(){
+    public void resetYawAngle(){
         pigeon.setYaw(0);
     }
 
     /**
      * Resets Sensors
      */
-    public static void resetSensors(){
+    public void resetSensors(){
         gyroReset();
         resetCANcoder();
     }

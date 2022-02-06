@@ -9,6 +9,9 @@ package frc.team6429.periodics.Auto.Modes;
 
 import java.util.Arrays;
 
+import com.fasterxml.jackson.databind.node.IntNode;
+
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.team6429.periodics.Auto.AutoModeEndedException;
 import frc.team6429.periodics.Auto.Action.*;
 
@@ -21,5 +24,6 @@ public class MainAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException {
         runAction(null);
+    
     }
 }

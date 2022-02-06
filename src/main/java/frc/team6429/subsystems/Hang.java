@@ -5,6 +5,8 @@
 package frc.team6429.subsystems;
 
 import frc.team6429.subsystems.Drive2;
+import frc.team6429.util.Utils;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -27,27 +29,19 @@ public class Hang {
     public VictorSP hangMotor1;
     public WPI_TalonFX hangMotor2;
 
-    public Encoder traversalEnc;
+    //public Encoder traversalEnc;
     public CANCoder hangCANcoder;
     
     public Hang(){
-        hangMotor1 = new VictorSP(Constants.hangMotorPort);
-        //hangMotor2 = makeTalonFX(Constants.hangMotorID, false);
+        //hangMotor1 = new VictorSP(Constants.hangMotorPort);
+        hangMotor1 = Utils.makeVictorSP(Constants.hangMotorPort, false);
+        hangMotor2 = Utils.makeTalonFX(Constants.hangMotorID, false);
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
         mDrive = new Drive();
         mDrive2 = new Drive2();
 
     }
 
-    private WPI_TalonFX makeTalonFX(int id, boolean invert) { 
-        WPI_TalonFX talon = new WPI_TalonFX(id);
-    
-        talon.configFactoryDefault();
-        talon.setInverted(invert);
-        talon.stopMotor();
-    
-        return talon;
-      }
 
 
 }

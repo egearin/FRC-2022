@@ -10,8 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -21,6 +25,61 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 
 /** Add your docs here. */
 public final class Utils {
+
+    /**
+     * VictorSPX Constructor
+     * @param id
+     * Motor ID 
+     * @param invert
+     * Is inverted
+     * @return VictorSPX
+     */
+
+    public static WPI_VictorSPX makeVictorSPX(int id , boolean invert) { 
+        WPI_VictorSPX victorSPX = new WPI_VictorSPX(id);
+        invert = victorSPX.getInverted();
+
+        victorSPX.configFactoryDefault();
+        victorSPX.setInverted(invert);
+        victorSPX.stopMotor();
+    
+        return victorSPX;
+      }
+    /**
+     * TalonFX Constructor
+     * @param id
+     * Motor ID 
+     * @param invert
+     * Is inverted
+     * @return TalonFX
+     */
+    public static WPI_TalonFX makeTalonFX(int id, boolean invert) { 
+        WPI_TalonFX talon = new WPI_TalonFX(id);
+    
+        talon.configFactoryDefault();
+        talon.setInverted(invert);
+        talon.stopMotor();
+    
+        return talon;
+      }
+    /**
+     * VictorSP Constructor
+     * @param port
+     * Motor Port 
+     * @param invert
+     * Is inverted
+     * @return VictorSP
+     */
+    public static VictorSP makeVictorSP(int port , boolean invert) {
+        VictorSP victorSP = new VictorSP(port);
+        invert = victorSP.getInverted();
+        
+        victorSP.setInverted(invert);
+        victorSP.stopMotor();
+
+        return victorSP;
+    }
+
     /**
      * Return deadband value
      * @param value
@@ -66,7 +125,6 @@ public final class Utils {
      * @param outputEnd
      * @return
      */
-    /*
     public static double map(double value, double inputStart, double inputEnd, double outputStart, double outputEnd){
         double deltaIn = inputEnd - inputStart;
         double deltaOut = outputEnd - outputStart;
@@ -100,11 +158,10 @@ public final class Utils {
         }
     }
     
-    /**
+    /** 
      * Print Trajectory But Multiple of Them @see {@link #printTrajectoryToDashboard(Trajectory)}
      * @param trajectory
      */
-    /*
     public static void printTrajectoriesToDashboard(List<Trajectory> trajectories, Field2d fieldSim){
         String apexName = "Trajectory";
         int partitionSize = 16;
@@ -140,5 +197,5 @@ public final class Utils {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryLocation, ex.getStackTrace());
             return null;
         }
-    }*/
+    }
 }

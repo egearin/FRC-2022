@@ -9,7 +9,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.util.Gamepad;
 
-/** Teleop: Robot Drive*/
+/** 
+ * Teleop: Robot Drive
+ * Robot Drivebase During Teleop Mode
+*/
 public class DriveTeleop {
 
     private static DriveTeleop mInstance = new DriveTeleop();
@@ -20,7 +23,8 @@ public class DriveTeleop {
 
     private Gamepad mGamepad;
     private Drive mDrive;
-    double rotation;
+    private double rotation;
+    private double turnPID = 0.07; 
     
     public DriveTeleop(){
         mGamepad = Gamepad.getInstance();
@@ -32,7 +36,7 @@ public class DriveTeleop {
     double speed = mGamepad.getForward() - mGamepad.getReverse();
 
     if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
-      rotation = mGamepad.getSensetiveSteering() * 0.5;
+      rotation = mGamepad.getSensetiveSteering() * 0.5; 
     }
 
     else {
@@ -43,6 +47,11 @@ public class DriveTeleop {
       mDrive.driveShift(!mDrive.shifter.get());
     } 
 
+    /*if(mGamepad.getPTOpressed()) {
+      mDrive.powerTakeOff(!mDrive.pto.get());
+      
+    }*/
+    
     mDrive.robotDrive(speed, rotation);
     mGamepad.forceFeedback(speed, rotation);
 
