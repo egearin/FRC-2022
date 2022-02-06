@@ -112,11 +112,12 @@ public class Drive {
         //shifter = new Solenoid(PneumaticsModuleType.REVPH, Constants.shifterPort);
         shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
         shifter.setPulseDuration(Constants.shifterPulseDuration);
-        
+        shifter.set(true);
 
         //pto = new Solenoid(PneumaticsModuleType.REVPH, Constants.ptoPort);
         pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
         pto.setPulseDuration(Constants.ptoPulseDuration);
+        pto.set(false);
 
         //compressor = new Compressor(0, PneumaticsModuleType.REVPH);
 
@@ -397,7 +398,7 @@ public class Drive {
     }
      
     /**
-     * 
+     * Simple Turn PID using rotation
      * @param desired_rotation
      * @return
      */
@@ -415,7 +416,7 @@ public class Drive {
     }
 
     /**
-     * 
+     * Turn PID using rotation
      * @param desired_rotation
      * @return 
      */
@@ -431,6 +432,40 @@ public class Drive {
         }
         tankDriveVolts(rotation, -rotation);
         return rotation;
+    }
+
+    /**
+     * Turn PID using angle
+     * @param wantedAngle
+     * @param currentAngle
+     * @return 
+     */
+    public double autoTurnPID(double wantedAngle, double currentAngle){
+        double turnError = 0;
+        double turnIntegral = 0;
+        double turnDerivative = 0;
+        double turnPrevError = 0;
+        double turnRes = 0;
+
+        turnError = wantedAngle-currentAngle;
+        turnIntegral += turnError*Constants.kDriveI*0.02;
+        turnDerivative = turnError-turnPrevError;
+        turnIntegral = Utils.applyDeadband(turnIntegral, -1, 1);
+
+        turnRes = turnIntegral+(turnError*Constants.kDriveP)+(turnDerivative*Constants.kDriveD);
+
+        turnRes = Utils.applyDeadband(turnRes, -1, 1);
+        
+        turnPrevError = turnError;
+
+        return turnRes;
+
+    }
+    
+    public void autoTurn(double wantedAngle){
+        if(Utils.tolerance(getGyroAngle(), wantedAngle, 0.5));
+        else
+        chassis.curvatureDrive(0,autoTurnPID(wantedAngle, getGyroAngle()),false);
     }
 
     /*private WPI_VictorSPX makeVictorSPX(int id , boolean invert) { 
