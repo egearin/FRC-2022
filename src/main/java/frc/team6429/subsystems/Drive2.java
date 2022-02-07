@@ -148,7 +148,7 @@ public class Drive2 {
     * @param leftVolts  the commanded left output
     * @param rightVolts the commanded right output
     */
-    public void tankDriveVolts(double leftVolts, double rightVolts) {
+    public void tankDriveVolts(double leftVolts, double rightVolts){
         leftMotor.setVoltage(leftVolts);
         rightMotor.setVoltage(-rightVolts);
         chassis.feed();
@@ -182,10 +182,10 @@ public class Drive2 {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.01);
         double minMax = SmartDashboard.getNumber("Min PID", 0.3);
-        if (desired_rotation > 1.0){
+        if (desired_rotation > 1.0) {
                 rotation = kP*desired_rotation + minMax;
         }
-        else if (desired_rotation < 1.0){
+        else if (desired_rotation < 1.0) {
                 rotation = kP*desired_rotation - minMax;
         }
         return rotation;
@@ -195,10 +195,10 @@ public class Drive2 {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
         double minMax = 1.9;
-        if (desired_rotation > 1.0){ // to the right
+        if (desired_rotation > 1.0) { // to the right
                 rotation = kP*desired_rotation + minMax;
         }
-        else if (desired_rotation < 1.0){ // to the left
+        else if (desired_rotation < 1.0) { // to the left
                 rotation = kP*desired_rotation - minMax;
         }
         tankDriveVolts(rotation, -rotation);

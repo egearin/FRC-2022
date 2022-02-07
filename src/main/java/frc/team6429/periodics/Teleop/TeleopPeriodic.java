@@ -6,6 +6,9 @@ package frc.team6429.periodics.Teleop;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
+import frc.team6429.subsystems.Dumper;
+import frc.team6429.subsystems.Indexer;
+import frc.team6429.util.Drivepanel;
 import frc.team6429.util.Gamepad;
 
 /** 
@@ -20,21 +23,70 @@ public class TeleopPeriodic {
         return mInstance;
     }
 
+    //Subsystems
     public Drive mDrive;
+    public Indexer mIndexer;
+    public Dumper mDumper;
     public Gamepad mGamepad;
+    public Drivepanel mDrivepanel;
 
 
-    public TeleopPeriodic() {
+
+    public TeleopPeriodic(){
         mDrive = Drive.getInstance();
+        mIndexer = Indexer.getInstance();
+        mDumper = Dumper.getInstance();
         mGamepad = Gamepad.getInstance();
+        mDrivepanel = Drivepanel.getInstance();
     }
 
-    public void teleopPeriodic() {
+    public void teleopPeriodic(){
+    
+    //Manual Pivot Codes
+    if(mDrivepanel.pivotDown()) {
+        mIndexer.pivotDown();
+    }
+    else if(mDrivepanel.pivotUp()) {
+        mIndexer.pivotUp();
+    }
+    else {
+        mIndexer.pivotStall();
+    }
 
+    //Manual Indexer Codes
+    if(mDrivepanel.getIndexerDrivepanel()) {
+        mIndexer.indexerOn(1, 0.2);
+    }
+    else if(mDrivepanel.getIndexerReverseDrivepanel()) {
+        mIndexer.indexerReverse(1, 1);
+    }
+    else {
+        mIndexer.indexerStop();
+    }
+
+    //Custom Indexer Codes
+
+    
+
+
+
+    //Dumper Codes
+    if(mGamepad.getDumperGamepad()) {
+        mDumper.dumperSend(1);
+    }
+    else if(mGamepad.getDumperOppositeGamepad()) {
+        mDumper.dumperSendOpposite(1);
+    }
+    
+    //Power Take-Off
     if(mGamepad.getPTOpressed()) {
         mDrive.powerTakeOff(!mDrive.pto.get());
-        
     }
+
+
+    
+
+    
 
     }
 }

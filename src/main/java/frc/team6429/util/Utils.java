@@ -4,6 +4,7 @@
 
 package frc.team6429.util;
 
+import java.io.*;   
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public final class Utils {
      * @return VictorSPX
      */
 
-    public static WPI_VictorSPX makeVictorSPX(int id , boolean invert) { 
+    public static WPI_VictorSPX makeVictorSPX(int id , boolean invert){ 
         WPI_VictorSPX victorSPX = new WPI_VictorSPX(id);
         invert = victorSPX.getInverted();
 
@@ -53,7 +54,7 @@ public final class Utils {
      * Is inverted
      * @return TalonFX
      */
-    public static WPI_TalonFX makeTalonFX(int id, boolean invert) { 
+    public static WPI_TalonFX makeTalonFX(int id, boolean invert){ 
         WPI_TalonFX talon = new WPI_TalonFX(id);
     
         talon.configFactoryDefault();
@@ -70,7 +71,7 @@ public final class Utils {
      * Is inverted
      * @return VictorSP
      */
-    public static VictorSP makeVictorSP(int port , boolean invert) {
+    public static VictorSP makeVictorSP(int port , boolean invert){
         VictorSP victorSP = new VictorSP(port);
         invert = victorSP.getInverted();
         
@@ -90,10 +91,10 @@ public final class Utils {
     public static double applyDeadband(double value, double minValue, double maxValue){
         if(value > maxValue)
             return maxValue;
-        else if(value<minValue){
+        else if(value<minValue) {
             return minValue;
         }
-        else{
+        else {
             return value;
         }
     }
@@ -141,8 +142,8 @@ public final class Utils {
                                     .map(state -> state.poseMeters)
                                     .collect(Collectors.toList());
         
-        for(int a = 0; a < objectPoses.size(); a++){
-            if (a % 2 == 0){
+        for(int a = 0; a < objectPoses.size(); a++) {
+            if (a % 2 == 0) {
                 objectPoses.remove(a);
             }
         }
@@ -152,7 +153,7 @@ public final class Utils {
         for (int i = 0; i < listSize; i += partitionSize) {
             partitions.add(objectPoses.subList(i, Math.min(i + partitionSize, objectPoses.size())));
         }
-        for (int a = 0; a < partitions.size(); a++){
+        for (int a = 0; a < partitions.size(); a++) {
             System.out.println("a is" + a + "Lenght of array is" + partitions.get(a).size());
             RobotData.fieldSim.getObject(objectApexName + a).setPoses(partitions.get(a));
         }
@@ -165,14 +166,14 @@ public final class Utils {
     public static void printTrajectoriesToDashboard(List<Trajectory> trajectories, Field2d fieldSim){
         String apexName = "Trajectory";
         int partitionSize = 16;
-        for(int z = 0; z < trajectories.size(); z++){
+        for(int z = 0; z < trajectories.size(); z++) {
             String objectApexName = apexName + z + "-"; 
             Trajectory trajectory = trajectories.get(z);
             List<Pose2d> objectPoses = trajectory.getStates().stream()
                                         .map(state -> state.poseMeters)
                                         .collect(Collectors.toList());
-            for(int a = 0; a < objectPoses.size(); a++){
-                if (a % 2 == 0){
+            for(int a = 0; a < objectPoses.size(); a++) {
+                if (a % 2 == 0) {
                     objectPoses.remove(a);
                 }
             }
@@ -181,7 +182,7 @@ public final class Utils {
             for (int i = 0; i < listSize; i += partitionSize) {
                 partitions.add(objectPoses.subList(i, Math.min(i + partitionSize, objectPoses.size())));
             }
-            for (int a = 0; a < partitions.size(); a++){
+            for (int a = 0; a < partitions.size(); a++) {
                 fieldSim.getObject(objectApexName + a).setPoses(partitions.get(a));
             }
         }
@@ -197,5 +198,35 @@ public final class Utils {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryLocation, ex.getStackTrace());
             return null;
         }
+    } 
+
+    
+    /**
+     * Function to convert inches to centimeters
+     * @param inches
+     * input inches
+     * @return centimeters
+     */
+    public static double conversion_inchToCM(double inches){
+        double centi;
+        centi = inches * 2.54;
+
+        return centi;
     }
+
+    /**
+     * Function to convert inches to millimeters
+     * @param inches
+     * input inches
+     * @return millimeters
+     */
+    public static double conversion_inchToMM(double inches){
+        double millimeters;
+        millimeters = conversion_inchToCM(inches) * 10;
+        return millimeters;
+    }
+
+        
+    
+
 }

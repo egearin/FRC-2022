@@ -13,16 +13,16 @@ package frc.team6429.periodics.Auto.Action;
 public class NoopAction implements Action {
 
     @Override
-    public void start() {}
+    public void start(){}
 
     @Override
-    public void update() {}
+    public void update(){}
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(){
         return true;
     }
 
     @Override
-    public void done() {}
+    public void done(){}
 }

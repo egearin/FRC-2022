@@ -18,21 +18,21 @@ public class SeriesAction implements Action {
     private Action mCurrentAction;
     private final ArrayList<Action> mRemainingActions;
 
-    public SeriesAction(List<Action> actions) {
+    public SeriesAction(List<Action> actions){
         mRemainingActions = new ArrayList<>(actions);
         mCurrentAction = null;
     }
 
-    public SeriesAction(Action... actions) {
+    public SeriesAction(Action... actions){
         this(Arrays.asList(actions));
     }
 
     @Override
-    public void start() {
+    public void start(){
     }
 
     @Override
-    public void update() {
+    public void update(){
         if (mCurrentAction == null) {
             if (mRemainingActions.isEmpty()) {
                 return;
@@ -51,11 +51,11 @@ public class SeriesAction implements Action {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(){
         return mRemainingActions.isEmpty() && mCurrentAction == null;
     }
 
     @Override
-    public void done() {
+    public void done(){
     }
 }

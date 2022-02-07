@@ -22,21 +22,21 @@ public class WaitAction implements Action {
         timer = new Timer();
     }
     @Override
-    public void start() {
+    public void start(){
         timer.reset();
         timer.start();
     }
 
     @Override
-    public void update() {
+    public void update(){
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(){
         return timer.get() > _time;
     }
 
     @Override
-    public void done() {
+    public void done(){
     }
 }

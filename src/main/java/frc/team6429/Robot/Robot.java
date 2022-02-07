@@ -25,7 +25,7 @@ import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Hang;
-import frc.team6429.subsystems.Intake;
+import frc.team6429.subsystems.Indexer;
 import frc.team6429.util.Drivepanel;
 import frc.team6429.util.Gamepad;
 
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
   private Drive mDrive;
-  private Intake mIntake;
+  private Indexer mIntake;
   private Hang mHang;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
     mTeleopPeriodic = TeleopPeriodic.getInstance();
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
-    mIntake = Intake.getInstance();
+    mIntake = Indexer.getInstance();
     mHang = Hang.getInstance();
     timer = new Timer();
     ame = new AutoModeExecutor();
@@ -166,7 +166,7 @@ public class Robot extends TimedRobot {
     mTeleopPeriodic.teleopPeriodic();
 
 
-    if(mGamepad.getTest2()){
+    /*if(mGamepad.getTest2()){
     mDrive.rightMotor.set(0.2);
     }
 
@@ -177,7 +177,7 @@ public class Robot extends TimedRobot {
     else{
 
       mDrive.stopDrive();
-    }
+    } */
   }
 
 }

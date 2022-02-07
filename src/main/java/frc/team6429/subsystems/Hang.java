@@ -6,13 +6,13 @@ package frc.team6429.subsystems;
 
 import frc.team6429.subsystems.Drive2;
 import frc.team6429.util.Utils;
+import frc.team6429.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-import frc.team6429.robot.Constants;
 
 /** Add your docs here. */
 public class Hang {
@@ -34,7 +34,7 @@ public class Hang {
     
     public Hang(){
         //hangMotor1 = new VictorSP(Constants.hangMotorPort);
-        hangMotor1 = Utils.makeVictorSP(Constants.hangMotorPort, false);
+        //hangMotor1 = Utils.makeVictorSP(Constants.hangMotorPort, false);
         hangMotor2 = Utils.makeTalonFX(Constants.hangMotorID, false);
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
         mDrive = new Drive();

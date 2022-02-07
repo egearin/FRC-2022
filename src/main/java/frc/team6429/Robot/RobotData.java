@@ -12,13 +12,14 @@ import edu.wpi.first.math.trajectory.Trajectory;
 
 /** Add your docs here. */
 public class RobotData {
+
     public enum CANcoderMode{
         
     }
     
     public enum LoadedTrajectory{
         NONE,
-        DEFAULT
+        DEFAULT;
 
     }
 

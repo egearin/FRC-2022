@@ -18,26 +18,26 @@ import java.util.List;
 public class ParallelAction implements Action {
     private final ArrayList<Action> mActions;
 
-    public ParallelAction(List<Action> actions) {
+    public ParallelAction(List<Action> actions){
         mActions = new ArrayList<>(actions);
     }
 
-    public ParallelAction(Action... actions) {
+    public ParallelAction(Action... actions){
         this(Arrays.asList(actions));
     }
 
     @Override
-    public void start() {
+    public void start(){
         mActions.forEach(Action::start);
     }
 
     @Override
-    public void update() {
+    public void update(){
         mActions.forEach(Action::update);
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(){
         for (Action action : mActions) {
             if (!action.isFinished()) {
                 return false;
@@ -47,7 +47,7 @@ public class ParallelAction implements Action {
     }
 
     @Override
-    public void done() {
+    public void done(){
         mActions.forEach(Action::done);
     }
 }

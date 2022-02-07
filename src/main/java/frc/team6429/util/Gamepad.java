@@ -26,12 +26,12 @@ public class Gamepad {
     public void forceFeedback(double speed, double rotation){
         double leftRotation;
         double rightRotation;
-        if (rotation < 0){
+        if (rotation < 0) {
             leftRotation = 0.5 * (Math.abs(rotation) + speed); 
             rightRotation = 0.5 * (Math.abs(speed));
         }
 
-        else{
+        else {
             leftRotation = 0.5 * Math.abs(speed);
             rightRotation = 0.5 * (Math.abs(rotation) + speed);
         }
@@ -55,19 +55,51 @@ public class Gamepad {
         return gamepad.getRawAxis(Constants.axis_sensetiveSteering);
     }
 
+    public boolean getCustomIndexerOn(){
+        return gamepad.getRawButton(Constants.customIndexerOnButtonGamepad);
+    }
+
+    public boolean getCustomIndexerOff(){
+        return gamepad.getRawButton(Constants.customIndexerOffButtonGamepad);
+    }
+
+    public boolean getIntakeGamepad(){
+        return gamepad.getRawButton(Constants.intakeOnButtonGamepad);
+    }
+
+    public boolean getIntakeReverseGamepad(){
+        return gamepad.getRawButton(Constants.intakeReverseButtonGamepad);
+    }
+
+    public boolean getConveyorGamepad(){
+        return gamepad.getRawButton(Constants.conveyorOnButtonGamepad);
+    }
+
+    public boolean getConveyorReverseGamepad(){
+        return gamepad.getRawButton(Constants.conveyorReverseButtonGamepad);
+    }
+
     public boolean getDriveShifterPressed(){
         return gamepad.getRawButtonReleased(Constants.shifterButton);
     }
+
+    public boolean getDriveShiftOnePressed(){
+        return gamepad.getRawButtonReleased(Constants.shifterOneButton);
+    }
     
+    public boolean getDriveShiftTwoPressed(){
+        return gamepad.getRawButtonReleased(Constants.shifterTwoButton);
+    }
+
     public boolean getPTOpressed(){
         return gamepad.getRawButton(Constants.ptoButton);
     }
     
-    public boolean getTest1(){
-        return gamepad.getRawButton(5);
+    public boolean getDumperGamepad(){
+        return gamepad.getRawButton(Constants.dumperButtonGamepad);
     }
 
-    public boolean getTest2(){
-        return gamepad.getRawButton(6);
+    public boolean getDumperOppositeGamepad(){
+        return gamepad.getRawButton(Constants.dumperOppositeButtonGamepad);
     }
 }

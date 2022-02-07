@@ -17,23 +17,23 @@ public class StopAction implements Action {
     public Drive mDrive;
 
     @Override
-    public void start() {
+    public void start(){
         mDrive = Drive.getInstance();
         mDrive.stopDrive();
     }
 
     @Override
-    public void update() {
+    public void update(){
         mDrive.stopDrive();
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished(){
         return false;
     }
     
     @Override
-    public void done() {
+    public void done(){
     }
 
  

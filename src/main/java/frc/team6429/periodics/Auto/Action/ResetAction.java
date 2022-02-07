@@ -4,33 +4,34 @@
 
 package frc.team6429.periodics.Auto.Action;
 
+import frc.team6429.util.Sensors;
 
 /** Add your docs here. */
-public class LambdaAction implements Action {
+public class ResetAction implements Action {
 
-    public interface VoidInterace {
-        void f();
-    }
-
-    VoidInterace mF;
-
-    public LambdaAction(VoidInterace f){
-        this.mF = f;
-    }
 
     @Override
     public void start(){
-        mF.f();
+        
+        
     }
 
     @Override
-    public void update(){}
+    public void update(){
+        
+        
+    }
 
     @Override
     public boolean isFinished(){
-        return true;
+        
+        return false;
     }
 
     @Override
-    public void done(){}
+    public void done(){
+        
+        
+    }
+
 }

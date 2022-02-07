@@ -19,9 +19,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -66,7 +66,7 @@ public class Drive {
     public Solenoid shifter;
     public Solenoid pto;
 
-    //public Compressor compressor;
+    public Compressor compressor;
 
     //Master
     public MotorControllerGroup leftMotor;
@@ -109,17 +109,17 @@ public class Drive {
 
         pigeon = new PigeonIMU(Constants.pigeonID);
 
-        //shifter = new Solenoid(PneumaticsModuleType.REVPH, Constants.shifterPort);
-        shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
+        shifter = new Solenoid(PneumaticsModuleType.REVPH, Constants.shifterPort);
+        //shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
         shifter.setPulseDuration(Constants.shifterPulseDuration);
         shifter.set(true);
 
-        //pto = new Solenoid(PneumaticsModuleType.REVPH, Constants.ptoPort);
-        pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
+        pto = new Solenoid(PneumaticsModuleType.REVPH, Constants.ptoPort);
+        //pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
         pto.setPulseDuration(Constants.ptoPulseDuration);
         pto.set(false);
 
-        //compressor = new Compressor(0, PneumaticsModuleType.REVPH);
+        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
 
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 1/360, "meter", SensorTimeBase.PerSecond);
@@ -269,7 +269,7 @@ public class Drive {
      * Robot Drive Using Shifter
      * @param isShifted
      */
-    public void driveShift(boolean isShifted) {
+    public void driveShift(boolean isShifted){
 
         shifter.set(isShifted);
         SmartDashboard.putBoolean("Shifted:", isShifted );
@@ -282,9 +282,23 @@ public class Drive {
             SmartDashboard.putNumber("Shift", 1);
         }
     } 
-    
+
     /**
-     * Robot Using Power Take Off
+     * Robot Drive Using Shifter State One
+     */
+    public void driveShiftOne(){
+        shifter.set(false);
+    }
+
+    /**
+     * Robot Drive Using Shifter State Two
+     */
+    public void driveShiftTwo(){
+        shifter.set(true);
+    }
+
+    /**
+     * Robot Using Power Take-Off
      * @param shift
      */
     public void powerTakeOff(boolean shift){
@@ -326,7 +340,7 @@ public class Drive {
     * @param leftVolts  the commanded left output
     * @param rightVolts the commanded right output
     */
-    public void tankDriveVolts(double leftVolts, double rightVolts) {
+    public void tankDriveVolts(double leftVolts, double rightVolts){
         leftMotor.setVoltage(leftVolts);
         rightMotor.setVoltage(-rightVolts);
         chassis.feed();
@@ -363,7 +377,7 @@ public class Drive {
 
     double totalX;
 
-    public double getTotalX() {
+    public double getTotalX(){
         return totalX;
     }
 
@@ -373,7 +387,7 @@ public class Drive {
      * @param wantedDistance
      * @return 
      */
-    public double distancePID(double maxSpeed, double wantedDistance) {
+    public double distancePID(double maxSpeed, double wantedDistance){
         double distanceError = 0;
         double prevError = 0;
         double distanceIntegral = 0;
@@ -406,10 +420,10 @@ public class Drive {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.01);
         double minMax = SmartDashboard.getNumber("Min PID", 0.3);
-        if (desired_rotation > 1.0){
+        if (desired_rotation > 1.0) {
                 rotation = kP*desired_rotation + minMax;
         }
-        else if (desired_rotation < 1.0){
+        else if (desired_rotation < 1.0) {
                 rotation = kP*desired_rotation - minMax;
         }
         return rotation;
@@ -424,10 +438,10 @@ public class Drive {
         double rotation = 0;
         double kP = SmartDashboard.getNumber("Turn PID", 0.1);
         double minMax = 1.9;
-        if (desired_rotation > 1.0){ // to the right
+        if (desired_rotation > 1.0) { // to the right
                 rotation = kP*desired_rotation + minMax;
         }
-        else if (desired_rotation < 1.0){ // to the left
+        else if (desired_rotation < 1.0) { // to the left
                 rotation = kP*desired_rotation - minMax;
         }
         tankDriveVolts(rotation, -rotation);
@@ -453,7 +467,6 @@ public class Drive {
         turnIntegral = Utils.applyDeadband(turnIntegral, -1, 1);
 
         turnRes = turnIntegral+(turnError*Constants.kDriveP)+(turnDerivative*Constants.kDriveD);
-
         turnRes = Utils.applyDeadband(turnRes, -1, 1);
         
         turnPrevError = turnError;
@@ -463,12 +476,14 @@ public class Drive {
     }
     
     public void autoTurn(double wantedAngle){
-        if(Utils.tolerance(getGyroAngle(), wantedAngle, 0.5));
-        else
+        if(Utils.tolerance(getGyroAngle(), wantedAngle, 0.5)) {
+        }
+        else {
         chassis.curvatureDrive(0,autoTurnPID(wantedAngle, getGyroAngle()),false);
+        }
     }
 
-    /*private WPI_VictorSPX makeVictorSPX(int id , boolean invert) { 
+    /*private WPI_VictorSPX makeVictorSPX(int id , boolean invert){ 
         WPI_VictorSPX victorSPX = new WPI_VictorSPX(id);
         invert = victorSPX.getInverted();
 
@@ -480,7 +495,7 @@ public class Drive {
       }
 
 
-    private VictorSP makeVictorSP(int id , boolean invert) {
+    private VictorSP makeVictorSP(int id , boolean invert){
         VictorSP victorSP = new VictorSP(id);
         invert = victorSP.getInverted();
         

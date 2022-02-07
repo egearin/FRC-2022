@@ -24,6 +24,7 @@ public class DriveTeleop {
     private Gamepad mGamepad;
     private Drive mDrive;
     private double rotation;
+    private double speed;
     private double turnPID = 0.07; 
     
     public DriveTeleop(){
@@ -32,8 +33,8 @@ public class DriveTeleop {
     }
     
     public void driveTeleop(){
-      
-    double speed = mGamepad.getForward() - mGamepad.getReverse();
+    //Robot Drive
+    speed = mGamepad.getForward() - mGamepad.getReverse();
 
     if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
       rotation = mGamepad.getSensetiveSteering() * 0.5; 
@@ -43,9 +44,18 @@ public class DriveTeleop {
       rotation = mGamepad.getSteering() * 0.75;
     }
 
+    //Drive Shifter
     if(mGamepad.getDriveShifterPressed()) {
       mDrive.driveShift(!mDrive.shifter.get());
     } 
+
+    else if(mGamepad.getDriveShiftOnePressed()) {
+      mDrive.driveShiftOne();
+    }
+
+    else if(mGamepad.getDriveShiftTwoPressed()) {
+      mDrive.driveShiftTwo();
+    }
 
     /*if(mGamepad.getPTOpressed()) {
       mDrive.powerTakeOff(!mDrive.pto.get());
