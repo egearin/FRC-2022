@@ -12,6 +12,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,15 +20,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 import frc.team6429.robot.Constants;
 import frc.team6429.util.Sensors;
@@ -53,7 +58,15 @@ public class Drive {
     public PIDController PID;
     public PIDController leftController = new PIDController(0, 0, 0);
     public PIDController rightController = new PIDController(0, 0, 0);
-    
+
+    //ProfiledPID
+    public Constraints constraints;
+    public ProfiledPIDController profiledPID;
+
+    //Trapezoid
+    public TrapezoidProfile trapezoidProfile;
+    public Timer timer;
+
     //Feedforward
     public SimpleMotorFeedforward driveFeedforward;
 
@@ -62,15 +75,17 @@ public class Drive {
     public CANCoder leftCANcoder;
     public CANCoder rightCANcoder;
 
-    //Solenoid 
+    //Solenoid
     public Solenoid shifter;
     public Solenoid pto;
-
-    public Compressor compressor;
+    
+    //public Compressor compressor;
 
     //Master
     public MotorControllerGroup leftMotor;
     public MotorControllerGroup rightMotor;
+
+    public SimpleMotorFeedforward simpleMotorFF;
 
     public DifferentialDrive chassis;
     
@@ -79,14 +94,19 @@ public class Drive {
     public RamseteManager ramseteManager;
 
     public Sensors mSensors;
-    public Hang mHang;
+  
     
 
     
     public Drive(){
 
+        timer = new Timer();
+
+        constraints = new Constraints(Constants.kMaxSpeed, Constants.kMaxAcceleration);
         PID = new PIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
 
+        profiledPID = new ProfiledPIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD, constraints);
+        simpleMotorFF = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV);
         driveFeedforward = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV, Constants.kDriveA);
         
         driveLOne = new WPI_VictorSPX(Constants.driveOneLeftMotorID);
@@ -109,17 +129,15 @@ public class Drive {
 
         pigeon = new PigeonIMU(Constants.pigeonID);
 
-        shifter = new Solenoid(PneumaticsModuleType.REVPH, Constants.shifterPort);
+        shifter = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.shifterChannel);
         //shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
         shifter.setPulseDuration(Constants.shifterPulseDuration);
-        shifter.set(true);
 
-        pto = new Solenoid(PneumaticsModuleType.REVPH, Constants.ptoPort);
+        pto = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.ptoChannel);
         //pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
         pto.setPulseDuration(Constants.ptoPulseDuration);
-        pto.set(false);
 
-        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
+        //compressor = new Compressor(0, PneumaticsModuleType.REVPH);
 
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 1/360, "meter", SensorTimeBase.PerSecond);
@@ -127,8 +145,11 @@ public class Drive {
         rightCANcoder = new CANCoder(Constants.rightCANcoderID);
         rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
         
-        mSensors = Sensors.getInstance();
-        mHang = Hang.getInstance();
+
+        timer.start();
+
+        pto.close();
+        shifter.close();
     }
 
 
@@ -264,13 +285,11 @@ public class Drive {
     
     }
 
-
     /**
      * Robot Drive Using Shifter
      * @param isShifted
      */
     public void driveShift(boolean isShifted){
-
         shifter.set(isShifted);
         SmartDashboard.putBoolean("Shifted:", isShifted );
         
@@ -281,8 +300,8 @@ public class Drive {
         else {
             SmartDashboard.putNumber("Shift", 1);
         }
-    } 
-
+        
+    }
     /**
      * Robot Drive Using Shifter State One
      */
@@ -357,6 +376,46 @@ public class Drive {
         chassis.curvatureDrive(speed, drivePID, false);
     }
 
+    /**
+     * Sets the goal for ProfiledPIDController
+     * @param position
+     * @param velocity
+     */
+    public void setGoal(double position, double velocity){
+        profiledPID.setGoal(new State(position, velocity));
+    }
+
+    /**
+     * Resets the setpoint of profiledPID
+     */
+    public void resetSetpoint(){
+        profiledPID.reset(profiledPID.getSetpoint());
+    }
+
+    /**
+     * Motor Drive using profiledPID and simpleMotorFeedforward 
+     * @param wanted_angle   
+     */
+    public void sexyMotorDrive(double wanted_angle){
+        double previousVelocity = 0;
+        double previousTime;
+        double acceleration;
+
+        previousTime = Timer.getFPGATimestamp();
+        acceleration = (profiledPID.getSetpoint().velocity - previousVelocity) / (timer.get() - previousTime);
+        
+        double drivePID = profiledPID.calculate(mSensors.getGyroAngle(), wanted_angle);
+        drivePID = MathUtil.clamp(drivePID, -1, 1);
+        double driveFF = simpleMotorFF.calculate(mSensors.getSpeed(), acceleration);
+        driveFF = MathUtil.clamp(driveFF, -1, 1);
+        double voltage = driveFF + drivePID;
+        
+        leftMotor.setVoltage(voltage);
+        rightMotor.setVoltage(voltage);
+        
+        previousVelocity = profiledPID.getSetpoint().velocity;
+        
+    }
 
     /**
      * Resets PID
@@ -371,6 +430,7 @@ public class Drive {
     public void reset(){
         resetPID();
         mSensors.resetSensors();
+        resetSetpoint();
     
     }
 
