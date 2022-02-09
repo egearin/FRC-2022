@@ -35,8 +35,8 @@ public class Indexer {
     public double conveyor_speed;
 
     //Solenoid 
-    public Solenoid pivotPiston;
-    public DoubleSolenoid pivotPistons;
+    //public Solenoid pivotPiston;
+    //public DoubleSolenoid pivotPistons;
 
     //Solenoid States
     public Value kOff;
@@ -51,15 +51,15 @@ public class Indexer {
         //conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
         conveyorMotor = Utils.makeVictorSPX(Constants.conveyorMotorID, false);
 
-        pivotPiston = new Solenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonChannel);
-        pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
+        //pivotPiston = new Solenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonChannel);
+        //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
 
         //pivotPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPiston1Channel);
         //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPistons1ForwardChannel, Constants.pivotPistons1ReverseChannel);
         kOff = Value.kOff;
         kForward = Value.kForward;
         kReverse = Value.kReverse;
-        pivotPistons.set(kOff);
+        //pivotPistons.set(kOff);
         
     }
 
@@ -97,7 +97,7 @@ public class Indexer {
      * @param state
      */
     public void intakePivot(boolean state){
-        pivotPiston.set(state);
+        //pivotPiston.set(state);
    
     }
 
@@ -105,21 +105,21 @@ public class Indexer {
      * Intake Pivot Up Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotUp(){
-        pivotPistons.set(kReverse);
+        //pivotPistons.set(kReverse);
     }
 
     /**
      * Intake Pivot Down Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotDown(){
-        pivotPistons.set(kForward);
+        //pivotPistons.set(kForward);
     }
 
     /**
      * Intake Pivot Stall Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotStall(){
-        pivotPistons.set(kOff);
+        //pivotPistons.set(kOff);
     }
 
     /**

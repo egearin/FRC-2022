@@ -4,11 +4,18 @@
 
 package frc.team6429.util;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU_ControlFrame;
 import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.robot.Constants;
@@ -30,32 +37,32 @@ public class Sensors {
     public CANCoder hangCANcoder;
 
     //Ultrasonic
-    public static Ultrasonic higherUltrasonic;
-    public static Ultrasonic lowerUltrasonic;
+    public static DigitalOutput ultrasonicTriggerPinLow = new DigitalOutput(0);
+    public DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(1);
+  
+    public static AnalogInput lowerUltrasonicSensor= new AnalogInput(0);
+    public static AnalogInput higherUltrasonicSensor = new AnalogInput(1);
 
-    public boolean enabling;
+
 
     public Sensors(){
         pigeon = new PigeonIMU(Constants.pigeonID);
 
         rightCANcoder = new CANCoder(Constants.rightCANcoderID);
         rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360 , "meter" , SensorTimeBase.PerSecond);
-
+        
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
 
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
-        hangCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
+        //hangCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
 
-        enabling = true;
+        ultrasonicTriggerPinLow = new DigitalOutput(0);
+        ultrasonicTriggerPinHigh = new DigitalOutput(1);
+      
+        lowerUltrasonicSensor = new AnalogInput(0);
+        higherUltrasonicSensor = new AnalogInput(1);
 
-        higherUltrasonic = new Ultrasonic(Constants.higherUltrasonicPingChannel, Constants.higherUltrasonicEchoChannel);
-        higherUltrasonic.setEnabled(enabling);
-
-        lowerUltrasonic = new Ultrasonic(Constants.lowerUltrasonicPingChannel, Constants.lowerUltrasonicEchoChannel);
-        lowerUltrasonic.setEnabled(enabling);
-
-        Ultrasonic.setAutomaticMode(enabling);
     }
 
     //----------ENCODER----------
@@ -92,7 +99,7 @@ public class Sensors {
         SmartDashboard.putNumber("Average Speed", getSpeed());
     }
 
-    //GYRO
+    //----------PIGEON----------
     /**
      * Gets Gyro Angle
      */
@@ -106,63 +113,247 @@ public class Sensors {
 
     /**
      * Only Get Yaw Angle
-     */
+     * @return yaw
+     */    
     public double getYawAngle(){
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
-        return ypr[0];
-    }
 
-    //ULTRASONIC
+        return ypr[0];
+    }   
 
     /**
-     * Gets distance in centimeters of the target returned from the ultrasonic sensor.
-     * @return distance
+     * Only Get Pitch Angle
+     * @return pitch
+     */
+    public double getPitchAngle(){
+        double[] ypr = new double[3];
+        pigeon.getYawPitchRoll(ypr);
+
+        return ypr[1];
+    }
+
+    /**
+     * Only Get Roll Angle
+     * @return roll
+     */
+    public double getRollAngle(){
+        double[] ypr = new double[3];
+        pigeon.getYawPitchRoll(ypr);
+        return ypr[2];
+    }
+    
+    /**
+     * Alternate Only Get Yaw Angle
+     * @return yaw
+     */
+    public double getYaw(){
+        double yaw;
+        yaw = pigeon.getYaw();
+
+        return yaw;
+    }
+
+    /**
+     * Alternate Only Get Pitch Angle
+     * @return pitch
+     */
+    public double getPitch(){
+        double pitch;
+        pitch = pigeon.getPitch();
+
+        return pitch;
+    }
+    
+    /**
+     * Alternate Only Get Roll Angle
+     * @return roll
+     */
+    public double getRoll(){
+        double roll;
+        roll = pigeon.getRoll();
+    
+        return roll;
+    }
+
+    /**
+     * Gets Raw X angle in degrees per second
+     * @return x axis
+     */
+    public double getX(){
+        double[] xyz = new double[3];
+        pigeon.getRawGyro(xyz);
+
+        return xyz[0];
+    }
+    
+    /**
+     * Gets Raw Y angle in degrees per second
+     * @return y axis
+     */
+    public double getY(){
+        double[] xyz = new double[3];
+        pigeon.getRawGyro(xyz);
+
+        return xyz[1];
+    }
+
+    /**
+     * Gets Raw Z angle in degrees per second
+     * @return z axis
+     */
+    public double getZ(){
+        double[] xyz = new double[3];
+        pigeon.getRawGyro(xyz);
+
+        return xyz[2];
+    }
+
+    /**
+     * Pigeon Calibration Mode
+     * @return CalibrationMode BootTareGyroAccel
+     */
+    public CalibrationMode calibrationMode(){
+        pigeon.enterCalibrationMode(PigeonIMU.CalibrationMode.BootTareGyroAccel);
+
+        return PigeonIMU.CalibrationMode.valueOf(0);
+    }
+
+    public void pigeonOutput(){
+        SmartDashboard.putNumber("getX", getX());
+        SmartDashboard.putNumber("getY", getY());
+        SmartDashboard.putNumber("getZ", getZ());
+        SmartDashboard.putNumber("getRoll", getRoll());
+        SmartDashboard.putNumber("getPitch", getPitch());
+        SmartDashboard.putNumber("getYaw", getYaw());
+        SmartDashboard.putNumber("getRollAngle", getRollAngle());
+        SmartDashboard.putNumber("getPitchAngle", getPitchAngle());
+        SmartDashboard.putNumber("getYawAngle", getYawAngle());
+        SmartDashboard.putNumber("getGyroAngle", getGyroAngle());
+    }   
+
+    //----------ULTRASONIC----------
+    /**
+     * Sets lower ultrasonic sensor to on and higher ultrasonic sensor to off
+     */
+    public void turnOnLowerUltrasonic(){
+        lowerOn();
+        higherOff();
+    }
+
+    /**
+     * Sets higher ultrasonic to on and lower ultrasonic to off
+     */
+    public void turnOnHigherUltrasonic(){
+        higherOn();
+        lowerOff();
+    }
+
+    /**
+     * Sets both sensors to on
+     */
+    public void turnOnBothSensors(){
+        higherOn();
+        lowerOn();
+    }
+
+    /**
+     * Sets both sensors to off
+     */
+    public void turnOffBothSensors(){
+        higherOff();
+        lowerOff();
+    }
+    
+    /**
+     * Only sets higher ultrasonic sensor to on
+     */
+    public void higherOn(){
+        ultrasonicTriggerPinHigh.set(true);
+    }
+
+    /**
+     * Only sets lower ultrasonic sensor to on
+     */
+    public void lowerOn(){
+        ultrasonicTriggerPinLow.set(true);
+    }
+
+    /**
+     * Only sets higher ultrasonic sensor to off
+     */
+    public void higherOff(){
+        ultrasonicTriggerPinHigh.set(false);
+    }
+
+    /**
+     * Only sets lower ultrasonic sensor to off
+     */
+    public void lowerOff(){
+        ultrasonicTriggerPinHigh.set(false);
+    }
+
+    /**
+     * Gets distance in centimeters of the target returned from the higher ultrasonic sensor.
+     * @return higherMeasuredDistance
      */
     public static double getDistanceHigherCM(){
-        double distance;
-        //distance = Utils.conversion_inchToCM(higherUltrasonic.getRangeInches());
-        distance = getDistanceHigherMM() / 10;
+        double higherMeasuredDistance;
+        double voltageScaleFactor;
+        voltageScaleFactor = 5 / (RobotController.getVoltage5V());
+        higherMeasuredDistance = (higherUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
-        return distance;
-
+        return higherMeasuredDistance;
     }
 
     /**
-     * Gets distance in millimeters of the target returned from the ultrasonic sensor.
-     * @return distance
+     * Gets distance in millimeters of the target returned from the higher ultrasonic sensor.
+     * @return higherDistanceMM
      */
     public static double getDistanceHigherMM(){
-        double distance;
-        //distance = Utils.conversion_inchToMM(higherUltrasonic.getRangeInches());
-        distance = higherUltrasonic.getRangeMM();
+        double higherDistanceMM;
+        higherDistanceMM = getDistanceHigherCM() * 10;
 
-        return distance;
+        return higherDistanceMM;
     }  
 
- 
     /**
-     * Gets distance in millimeters of the target returned from the ultrasonic sensor.
-     * @return distance
+     * Gets distance in centimeters of the target returned from the lower ultrasonic sensor.
+     * @return lowerMeasuredDistance
      */
     public static double getDistanceLowerCM(){
-        double distance;
-        //distance = Utils.conversion_inchToCM(higherUltrasonic.getRangeInches());
-        distance = getDistanceLowerMM() / 10;
+        double lowerMeasuredDistance;
+        double voltageScaleFactor;
+        voltageScaleFactor = 5 / (RobotController.getVoltage5V());
+        lowerMeasuredDistance = (lowerUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
-        return distance;
+        return lowerMeasuredDistance;
     }  
 
     /**
-     * Gets distance in millimeters of the target returned from the ultrasonic sensor.
-     * @return distance
+     * Gets distance in millimeters of the target returned from the lower ultrasonic sensor.
+     * @return lowerDistanceMM
      */
     public static double getDistanceLowerMM(){
-        double distance;
-        //distance = Utils.conversion_inchToMM(higherUltrasonic.getRangeInches());
-        distance = lowerUltrasonic.getRangeMM();
+        double lowerDistanceMM;
+        lowerDistanceMM = getDistanceLowerCM() * 10;
 
-        return distance;
+        return lowerDistanceMM;
+    }
+
+    public static enum UltrasonicStates{
+        DEFAULT(false),
+        BALLDETECTED(true);
+
+    public final boolean states;
+
+    UltrasonicStates(boolean isStates){
+        states = isStates;
+    }
+    
+    public boolean isStates(){
+        return states;
+      }
     }
 
     /**
@@ -171,7 +362,10 @@ public class Sensors {
      */ 
     public static boolean isLowerCargoDetected(){
         boolean state;
-        state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - 5.5);
+
+        state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
+        //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
     }
@@ -182,24 +376,12 @@ public class Sensors {
      */
     public static boolean isHigherCargoDetected(){
         boolean state;
-        state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - 5.5);
+
+        state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
+        //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
-    }
-
-    public static enum UltrasonicStates{
-        DEFAULT(false),
-        BALLDETECTED(true);
-
-    public final boolean states;
-
-      UltrasonicStates(boolean isStates){
-        states = isStates;
-      }
-    
-    public boolean isStates(){
-        return states;
-      }
     }
 
     /** 
@@ -214,7 +396,8 @@ public class Sensors {
         SmartDashboard.putBoolean("Is Lower Ball Detected", isLowerCargoDetected());
         SmartDashboard.putBoolean("Is Highter Ball Detected", isHigherCargoDetected());
     }
-    //RESET
+
+    //----------RESET----------
     /**
      * Resets all CANcoder values
      */

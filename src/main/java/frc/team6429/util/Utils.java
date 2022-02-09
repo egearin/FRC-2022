@@ -225,8 +225,4 @@ public final class Utils {
         millimeters = conversion_inchToCM(inches) * 10;
         return millimeters;
     }
-
-        
-    
-
 }

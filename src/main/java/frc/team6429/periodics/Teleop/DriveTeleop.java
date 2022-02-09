@@ -23,9 +23,12 @@ public class DriveTeleop {
 
     private Gamepad mGamepad;
     private Drive mDrive;
+
     private double rotation;
     private double speed;
-    private double turnPID = 0.07; 
+    private double sensetiveSteering = 0.5;
+    private double steering = 0.75;
+    private double turnPID = 0.07;
     
     public DriveTeleop(){
         mGamepad = Gamepad.getInstance();
@@ -37,11 +40,11 @@ public class DriveTeleop {
     speed = mGamepad.getForward() - mGamepad.getReverse();
 
     if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
-      rotation = mGamepad.getSensetiveSteering() * 0.5; 
+      rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering); 
     }
 
     else {
-      rotation = mGamepad.getSteering() * 0.75;
+      rotation = (mGamepad.getSteering()) * (steering);
     }
 
     //Drive Shifter

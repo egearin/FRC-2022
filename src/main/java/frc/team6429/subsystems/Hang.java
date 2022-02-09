@@ -4,7 +4,7 @@
 
 package frc.team6429.subsystems;
 
-import frc.team6429.subsystems.Drive2;
+//import frc.team6429.subsystems.Drive2;
 import frc.team6429.util.Utils;
 import frc.team6429.robot.Constants;
 
@@ -24,7 +24,7 @@ public class Hang {
     }
 
     public Drive mDrive;
-    public Drive2 mDrive2;
+    //public Drive2 mDrive2;
 
     public VictorSP hangMotor1;
     public WPI_TalonFX hangMotor2;
@@ -38,7 +38,7 @@ public class Hang {
         hangMotor2 = Utils.makeTalonFX(Constants.hangMotorID, false);
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
         mDrive = new Drive();
-        mDrive2 = new Drive2();
+        //mDrive2 = new Drive2();
 
     }
 

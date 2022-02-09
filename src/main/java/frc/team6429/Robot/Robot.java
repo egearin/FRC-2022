@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,10 +27,10 @@ import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
-import frc.team6429.subsystems.Hang;
 import frc.team6429.subsystems.Indexer;
 import frc.team6429.util.Drivepanel;
 import frc.team6429.util.Gamepad;
+import frc.team6429.util.Sensors;
 
 
 /**
@@ -47,7 +50,7 @@ public class Robot extends TimedRobot {
   private Drivepanel mDrivepanel;
   private Drive mDrive;
   private Indexer mIntake;
-  private Hang mHang;
+  private Sensors mSensors;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
 
@@ -74,9 +77,10 @@ public class Robot extends TimedRobot {
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
     mIntake = Indexer.getInstance();
-    mHang = Hang.getInstance();
+    mSensors = Sensors.getInstance();
     timer = new Timer();
     ame = new AutoModeExecutor();
+
   }
 
   /**
@@ -87,7 +91,11 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("enc", mSensors.leftCANcoder.getPosition());
+    SmartDashboard.putNumber("enc2", mSensors.rightCANcoder.getPosition());
+    mSensors.pigeonOutput();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -156,14 +164,22 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+
+    
+    mSensors.resetCANcoder();
+    mSensors.rightCANcoder.setPositionToAbsolute();
+    mSensors.leftCANcoder.setPositionToAbsolute();
+    mSensors.gyroReset();
+    
+  }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
 
-    mDriveTeleop.driveTeleop();
-    mTeleopPeriodic.teleopPeriodic();
+    //mDriveTeleop.driveTeleop();
+    //mTeleopPeriodic.teleopPeriodic();
 
 
     /*if(mGamepad.getTest2()){
@@ -178,6 +194,19 @@ public class Robot extends TimedRobot {
 
       mDrive.stopDrive();
     } */
+  /*mSensors.leftCANcoder.getMagnetFieldStrength();
+  
+  mDrive.rightMotor.set(1);
+  mSensors.rightCANcoder.getPosition();
+  mDrive.leftMotor.set(1);
+  
+  mSensors.leftCANcoder.getPosition();*/
+
+
+    
+    
+
+  
   }
 
 }
