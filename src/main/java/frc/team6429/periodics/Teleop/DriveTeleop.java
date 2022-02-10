@@ -7,7 +7,7 @@ package frc.team6429.periodics.Teleop;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
-import frc.team6429.util.Gamepad;
+import frc.team6429.subsystems.Gamepad;
 
 /** 
  * Teleop: Robot Drive

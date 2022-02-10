@@ -5,7 +5,10 @@
 package frc.team6429.robot;
 
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import frc.team6429.util.Utils;
 
 /** 
  * All Robot Constants 
@@ -49,6 +52,9 @@ public class Constants {
 
     //Pigeon port 
     public static final int pigeonID = 7;
+
+    //CANdle Port
+    public static final int candleID = 13;
     
     //PID Constants
     public static final double kDriveP = 0;
@@ -161,6 +167,30 @@ public class Constants {
     //Necessary Constants
     public static final double traversalAngle = 0;
     
+    //Field dimensions
+    public static final double fieldLength = Utils.conversion_inchToMeters(54.0 * 12.0);
+    public static final double fieldWidth = Utils.conversion_inchToMeters(27.0 * 12.0);
+    public static final double hangarLength = Utils.conversion_inchToMeters(128.75);
+    public static final double hangarWidth = Utils.conversion_inchToMeters(116.0);
 
+    //Dimensions of hub and tarmac
+    public static final Rotation2d centerLineAngle = Rotation2d.fromDegrees(66.0);
+    public static final Translation2d hubCenter = new Translation2d(fieldLength / 2.0, fieldWidth / 2.0);
+    public static final double tarmacInnerDiameter = Utils.conversion_inchToMeters(219.25);
+    public static final double tarmacOuterDiameter = Utils.conversion_inchToMeters(237.31);
+    public static final double tarmacFenderToTip = Utils.conversion_inchToMeters(84.75);
+    public static final double tarmacFullSideLength = tarmacInnerDiameter * (Math.sqrt(2.0) - 1.0); // If the tarmac formed a full octagon
+    public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); // Length of tape marking outside of tarmac
+    public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; // Length removed b/c of corner cutoff
+    public static final double hubSquareLength = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
+
+    //Reference rotations (angle from hub to each reference point and fender side)
+    public static final Rotation2d referenceARotation = Rotation2d.fromDegrees(180.0).minus(centerLineAngle).plus(Rotation2d.fromDegrees(360.0 / 16.0));
+    public static final Rotation2d referenceBRotation = referenceARotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
+    public static final Rotation2d referenceCRotation = referenceBRotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
+    public static final Rotation2d referenceDRotation = referenceCRotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
+    public static final Rotation2d fenderARotation = referenceARotation.rotateBy(Rotation2d.fromDegrees(360.0 / 16.0));
+    public static final Rotation2d fenderBRotation = fenderARotation.rotateBy(Rotation2d.fromDegrees(90.0));
+      
 }   
 

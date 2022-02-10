@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,11 +24,12 @@ import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
+import frc.team6429.subsystems.Drivepanel;
+import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Indexer;
-import frc.team6429.util.Drivepanel;
-import frc.team6429.util.Gamepad;
 import frc.team6429.util.Sensors;
 
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -53,7 +51,6 @@ public class Robot extends TimedRobot {
   private Sensors mSensors;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
-
   private AutoModeExecutor ame;
   private Timer timer;
 
@@ -177,6 +174,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();

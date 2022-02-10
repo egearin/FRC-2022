@@ -200,6 +200,18 @@ public final class Utils {
         }
     } 
 
+    /**
+     * Function to convert inches to meters
+     * @param inches
+     * input inches
+     * @return meters
+     */
+    public static double conversion_inchToMeters(double inches){
+        double meters;
+        meters = (conversion_inchToCM(inches)) / 10;
+
+        return meters;
+    }
     
     /**
      * Function to convert inches to centimeters

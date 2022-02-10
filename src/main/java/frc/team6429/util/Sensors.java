@@ -38,7 +38,7 @@ public class Sensors {
 
     //Ultrasonic
     public static DigitalOutput ultrasonicTriggerPinLow = new DigitalOutput(0);
-    public DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(1);
+    public static DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(1);
   
     public static AnalogInput lowerUltrasonicSensor= new AnalogInput(0);
     public static AnalogInput higherUltrasonicSensor = new AnalogInput(1);
@@ -236,7 +236,7 @@ public class Sensors {
     /**
      * Sets lower ultrasonic sensor to on and higher ultrasonic sensor to off
      */
-    public void turnOnLowerUltrasonic(){
+    public static void turnOnLowerUltrasonic(){
         lowerOn();
         higherOff();
     }
@@ -244,7 +244,7 @@ public class Sensors {
     /**
      * Sets higher ultrasonic to on and lower ultrasonic to off
      */
-    public void turnOnHigherUltrasonic(){
+    public static void turnOnHigherUltrasonic(){
         higherOn();
         lowerOff();
     }
@@ -252,7 +252,7 @@ public class Sensors {
     /**
      * Sets both sensors to on
      */
-    public void turnOnBothSensors(){
+    public static void turnOnBothSensors(){
         higherOn();
         lowerOn();
     }
@@ -260,7 +260,7 @@ public class Sensors {
     /**
      * Sets both sensors to off
      */
-    public void turnOffBothSensors(){
+    public static void turnOffBothSensors(){
         higherOff();
         lowerOff();
     }
@@ -268,28 +268,28 @@ public class Sensors {
     /**
      * Only sets higher ultrasonic sensor to on
      */
-    public void higherOn(){
+    public static void higherOn(){
         ultrasonicTriggerPinHigh.set(true);
     }
 
     /**
      * Only sets lower ultrasonic sensor to on
      */
-    public void lowerOn(){
+    public static void lowerOn(){
         ultrasonicTriggerPinLow.set(true);
     }
 
     /**
      * Only sets higher ultrasonic sensor to off
      */
-    public void higherOff(){
+    public static void higherOff(){
         ultrasonicTriggerPinHigh.set(false);
     }
 
     /**
      * Only sets lower ultrasonic sensor to off
      */
-    public void lowerOff(){
+    public static void lowerOff(){
         ultrasonicTriggerPinHigh.set(false);
     }
 
@@ -297,9 +297,10 @@ public class Sensors {
      * Gets distance in centimeters of the target returned from the higher ultrasonic sensor.
      * @return higherMeasuredDistance
      */
-    public static double getDistanceHigherCM(){
+    public double getDistanceHigherCM(){
         double higherMeasuredDistance;
         double voltageScaleFactor;
+        higherOn();
         voltageScaleFactor = 5 / (RobotController.getVoltage5V());
         higherMeasuredDistance = (higherUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
@@ -310,8 +311,9 @@ public class Sensors {
      * Gets distance in millimeters of the target returned from the higher ultrasonic sensor.
      * @return higherDistanceMM
      */
-    public static double getDistanceHigherMM(){
+    public double getDistanceHigherMM(){
         double higherDistanceMM;
+        higherOn();
         higherDistanceMM = getDistanceHigherCM() * 10;
 
         return higherDistanceMM;
@@ -321,9 +323,10 @@ public class Sensors {
      * Gets distance in centimeters of the target returned from the lower ultrasonic sensor.
      * @return lowerMeasuredDistance
      */
-    public static double getDistanceLowerCM(){
+    public double getDistanceLowerCM(){
         double lowerMeasuredDistance;
         double voltageScaleFactor;
+        lowerOn();
         voltageScaleFactor = 5 / (RobotController.getVoltage5V());
         lowerMeasuredDistance = (lowerUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
@@ -334,11 +337,26 @@ public class Sensors {
      * Gets distance in millimeters of the target returned from the lower ultrasonic sensor.
      * @return lowerDistanceMM
      */
-    public static double getDistanceLowerMM(){
+    public double getDistanceLowerMM(){
         double lowerDistanceMM;
+        lowerOn();
         lowerDistanceMM = getDistanceLowerCM() * 10;
 
         return lowerDistanceMM;
+    }
+
+    public double getBallCount(){
+        double status = 0;
+        turnOnBothSensors();
+        if(isHigherCargoDetected()){
+            if(isLowerCargoDetected()){
+                status = 2;
+            }
+            else{
+                status = 1;
+            }
+        }       
+        return status;
     }
 
     public static enum UltrasonicStates{
@@ -360,11 +378,12 @@ public class Sensors {
      * Checks if lower ball is detected or not
      * @return is lower cargo ball detected
      */ 
-    public static boolean isLowerCargoDetected(){
+    public boolean isLowerCargoDetected(){
         boolean state;
+        lowerOn();
 
-        state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
-        //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
         //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
@@ -374,11 +393,12 @@ public class Sensors {
      * Checks if lower ball is detected or not
      * @return is higher cargo ball detected
      */
-    public static boolean isHigherCargoDetected(){
+    public boolean isHigherCargoDetected(){
         boolean state;
-
-        state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
-        //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        higherOn();
+        
+        state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(1));
+        //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(0));
         //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
@@ -416,6 +436,9 @@ public class Sensors {
         pigeon.setFusedHeading(0);
     }
 
+    /**
+     * Resets Yaw Angle
+     */
     public void resetYawAngle(){
         pigeon.setYaw(0);
     }
