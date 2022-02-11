@@ -43,6 +43,9 @@ public class Constants {
     public static final int pivotPistonChannel = 14; //Single Solenoid for REVPH
     public static final int pivotPistonsForwardChannel = 13; //Double Solenoid for REVPH 
     public static final int pivotPistonsReverseChannel = 12; //Double Solenoid for REVPH
+    public static final int climbLeftPistonChannel = 0;
+    public static final int climbRightPistonChannel = 0;
+    public static final int climbForwardPistonChannel = 0;
 
     public static final int shifter1Port = 0; //Single Solenoid for CTREPCM
     public static final int pto1Port = 1; //Single Solenoid for CTREPCM
@@ -142,6 +145,7 @@ public class Constants {
 
     //Distance Values
     public static final double ultrasonicDistanceAcross = 50.5;
+        
     /**
      * to choose subtrahend value to subtract from distance across the conveyor
      * @param value
@@ -163,6 +167,7 @@ public class Constants {
     public static final double degreeCoefficientCANcoder = 7.792562E-05;
     public static final double wheelPerimeter = 0.31918581360472299303;
     public static final double canCoderCPR = 4096;
+    public static final double robotMass = 35;
     
     //Necessary Constants
     public static final double traversalAngle = 0;
@@ -191,6 +196,9 @@ public class Constants {
     public static final Rotation2d referenceDRotation = referenceCRotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
     public static final Rotation2d fenderARotation = referenceARotation.rotateBy(Rotation2d.fromDegrees(360.0 / 16.0));
     public static final Rotation2d fenderBRotation = fenderARotation.rotateBy(Rotation2d.fromDegrees(90.0));
+
+    public static final double climbPressureRear = 0;
+    public static final double climbPressureFront = 0;
       
 }   
 
