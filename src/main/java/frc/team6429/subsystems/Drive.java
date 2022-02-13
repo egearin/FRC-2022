@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.SensorTimeBase;
@@ -96,16 +97,18 @@ public class Drive {
 
     public DifferentialDrive chassis;
     public TalonFXConfiguration config;
+    public AbsoluteSensorRange sensorRange;
     
     //Odometry
     public DifferentialDriveOdometry odometry;
     public RamseteManager ramseteManager;
 
     public Sensors mSensors;
-  
-    
 
-    
+    public NeutralMode neutralModeBrake;
+    public NeutralMode neutralModeCoast;
+    public NeutralMode neutralModeEEPROM;
+
     public Drive(){
 
         timer = new Timer();
@@ -133,8 +136,10 @@ public class Drive {
         driveLOne.setSensorPhase(false);
         driveROne.setSelectedSensorPosition(0);
         driveLOne.setSelectedSensorPosition(0);
-        setNeutralMode(NeutralMode.Brake);
-
+        neutralModeBrake = NeutralMode.Brake;
+        neutralModeCoast = NeutralMode.Coast;
+        neutralModeEEPROM = NeutralMode.EEPROMSetting;
+        setNeutralMode(neutralModeBrake);
         leftMotor = new MotorControllerGroup(driveLOne, driveLTwo);
         rightMotor = new MotorControllerGroup(driveROne, driveRTwo);
 

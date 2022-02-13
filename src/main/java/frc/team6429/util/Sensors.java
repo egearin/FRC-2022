@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.robot.Constants;
+import frc.team6429.subsystems.Drive;
+import frc.team6429.subsystems.Hang;
 
 /** Add your docs here. */
 public class Sensors {
@@ -44,7 +46,9 @@ public class Sensors {
     public static AnalogInput lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
     public static AnalogInput higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
 
-
+    //Other Subsystems
+    public Drive mDrive;
+    public Hang mHang;
 
     public Sensors(){
         pigeon = new PigeonIMU(Constants.pigeonID);
@@ -56,8 +60,6 @@ public class Sensors {
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
 
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
-        //hangCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
-
     }
 
     //----------ENCODER----------
@@ -73,7 +75,7 @@ public class Sensors {
 
     /** 
      * Only Get Right Speed
-     * 
+     * @return Right Speed
      */
     public double getRightSpeed(){
         double rightSpeed = rightCANcoder.getVelocity();
@@ -81,10 +83,107 @@ public class Sensors {
         return rightSpeed;
     }
 
+    /**
+     * Get Average Speed
+     * @return Speed
+     */
     public double getSpeed(){
         return (getLeftSpeed() + getRightSpeed())/ 2; 
     }
 
+    /**
+     * Only Get Left Speed from Falcon-Integrated Sensor
+     * @return Left Speed
+     */
+    public double getIntegratedLeftSpeed(){
+        double leftSpeed = mDrive.driveLOne.getSelectedSensorVelocity();
+
+        return leftSpeed;
+    }
+
+    /**
+     * Only Get Right Speed from Falcon-Integrated Sensor
+     * @return Right Speed
+     */
+    public double getIntegratedRightSpeed(){
+        double rightSpeed = mDrive.driveROne.getSelectedSensorVelocity();
+
+        return rightSpeed;
+    }   
+
+    /**
+     * Get Average Speed from Falcon-Integrated Sensors
+     * @return Speed
+     */
+    public double getIntagratedSpeed(){
+        return (getIntegratedLeftSpeed() + getIntegratedLeftSpeed()) / 2;
+    }
+
+    /**
+     * Only Get Left Position
+     * @return CANcoder Left Position
+     */
+    public double getLeftPosition(){
+        double leftPosition = leftCANcoder.getPosition();
+
+        return leftPosition;
+    }
+
+    /**
+     * Only Get Right Position
+     * @return CANcoder Right Position
+     */
+    public double getRightPosition(){
+        double rightPosition = rightCANcoder.getPosition();
+
+        return rightPosition;
+    }
+
+    /**
+     * Get Average Position
+     * @return position
+     */
+    public double getPosition(){
+        return (getLeftPosition() + getRightPosition()) / 2;
+    }
+
+    /**
+     * Only Get Left Position from Falcon-Integrated Sensor
+     * @return Left Position
+     */
+    public double getIntegratedLeftPos(){
+        double leftPos = mDrive.driveROne.getSelectedSensorPosition();
+
+        return leftPos;
+    }
+    
+    /**
+     * Only Get Right Position from Falcon-Integrated Sensor
+     * @return Right Position
+     */
+    public double getIntegratedRightPos(){
+        double rightPos = mDrive.driveLOne.getSelectedSensorPosition();
+
+        return rightPos;
+    }
+
+    /**
+     * Get Integrated Position from Falcon-Integrated Sensors
+     * @return position
+     */
+    public double getIntagratedPosition(){
+        return (getIntegratedLeftPos() + getIntegratedRightPos()) / 2;
+    }
+
+    /**
+     * Get Output Position from Falcon-Integrated Sensor 
+     * @return position
+     */
+    public double getHangPos(){
+        double position = mHang.hangMotor.getSelectedSensorPosition();
+
+        return position;
+    }
     /**
      * Encoder outputs using SmartDashboard
      */
@@ -92,6 +191,10 @@ public class Sensors {
         SmartDashboard.putNumber("Left Speed", getLeftSpeed());
         SmartDashboard.putNumber("Right Speed", getRightSpeed());
         SmartDashboard.putNumber("Average Speed", getSpeed());
+
+        SmartDashboard.putNumber("Left F500 Speed", getIntegratedLeftSpeed());
+        SmartDashboard.putNumber("Right F500 Speed", getIntegratedRightSpeed());
+        SmartDashboard.putNumber("Average F500 Speed", getIntagratedSpeed());
     }
 
     //----------PIGEON----------
@@ -103,6 +206,7 @@ public class Sensors {
     }
     public boolean isPigeonReady(){
         PigeonState state = pigeon.getState();
+
         return state == PigeonState.Ready;
     }
 
@@ -135,6 +239,7 @@ public class Sensors {
     public double getRollAngle(){
         double[] ypr = new double[3];
         pigeon.getYawPitchRoll(ypr);
+
         return ypr[2];
     }
     
@@ -350,7 +455,8 @@ public class Sensors {
             else{
                 status = 1;
             }
-        }       
+        }  
+
         return status;
     }
 
@@ -400,7 +506,7 @@ public class Sensors {
     }
 
     /** 
-     * Ultrasonic sensor outputs using SmartDashboard
+    * Ultrasonic sensor outputs using SmartDashboard
     */
     public void ultrasonicOutputs(){
         SmartDashboard.putNumber("Lower Sensor Output in MM", getDistanceLowerMM());
@@ -420,6 +526,51 @@ public class Sensors {
         hangCANcoder.setPosition(0);
         leftCANcoder.setPosition(0);
         rightCANcoder.setPosition(0);
+    }   
+
+    /**
+     * Resets all drive CANcoder values
+     */
+    public void resetDrive(){
+        resetLeftCANcoder();
+        resetRightCANcoder();
+    }
+
+    public void resetLeftCANcoder(){
+        leftCANcoder.setPosition(0);
+    }
+
+    public void resetRightCANcoder(){
+        rightCANcoder.setPosition(0);
+    }
+
+    /**
+     * Resets all drive-integrated sensor values
+     */
+    public void resetDriveEnc(){
+        resetLeftEnc();
+        resetRightEnc();
+    }
+
+    /**
+     * Resets left Falcon-integrated sensor value
+     */
+    public void resetLeftEnc(){
+        mDrive.driveLOne.setSelectedSensorPosition(0);
+    }
+
+    /**
+     * Resets right Falcon-integrated sensor value
+     */
+    public void resetRightEnc(){
+        mDrive.driveROne.setSelectedSensorPosition(0);
+    }
+
+    /** 
+     * Resets hang-integrated sensor values
+    */
+    public void resetHangEnc(){
+        mHang.hangMotor.setSelectedSensorPosition(0);
     }
 
     /**

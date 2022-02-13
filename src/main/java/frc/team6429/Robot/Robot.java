@@ -171,14 +171,14 @@ public class Robot extends TimedRobot {
     mSensors.leftCANcoder.setPositionToAbsolute();
     mSensors.gyroReset();
     mLED = LED.getInstance();
-    
+    mSensors.resetDriveEnc();
     
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    mLED.setRainbow(1, 1, 20);
+    mSensors.encoderOutputs();
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();
