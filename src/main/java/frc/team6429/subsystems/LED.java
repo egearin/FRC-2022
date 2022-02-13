@@ -4,6 +4,7 @@
 
 package frc.team6429.subsystems;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
@@ -24,7 +25,7 @@ import com.ctre.phoenix.led.FireAnimation;
 import frc.team6429.robot.Constants;
 
 /** Add your docs here. */
-public class LED{
+public class LED {
 
     private static LED mInstance = new LED();
 
@@ -47,12 +48,67 @@ public class LED{
     public TwinkleOffAnimation twinkleOff;
     public FireAnimation fire;
     public Direction direction;
+    private Animation animation;
 
+    //LED Configuration
     public void configLED(){
         mCANdle = new CANdle(Constants.candleID, "CANdle");
         mCANdle.configAllSettings(config);
+        mCANdle.getAllConfigs(config);
         config = new CANdleConfiguration();
         config.stripType = LEDStripType.RGB; //set the strip type to RGB
+    }
+
+    public enum AnimationTypes {
+        ColorFlow,
+        Fire,
+        Larson,
+        Rainbow,
+        RgbFade,
+        SingleFade,
+        Strobe,
+        Twinkle,
+        TwinkleOff,
+        SetAll
+    }
+    
+    /**
+     * select and change animation type
+     * @param change
+     */
+    public void changeAnimation(AnimationTypes change) {
+        switch (change) {
+          case ColorFlow:
+            //setColorFlow(r, g, b, w, speed, numLed, direction);
+            break;
+          case Fire:
+            //setFireAnim(r, g, b, brightness, speed, numLed, sparking, cooling);
+            break;
+          case Larson:
+            //setLarson(r, g, b, w, speed, numLed, mode, size);
+            break;
+          case Rainbow:
+            //setRainbow(speed, brightness, numLed);
+            break;
+          case RgbFade:
+            //setRgbFade(speed, brightness, numLed);
+            break;
+          case SingleFade:
+            //setSingleFade(r, g, b, w, speed, numLed);
+            break;
+          case Strobe:
+            //setStrobe(r, g, b, w, speed, numLed);
+            break;
+          case Twinkle:
+            //setTwinkle(r, g, b, w, speed, numLed, divider);
+            break;
+          case TwinkleOff:
+            //setTwinkleOff(r, g, b, w, speed, numLed, divider);
+            break;
+          case SetAll:
+            animation = null;
+            break;
+        }
     }
 
     /**
@@ -169,6 +225,8 @@ public class LED{
     public void setFireAnim(int r, int g, int b, double brightness, double speed, int numLed, double sparking, double cooling){
         mCANdle.animate(new FireAnimation(brightness, speed, numLed, sparking, cooling));
     }
+
+    //Custom led color
+    public void setCustom(){
+    }
 }
-
-

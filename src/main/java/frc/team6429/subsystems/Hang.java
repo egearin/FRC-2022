@@ -9,6 +9,8 @@ import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 import frc.team6429.robot.Constants;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -31,18 +33,9 @@ public class Hang {
     }
 
     public PigeonIMU pigeon;
-
-    public Drive mDrive;
-    //public Drive2 mDrive2;
-
-    public VictorSP hangMotor1;
-    public WPI_TalonFX hangMotor2;
-
-    //public Encoder traversalEnc;
+    public WPI_TalonFX hangMotor;
     public CANCoder hangCANcoder;
-
-    //Pneumatic Hub Climb
-    public PneumaticHub climbPneumaticHub;
+    public TalonFXConfiguration config;
 
     // Solenoids for climb
     public Solenoid climbLeftSolenoid;
@@ -55,21 +48,24 @@ public class Hang {
     public Compressor compressorForward;
 
     public Sensors mSensor;
+    public Drive mDrive;
 
     private boolean statusRear = false;
     private boolean statusFront = false;
     
     public Hang(){
-        //hangMotor1 = new VictorSP(Constants.hangMotorPort);
-        //hangMotor1 = Utils.makeVictorSP(Constants.hangMotorPort, false);
-        hangMotor2 = Utils.makeTalonFX(Constants.hangMotorID, false);
+        hangMotor = Utils.makeTalonFX(Constants.hangMotorID, false);
+        hangMotor.configAllSettings(config);
+        hangMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        hangMotor.setSensorPhase(false);
+        hangMotor.setSelectedSensorPosition(0);
 
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
+
         pigeon = new PigeonIMU(Constants.pigeonID);
 
         mDrive = new Drive();
 
-        climbPneumaticHub = new PneumaticHub();
         climbLeftSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.climbLeftPistonChannel);
         climbRightSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.climbRightPistonChannel);
         climbForwardSolenoid = new Solenoid(PneumaticsModuleType.REVPH, Constants.climbForwardPistonChannel);   
@@ -79,9 +75,22 @@ public class Hang {
         compressorForward = new Compressor(PneumaticsModuleType.REVPH);
 
         mSensor = new Sensors();
+    }
 
-        //mDrive2 = new Drive2();
+    public void simpleHangMotorUp(double speed){
+        hangMotor.set(speed);
+    }
 
+    public void simpleHangMotorDown(double speed){
+        hangMotor.set(-speed);
+    }
+
+    //to be filled
+    public void hangPeriodic(){
+        
+    }
+    public void hangStop(){
+        hangMotor.stopMotor();
     }
 
     public void testLeftPiston(double wantedPressure){
@@ -145,7 +154,7 @@ public class Hang {
         }
     }
 
-    public void isimlazımbuna(){
+    public void isimlazimbuna(){
 
         compressorLeft.enableDigital();
         compressorRight.enableDigital();

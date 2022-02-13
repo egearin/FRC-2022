@@ -60,14 +60,8 @@ public class DriveTeleop {
       mDrive.driveShiftTwo();
     }
 
-    /*if(mGamepad.getPTOpressed()) {
-      mDrive.powerTakeOff(!mDrive.pto.get());
-      
-    }*/
-    
     mDrive.robotDrive(speed, rotation);
     mGamepad.forceFeedback(speed, rotation);
-
   }
 }
 

@@ -15,12 +15,6 @@ import frc.team6429.util.Utils;
 */
 public class Constants {
 
-    //Drive Motor Ports with "VictorSPX"
-    public static final int driveOneLeftMotorID = 3;
-    public static final int driveTwoLeftMotorID = 4;
-    public static final int driveOneRightMotorID = 1;
-    public static final int driveTwoRightMotorID = 2;
-
     //Drive Motor Ports with "TalonFX"
     public static final int rightOneMotorID = 26;
     public static final int rightTwoMotorID = 25;
@@ -53,6 +47,7 @@ public class Constants {
     public static final int pivotPistons1ForwardChannel = 2; //Double Solenoid for CTREPCM
     public static final int pivotPistons1ReverseChannel = 3; //Double Solenoid for CTREPCM
 
+
     //Pigeon port 
     public static final int pigeonID = 7;
 
@@ -78,11 +73,11 @@ public class Constants {
     public static final int hangCANcoderID = 100;
 
     //Ultrasonic Constants
-    public static final int higherUltrasonicPingChannel = 0;
-    public static final int higherUltrasonicEchoChannel = 1;
-
-    public static final int lowerUltrasonicPingChannel = 2;
-    public static final int lowerUltrasonicEchoChannel = 3;
+    public static final int trigPinHigh = 1;
+    public static final int trigPinLow= 0;
+    
+    public static final int higherSensor = 1;
+    public static final int lowerSensor = 0;
     
     //Drive Constants
     public static final double kTrackWidth = 0;
@@ -143,6 +138,15 @@ public class Constants {
     public static final int conveyorOnButtonDrivepanel = 0;
     public static final int conveyorReverseButtonDrivepanel = 0;
 
+    public static final int dumperOnDrivepanel = 0;
+    public static final int dumperOppositeDrivepanel = 0;
+
+    public static final int setHangDrivepanel = 0;
+    public static final int setHangReverseDrivepanel = 0;
+
+    public static final int encoderResetDrivepanel = 0;
+    public static final int pigeonResetDrivepanel = 0;
+
     //Distance Values
     public static final double ultrasonicDistanceAcross = 50.5;
         
@@ -171,6 +175,8 @@ public class Constants {
     
     //Necessary Constants
     public static final double traversalAngle = 0;
+    public static final double climbPressureRear = 0;
+    public static final double climbPressureFront = 0;
     
     //Field dimensions
     public static final double fieldLength = Utils.conversion_inchToMeters(54.0 * 12.0);
@@ -188,17 +194,5 @@ public class Constants {
     public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); // Length of tape marking outside of tarmac
     public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; // Length removed b/c of corner cutoff
     public static final double hubSquareLength = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
-
-    //Reference rotations (angle from hub to each reference point and fender side)
-    public static final Rotation2d referenceARotation = Rotation2d.fromDegrees(180.0).minus(centerLineAngle).plus(Rotation2d.fromDegrees(360.0 / 16.0));
-    public static final Rotation2d referenceBRotation = referenceARotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
-    public static final Rotation2d referenceCRotation = referenceBRotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
-    public static final Rotation2d referenceDRotation = referenceCRotation.rotateBy(Rotation2d.fromDegrees(360.0 / 8.0));
-    public static final Rotation2d fenderARotation = referenceARotation.rotateBy(Rotation2d.fromDegrees(360.0 / 16.0));
-    public static final Rotation2d fenderBRotation = fenderARotation.rotateBy(Rotation2d.fromDegrees(90.0));
-
-    public static final double climbPressureRear = 0;
-    public static final double climbPressureFront = 0;
-      
 }   
 

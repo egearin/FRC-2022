@@ -4,6 +4,12 @@
 
 package frc.team6429.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -30,6 +36,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
@@ -48,11 +55,11 @@ public class Drive {
     public static Drive getInstance(){
         return mInstance;
     }
-    //Follower VictorSPX
-    public WPI_VictorSPX driveLOne;
-    public WPI_VictorSPX driveLTwo;
-    public WPI_VictorSPX driveROne;
-    public WPI_VictorSPX driveRTwo;
+    //Follower TalonFX
+    public WPI_TalonFX driveLOne;
+    public WPI_TalonFX driveLTwo;
+    public WPI_TalonFX driveROne;
+    public WPI_TalonFX driveRTwo;
     
     //PID 
     public PIDController PID;
@@ -79,7 +86,7 @@ public class Drive {
     public Solenoid shifter;
     public Solenoid pto;
     
-    //public Compressor compressor;
+    public Compressor compressor;
 
     //Master
     public MotorControllerGroup leftMotor;
@@ -88,6 +95,7 @@ public class Drive {
     public SimpleMotorFeedforward simpleMotorFF;
 
     public DifferentialDrive chassis;
+    public TalonFXConfiguration config;
     
     //Odometry
     public DifferentialDriveOdometry odometry;
@@ -108,22 +116,27 @@ public class Drive {
         profiledPID = new ProfiledPIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD, constraints);
         simpleMotorFF = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV);
         driveFeedforward = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV, Constants.kDriveA);
-        
-        driveLOne = new WPI_VictorSPX(Constants.driveOneLeftMotorID);
-        //driveLOne = Utils.makeVictorSPX(Constants.driveOneLeftMotorID, false);
-        driveLTwo = new WPI_VictorSPX(Constants.driveTwoLeftMotorID);
-        //driveLTwo = Utils.makeVictorSPX(Constants.driveTwoLeftMotorID, false);
 
-        driveROne = new WPI_VictorSPX(Constants.driveOneRightMotorID);
-        //driveROne = Utils.makeVictorSPX(Constants.driveOneRightMotorID, true);
-        driveRTwo = new WPI_VictorSPX(Constants.driveTwoRightMotorID);
-        //driveRTwo = Utils.makeVictorSPX(Constants.driveTwoRightMotorID, true);
+        config = new TalonFXConfiguration();
+        
+        driveLOne = Utils.makeTalonFX(Constants.leftOneMotorID, false);
+        driveLTwo = Utils.makeTalonFX(Constants.leftTwoMotorID, false);
+        driveROne = Utils.makeTalonFX(Constants.rightOneMotorID, true);
+        driveRTwo = Utils.makeTalonFX(Constants.rightTwoMotorID, true);
+        driveROne.configAllSettings(config);
+        driveRTwo.configAllSettings(config);
+        driveLOne.configAllSettings(config);
+        driveLTwo.configAllSettings(config);
+        driveLOne.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        driveROne.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        driveROne.setSensorPhase(false);
+        driveLOne.setSensorPhase(false);
+        driveROne.setSelectedSensorPosition(0);
+        driveLOne.setSelectedSensorPosition(0);
+        setNeutralMode(NeutralMode.Brake);
 
         leftMotor = new MotorControllerGroup(driveLOne, driveLTwo);
-        leftMotor.setInverted(false);
-        
         rightMotor = new MotorControllerGroup(driveROne, driveRTwo);
-        rightMotor.setInverted(true);
 
         chassis = new DifferentialDrive(leftMotor, rightMotor);
 
@@ -137,21 +150,14 @@ public class Drive {
         //pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
         pto.setPulseDuration(Constants.ptoPulseDuration);
 
-        //compressor = new Compressor(0, PneumaticsModuleType.REVPH);
-
+        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 1/360, "meter", SensorTimeBase.PerSecond);
-
         rightCANcoder = new CANCoder(Constants.rightCANcoderID);
         rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
-        
-
-        timer.start();
-
         pto.close();
         shifter.close();
     }
-
 
     public void createRamseteManager(Trajectory trajectory){
         if (ramseteManager == null){
@@ -217,7 +223,6 @@ public class Drive {
     }
 
     /**
-     * 
      * @param gyroRotation
      * @param leftDistance !IN METERS!
      * @param rightDistance !IN METERS!
@@ -434,11 +439,10 @@ public class Drive {
     
     }
 
-
     double totalX;
 
     public double getTotalX(){
-        return totalX;
+        return mSensors.getX();
     }
 
     /**
@@ -544,28 +548,15 @@ public class Drive {
         }
     }
 
-    /*private WPI_VictorSPX makeVictorSPX(int id , boolean invert){ 
-        WPI_VictorSPX victorSPX = new WPI_VictorSPX(id);
-        invert = victorSPX.getInverted();
-
-        victorSPX.configFactoryDefault();
-        victorSPX.setInverted(invert);
-        victorSPX.stopMotor();
-    
-        return victorSPX;
-      }
-
-
-    private VictorSP makeVictorSP(int id , boolean invert){
-        VictorSP victorSP = new VictorSP(id);
-        invert = victorSP.getInverted();
-        
-        victorSP.setInverted(invert);
-        victorSP.stopMotor();
-
-        return victorSP;
-    }
-    */
+     /**
+     * @param neutralMode
+     */
+    public void setNeutralMode(NeutralMode neutralMode) {
+		driveLOne.setNeutralMode(neutralMode);
+		driveLTwo.setNeutralMode(neutralMode);
+		driveROne.setNeutralMode(neutralMode);
+		driveRTwo.setNeutralMode(neutralMode);
+	}
 
     /**
      * Stop Driving Robot
@@ -573,4 +564,6 @@ public class Drive {
     public void stopDrive(){
         chassis.tankDrive(0, 0);
     }
+
+
 }

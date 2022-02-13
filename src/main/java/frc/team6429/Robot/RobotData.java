@@ -19,7 +19,10 @@ public class RobotData {
     
     public enum LoadedTrajectory{
         NONE,
-        DEFAULT;
+        DEFAULT,
+        TWOCARGO,
+        THREECARGO,
+        FOURCARGO;
 
     }
 

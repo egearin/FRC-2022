@@ -51,6 +51,11 @@ public class Drivepanel {
         return panel1.getRawButton(Constants.intakeReverseButtonDrivepanel);
     }
 
+    //Power Take-Off
+    public boolean getPTOpressed(){
+        return panel1.getRawButtonReleased(Constants.ptoButton);
+    }
+
     //Conveyor
     public boolean getConveyorDrivepanel(){
         return panel1.getRawButton(Constants.conveyorOnButtonDrivepanel);
@@ -58,5 +63,32 @@ public class Drivepanel {
     
     public boolean getConveyorReverseDrivepanel(){
         return panel1.getRawButton(Constants.conveyorReverseButtonDrivepanel);
+    }
+
+    //Dumper
+    public boolean getDumperDrivepanel(){
+        return panel1.getRawButton(Constants.dumperOnDrivepanel);
+    }
+    
+    public boolean getDumperReverseDrivepanel(){
+        return panel1.getRawButton(Constants.dumperOppositeDrivepanel);
+    }
+
+    //Hang 
+    public boolean getHangMotorOn(){
+        return panel1.getRawButton(Constants.setHangDrivepanel);
+    }
+
+    public boolean getHangMotorReverse(){
+        return panel1.getRawButton(Constants.setHangReverseDrivepanel);
+    }
+
+    //Reset
+    public boolean getEncoderReset(){
+        return panel1.getRawButton(Constants.encoderResetDrivepanel);
+    }
+
+    public boolean getPigeonReset(){
+        return panel1.getRawButton(Constants.pigeonResetDrivepanel);
     }
 }

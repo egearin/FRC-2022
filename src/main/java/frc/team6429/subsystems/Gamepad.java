@@ -90,10 +90,6 @@ public class Gamepad {
     public boolean getDriveShiftTwoPressed(){
         return gamepad.getRawButtonReleased(Constants.shifterTwoButton);
     }
-
-    public boolean getPTOpressed(){
-        return gamepad.getRawButton(Constants.ptoButton);
-    }
     
     public boolean getDumperGamepad(){
         return gamepad.getRawButton(Constants.dumperButtonGamepad);

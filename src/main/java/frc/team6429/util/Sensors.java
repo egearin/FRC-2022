@@ -14,6 +14,7 @@ import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -37,11 +38,11 @@ public class Sensors {
     public CANCoder hangCANcoder;
 
     //Ultrasonic
-    public static DigitalOutput ultrasonicTriggerPinLow = new DigitalOutput(0);
-    public static DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(1);
+    public static DigitalOutput ultrasonicTriggerPinLow = new DigitalOutput(Constants.trigPinLow);
+    public static DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(Constants.trigPinHigh);
   
-    public static AnalogInput lowerUltrasonicSensor= new AnalogInput(0);
-    public static AnalogInput higherUltrasonicSensor = new AnalogInput(1);
+    public static AnalogInput lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
+    public static AnalogInput higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
 
 
 
@@ -56,12 +57,6 @@ public class Sensors {
 
         hangCANcoder = new CANCoder(Constants.hangCANcoderID);
         //hangCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
-
-        ultrasonicTriggerPinLow = new DigitalOutput(0);
-        ultrasonicTriggerPinHigh = new DigitalOutput(1);
-      
-        lowerUltrasonicSensor = new AnalogInput(0);
-        higherUltrasonicSensor = new AnalogInput(1);
 
     }
 
@@ -292,7 +287,7 @@ public class Sensors {
     public static void lowerOff(){
         ultrasonicTriggerPinHigh.set(false);
     }
-
+    
     /**
      * Gets distance in centimeters of the target returned from the higher ultrasonic sensor.
      * @return higherMeasuredDistance

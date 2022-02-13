@@ -27,7 +27,10 @@ import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Drivepanel;
 import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Indexer;
+import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
+
+import javax.management.loading.MLet;
 
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -53,7 +56,7 @@ public class Robot extends TimedRobot {
   private TeleopPeriodic mTeleopPeriodic;
   private AutoModeExecutor ame;
   private Timer timer;
-
+  private LED mLED;
 
 
   
@@ -134,7 +137,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
     mDriveTeleop.driveTeleop();
     mTeleopPeriodic.teleopPeriodic();
     /* Teleop: Robot drive
@@ -168,13 +170,15 @@ public class Robot extends TimedRobot {
     mSensors.rightCANcoder.setPositionToAbsolute();
     mSensors.leftCANcoder.setPositionToAbsolute();
     mSensors.gyroReset();
+    mLED = LED.getInstance();
+    
     
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-
+    mLED.setRainbow(1, 1, 20);
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();

@@ -36,7 +36,7 @@ public class Indexer {
     public double conveyor_speed;
 
     //Solenoid 
-    public DoubleSolenoid pivotPistons;
+    //public DoubleSolenoid pivotPistons;
     //public Solenoid pivotPiston;
     
     //Solenoid States
@@ -54,7 +54,7 @@ public class Indexer {
         //conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
         conveyorMotor = Utils.makeVictorSPX(Constants.conveyorMotorID, false);
 
-        pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
+        //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
         //pivotPiston = new Solenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonChannel);
 
         //pivotPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPiston1Channel);
@@ -102,35 +102,35 @@ public class Indexer {
      * Intake Pivot Up Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotUp(){
-        pivotPistons.set(kReverse);
+        //pivotPistons.set(kReverse);
     }
 
     /**
      * Intake Pivot Down Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotDown(){
-        pivotPistons.set(kForward);
+        //pivotPistons.set(kForward);
     }
 
     /**
      * Intake Pivot Stall Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotStall(){
-        pivotPistons.set(kOff);
+        //pivotPistons.set(kOff);
     }
 
     /**
      * Sets Only Conveyor On
      */
-    public void conveyorOn(){
-        conveyorMotor.set(1);
+    public void conveyorOn(double speed){
+        conveyorMotor.set(speed);
     }
 
     /** 
      * Sets Only Conveyor Reverse
      */
-    public void conveyorReverse(){
-        conveyorMotor.set(-1);
+    public void conveyorReverse(double speed){
+        conveyorMotor.set(-speed);
     }
 
     /**
