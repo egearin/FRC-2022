@@ -165,6 +165,7 @@ public class Robot extends TimedRobot {
 
     System.out.println("Auto selected: " + m_autoSelected);
     mSensors.resetSensors();
+    
     if (thread.isAlive()){
       DriverStation.reportWarning("Still not initialized the trajectories", false);
     }

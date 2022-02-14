@@ -5,6 +5,9 @@
 package frc.team6429.periodics.Auto.Modes;
 
 import frc.team6429.periodics.Auto.AutoModeEndedException;
+import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction;
+import frc.team6429.periodics.Auto.Action.FollowTrajectoryAction;
+import frc.team6429.periodics.Auto.Action.SeriesAction;
 import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
 
 /** Add your docs here. */
@@ -18,7 +21,8 @@ public class FourCargoAuto extends AutoModeBase{
 
     @Override
     protected void routine() throws AutoModeEndedException {
-        runAction(null);
+        runAction(new SeriesAction(new CreateTrajectoryAction(_path),
+                                    new FollowTrajectoryAction()));
         
     }
 }
