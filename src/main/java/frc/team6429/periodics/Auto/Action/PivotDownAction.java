@@ -5,40 +5,40 @@
 package frc.team6429.periodics.Auto.Action;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.team6429.subsystems.Dumper;
+import frc.team6429.subsystems.Indexer;
 
 /** Add your docs here. */
-public class SimpleDumperAction implements Action{
+public class PivotDownAction implements Action {
 
-    public Dumper mDumper;
+    public Indexer mIndexer;
     public Timer timer;
     public double wanted_time;
-
-    public SimpleDumperAction(double wantedTime){
-        mDumper = Dumper.getInstance();
+    
+    public PivotDownAction(){
+        mIndexer = Indexer.getInstance();
         timer = new Timer();
-        wanted_time = wantedTime;
     }
+
     @Override
     public void start() {
-        // TODO Auto-generated method stub
+        mIndexer.pivotDown();
         
     }
 
     @Override
     public void update() {
-        // TODO Auto-generated method stub
+        mIndexer.pivotStall();
         
     }
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
+        
         return false;
     }
 
     @Override
-    public void done() {
-        // TODO Auto-generated method stub
-        
-    }}
+    public void done() {  
+    }
+
+}

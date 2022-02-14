@@ -8,17 +8,19 @@ import frc.team6429.subsystems.Indexer;
 import edu.wpi.first.wpilibj.Timer;
 
 /** Add your docs here. */
-public class SimpleIndexerAction implements Action {
+public class IndexerAction implements Action {
 
     public Indexer mIndexer;
     public Timer timer;
-    public double wanted_time;
+    public double intake_speed;
+    public double conveyor_speed;
     public boolean finished;
 
-    public SimpleIndexerAction(double wantedTime){
+    public IndexerAction(double intakeSpeed, double conveyorSpeed){
         mIndexer = Indexer.getInstance();
         timer = new Timer();
-        wanted_time = wantedTime;
+        intake_speed = intakeSpeed;
+        conveyor_speed = conveyorSpeed;
 
     }
     @Override
@@ -29,14 +31,12 @@ public class SimpleIndexerAction implements Action {
 
     @Override
     public void update(){
-        mIndexer.indexerOn(1, 0.3);
+        mIndexer.runWithBallCount(1, 0.3);
     }
 
     @Override
     public boolean isFinished(){
-        finished = timer.get() >= wanted_time;
-        
-        return finished;
+        return mIndexer.runWithBallCount(1, 0.3) == 2;
     }
 
     @Override

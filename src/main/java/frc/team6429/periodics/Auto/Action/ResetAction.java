@@ -9,16 +9,48 @@ import frc.team6429.util.Sensors;
 /** Add your docs here. */
 public class ResetAction implements Action {
 
+    public Sensors mSensors;
+    public Reset which;
 
+    public ResetAction(Reset whichToReset){
+        mSensors = Sensors.getInstance();
+        which = whichToReset;
+    }
+
+    public enum Reset{
+        DriveEncoder,
+        HangEncoder,
+        Gyro,
+        ALL;
+    }
+
+    public void reset(Reset which){
+        switch(which){
+            case DriveEncoder:
+            mSensors.resetLeftCANcoder();
+            mSensors.resetRightCANcoder();
+            break;
+            case HangEncoder:
+            mSensors.resetHangEnc();
+            break;
+            case Gyro:
+            mSensors.gyroReset();
+            break;
+            case ALL:
+            mSensors.resetCANcoder();
+            mSensors.resetHangEnc();
+            mSensors.gyroReset();
+            break;
+        }
+
+    }
     @Override
     public void start(){
-        
-        
+        reset(which);
     }
 
     @Override
     public void update(){
-        
         
     }
 
@@ -30,7 +62,6 @@ public class ResetAction implements Action {
 
     @Override
     public void done(){
-        
         
     }
 

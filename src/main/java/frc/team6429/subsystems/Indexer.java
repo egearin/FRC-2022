@@ -36,8 +36,7 @@ public class Indexer {
     public double conveyor_speed;
 
     //Solenoid 
-    //public DoubleSolenoid pivotPistons;
-    //public Solenoid pivotPiston;
+    public DoubleSolenoid pivotPistons;
     
     //Solenoid States
     public Value kOff;
@@ -54,10 +53,7 @@ public class Indexer {
         //conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
         conveyorMotor = Utils.makeVictorSPX(Constants.conveyorMotorID, false);
 
-        //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
-        //pivotPiston = new Solenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonChannel);
-
-        //pivotPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPiston1Channel);
+        pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
         //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPistons1ForwardChannel, Constants.pivotPistons1ReverseChannel);
 
         kOff = Value.kOff;
@@ -102,21 +98,21 @@ public class Indexer {
      * Intake Pivot Up Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotUp(){
-        //pivotPistons.set(kReverse);
+        pivotPistons.set(kReverse);
     }
 
     /**
      * Intake Pivot Down Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotDown(){
-        //pivotPistons.set(kForward);
+        pivotPistons.set(kForward);
     }
 
     /**
      * Intake Pivot Stall Function Using DoubleSolenoid: pivotPistons
      */
     public void pivotStall(){
-        //pivotPistons.set(kOff);
+        pivotPistons.set(kOff);
     }
 
     /**
@@ -193,7 +189,7 @@ public class Indexer {
         indexerStop();
     }
 
-    public void runWithBallCount(double intakeSpeed, double conveyorSpeed){
+    public double runWithBallCount(double intakeSpeed, double conveyorSpeed){
         double ballCount;
         ballCount = mSensors.getBallCount();
 
@@ -204,8 +200,8 @@ public class Indexer {
         else if(ballCount == 1){
             conveyorStop();
         }
-        else{
+        else{}
 
-        }
+        return ballCount;
     }
 }
