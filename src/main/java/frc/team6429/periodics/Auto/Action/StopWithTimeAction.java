@@ -7,7 +7,7 @@ package frc.team6429.periodics.Auto.Action;
 import edu.wpi.first.wpilibj.Timer;
 import frc.team6429.subsystems.Drive;
 
-/** Add your docs here. */
+/** Stops With Timer */
 public class StopWithTimeAction implements Action{
 
     public Drive mDrive;

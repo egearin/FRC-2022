@@ -9,7 +9,7 @@ import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Indexer;
 
-/** Add your docs here.*/
+/** Select subsystem to stop, includes stop all */
 public class StopAllAction implements Action{
 
     public Drive mDrive;

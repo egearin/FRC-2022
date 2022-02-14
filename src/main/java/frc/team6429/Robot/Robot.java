@@ -21,6 +21,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
 
 import frc.team6429.periodics.Auto.AutoModeExecutor;
+import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
+import frc.team6429.periodics.Auto.Modes.FourCargoAuto;
+import frc.team6429.periodics.Auto.Modes.SimpleTwoCargo;
+import frc.team6429.periodics.Auto.Modes.ThreeCargoAuto;
+import frc.team6429.periodics.Auto.Modes.TwoCargoAuto;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
@@ -29,6 +34,10 @@ import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Indexer;
 import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
+import frc.team6429.util.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.management.loading.MLet;
 
@@ -42,11 +51,16 @@ import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
  */
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private static final String kTwoCargoAuto = "Two Cargo";
+  private static final String kThreeCargoAuto = "Three Cargo";
+  private static final String kFourCargoAuto = "Four Cargo";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private AutoModeExecutor autoModeExecutor;
+  private List<List<String>> listOfTrajectoryPaths;
+  double x = 0;
 
-
+  //systems
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
   private Drive mDrive;
@@ -54,12 +68,33 @@ public class Robot extends TimedRobot {
   private Sensors mSensors;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
-  private AutoModeExecutor ame;
   private Timer timer;
   private LED mLED;
 
-
-  
+  private Thread thread = new Thread(new Runnable(){
+    @Override
+    public void run() {
+      double startTime = Timer.getFPGATimestamp();
+      DriverStation.reportWarning("Creating all trajectories in a thread", false);
+      listOfTrajectoryPaths = new ArrayList<List<String>>();
+      List<String> twoCargo = new ArrayList<>();
+      List<String> threeCargo = new ArrayList<>();
+      List<String> fourCargo = new ArrayList<>();
+      twoCargo.add("paths/TwoCargo.wpilib.json");
+      threeCargo.add("paths/ThreeCargo.wpilib.json");
+      fourCargo.add("paths/FourCargo.wpilib.json");
+      listOfTrajectoryPaths.addAll(List.of(twoCargo, threeCargo, fourCargo));
+      for(List<String> trajectoryPaths:listOfTrajectoryPaths){
+        List<Trajectory> trajectories = new ArrayList<>(); 
+        for(String trajectoryPath:trajectoryPaths){
+            trajectories.add(Utils.readTrajectoryFromPW(trajectoryPath));
+        }
+        RobotData.listOfTrajectories.add(trajectories);
+      }
+      DriverStation.reportWarning("Trajectories created in " + (Timer.getFPGATimestamp() - startTime) + "seconds", false);
+    }                          
+  }
+);
   /**
    *
    * This function is run when the robot is first started up and should be used for any
@@ -79,7 +114,7 @@ public class Robot extends TimedRobot {
     mIntake = Indexer.getInstance();
     mSensors = Sensors.getInstance();
     timer = new Timer();
-    ame = new AutoModeExecutor();
+    autoModeExecutor = new AutoModeExecutor();
 
   }
 
@@ -110,28 +145,57 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    switch (m_autoSelected) {
+      case kDefaultAuto:
+        autoModeExecutor.setAutoMode(new SimpleTwoCargo());
+        break;
+      case kFourCargoAuto:
+        autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
+        break;
+      case kThreeCargoAuto:
+        autoModeExecutor.setAutoMode(new TwoCargoAuto(PathType.TWOCARGO));
+        break;
+      case kTwoCargoAuto:
+        autoModeExecutor.setAutoMode(new ThreeCargoAuto(PathType.THREECARGO));
+        break;
+      default:
+        autoModeExecutor.setAutoMode(new SimpleTwoCargo());
+        break;
+    }
+
     System.out.println("Auto selected: " + m_autoSelected);
+    mSensors.resetSensors();
+    if (thread.isAlive()){
+      DriverStation.reportWarning("Still not initialized the trajectories", false);
+    }
+    else{
+      autoModeExecutor.start();
+    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
+    /*switch (m_autoSelected) {
       case kDefaultAuto:
-      default:
-        // Put default auto code here
+        //
         break;
-    }
+      case kTwoCargoAuto:
+        // 
+        break;
+      case kThreeCargoAuto:
+        //
+        break;
+      case kFourCargoAuto:
+        //
+        break;
+    }*/
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    ame.stop();
+    autoModeExecutor.stop();
   }
 
   /** This function is called periodically during operator control. */
@@ -179,6 +243,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     mSensors.encoderOutputs();
+    mSensors.ultrasonicOutputs();
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();

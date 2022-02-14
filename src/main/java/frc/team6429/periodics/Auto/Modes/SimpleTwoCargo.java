@@ -14,7 +14,9 @@ import frc.team6429.periodics.Auto.Action.StopAllAction.Stop;
 
 
 /**
- * Add your docs here.
+ * The robot initially has the cargo ball inside.
+ * When the autonomous mode starts, the robot takes the second cargo ball in front of it and returns to its former position again.
+ * Finally, it drops two cargo balls and goes out of line.
  */
 public class SimpleTwoCargo extends AutoModeBase {
 
@@ -25,19 +27,19 @@ public class SimpleTwoCargo extends AutoModeBase {
                         new PivotDownAction(),
                         new SeriesAction(Arrays.asList(
                             new ParallelAction(
-                                new DriveAction(1.5, 0.5, 0),
+                                new DriveAction(1, 1, 0),
                                 new IndexerAction(1, 0.3)),
 
-                    new SeriesAction(new DriveAction(1.5, 0.5, 0),
+                    new SeriesAction(new DriveAction(1, -0.5, 0),
                                         new ParallelAction(
                                             new SeriesAction(new DumperOppositeAction(1, 1),
-                                             new StopAllAction(3, Stop.Dumper))
-
-                                             
-                    ))
+                                             new StopAllAction(1, Stop.Dumper)),
+                    new SeriesAction(new DriveAction(1, 1, 0),
+                                        new StopAllAction(1, Stop.Drive)
+                    
+                    )))
                 ))           
             ))
         ));
-    
     }
 }

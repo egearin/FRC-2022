@@ -5,9 +5,16 @@
 package frc.team6429.periodics.Auto.Modes;
 
 import frc.team6429.periodics.Auto.AutoModeEndedException;
+import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
 
 /** Add your docs here. */
-public class MainFourCargo extends AutoModeBase{
+public class FourCargoAuto extends AutoModeBase{
+    
+    public PathType _path;
+
+    public FourCargoAuto(PathType path){
+        _path = path;
+    }
 
     @Override
     protected void routine() throws AutoModeEndedException {
