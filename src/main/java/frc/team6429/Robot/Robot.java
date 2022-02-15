@@ -41,6 +41,7 @@ import java.util.List;
 
 import javax.management.loading.MLet;
 
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 /**
@@ -69,7 +70,7 @@ public class Robot extends TimedRobot {
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
   private Timer timer;
-  private LED mLED;
+  private LED mLed;
 
   private Thread thread = new Thread(new Runnable(){
     @Override
@@ -113,6 +114,7 @@ public class Robot extends TimedRobot {
     mGamepad = Gamepad.getInstance();
     mIntake = Indexer.getInstance();
     mSensors = Sensors.getInstance();
+    mLed = LED.getInstance();
     timer = new Timer();
     autoModeExecutor = new AutoModeExecutor();
 
@@ -151,15 +153,19 @@ public class Robot extends TimedRobot {
         break;
       case kFourCargoAuto:
         autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
+        mLed.setColorFlow(255, 0, 0, 0, 0.5, 8, Direction.Forward);//bunlar böle çalışır mı?
         break;
       case kThreeCargoAuto:
         autoModeExecutor.setAutoMode(new TwoCargoAuto(PathType.TWOCARGO));
+        mLed.setColorFlow(0, 255, 0, 0, 0.5, 8, Direction.Forward);
         break;
       case kTwoCargoAuto:
         autoModeExecutor.setAutoMode(new ThreeCargoAuto(PathType.THREECARGO));
+        mLed.setColorFlow(0, 0, 255, 0, 0.5, 8, Direction.Forward);
         break;
       default:
         autoModeExecutor.setAutoMode(new SimpleTwoCargo());
+        mLed.setColorFlow(0, 0, 0, 255, 0.5, 8, Direction.Forward);
         break;
     }
 
@@ -235,7 +241,6 @@ public class Robot extends TimedRobot {
     mSensors.rightCANcoder.setPositionToAbsolute();
     mSensors.leftCANcoder.setPositionToAbsolute();
     mSensors.gyroReset();
-    mLED = LED.getInstance();
     mSensors.resetDriveEnc();
     
   }

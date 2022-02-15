@@ -48,7 +48,6 @@ public class CreateTrajectoryAction implements Action {
                 RobotData.selectedTrajectory = 1;
                 break;
             case FOURCARGO:
-         
             trajectories = RobotData.listOfTrajectories.get(2);
                 RobotData.selectedTrajectory = 2;
                 break;

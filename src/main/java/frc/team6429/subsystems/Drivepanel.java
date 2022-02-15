@@ -83,6 +83,10 @@ public class Drivepanel {
         return panel1.getRawButton(Constants.setHangReverseDrivepanel);
     }
 
+    public boolean getRobotHang(){
+        return panel1.getRawButton(Constants.getRobotHangDrivepanel);
+    }
+
     //Reset
     public boolean getEncoderReset(){
         return panel1.getRawButton(Constants.encoderResetDrivepanel);

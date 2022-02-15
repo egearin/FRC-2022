@@ -143,10 +143,12 @@ public class Constants {
 
     public static final int setHangDrivepanel = 0;
     public static final int setHangReverseDrivepanel = 0;
+    public static final int getRobotHangDrivepanel = 0;
 
     public static final int encoderResetDrivepanel = 0;
     public static final int pigeonResetDrivepanel = 0;
 
+    
     //Distance Values
     public static final double ultrasonicDistanceAcross = 50.5;
         

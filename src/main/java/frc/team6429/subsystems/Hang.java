@@ -50,8 +50,8 @@ public class Hang {
     public Sensors mSensor;
     public Drive mDrive;
 
-    private boolean statusRear = false;
-    private boolean statusFront = false;
+    public boolean statusRear = false;
+    public boolean statusFront = false;
     
     public Hang(){
         hangMotor = Utils.makeTalonFX(Constants.hangMotorID, false);
@@ -154,7 +154,7 @@ public class Hang {
         }
     }
 
-    public void isimlazimbuna(){
+    public void compressAir(){
 
         compressorLeft.enableDigital();
         compressorRight.enableDigital();

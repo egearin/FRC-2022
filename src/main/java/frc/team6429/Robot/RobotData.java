@@ -13,8 +13,17 @@ import edu.wpi.first.math.trajectory.Trajectory;
 /** Add your docs here. */
 public class RobotData {
 
+    public enum RobotStates{
+        STORAGEFULL,
+        STORAGEHALVED,
+        CLEARINGSTORAGE,
+        FILLINGSTORAGE,
+        HANGPERIOD,
+        WARNING,
+        DISABLE;
+    }
+
     public enum CANcoderMode{
-        
     }
     
     public enum LoadedTrajectory{
@@ -30,4 +39,5 @@ public class RobotData {
 
     public static List<List<Trajectory>> listOfTrajectories = new ArrayList<>();
     public static Field2d fieldSim = new Field2d();
+
 }
