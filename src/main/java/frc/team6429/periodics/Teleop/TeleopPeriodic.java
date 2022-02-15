@@ -5,6 +5,8 @@
 package frc.team6429.periodics.Teleop;
 
 import com.ctre.phoenix.CustomParamConfigUtil;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
@@ -77,9 +79,11 @@ public class TeleopPeriodic {
         mIndexer.conveyorReverse(1);
     }
     else if(mDrivepanel.getIndexerDrivepanel()) {
+        mLed.setColorFlow(0, 255, 0, 0, 1, 8, ColorFlowAnimation.Direction.Forward);
         mIndexer.indexerOn(1, 1);
     }
     else if(mDrivepanel.getIndexerReverseDrivepanel()){
+        mLed.setColorFlow(0, 255, 0, 0, 1, 8, ColorFlowAnimation.Direction.Backward);
         mIndexer.indexerReverse(1, 1);
     }
     else {
@@ -92,12 +96,15 @@ public class TeleopPeriodic {
         if(mSensors.getBallCount() == 1){
             mIndexer.conveyorStop();
             mIndexer.intakeOn(0.5);
+            mLed.setTwinkle(0, 255, 255, 100, 1, 8, TwinklePercent.Percent100);
         }
         else if(mSensors.getBallCount() == 2){
             mIndexer.customIndexerOff();
+            mLed.setTwinkle(255, 0, 255, 100, 1, 8, TwinklePercent.Percent100);
         }
         else{
             mIndexer.customIndexerOn();
+            mLed.setColorFlow(0, 255, 0, 0, 1, 8, ColorFlowAnimation.Direction.Forward);
         }
     }
     else{
@@ -106,10 +113,12 @@ public class TeleopPeriodic {
 
      //Dumper Codes
     if(mGamepad.getDumperGamepad()) {
+        mLed.setColorFlow(255, 0, 0, 0, 1, 8, ColorFlowAnimation.Direction.Forward);
         mIndexer.indexerOn(1, 1);
         mDumper.dumperSend(1);
     }
     else if(mGamepad.getDumperOppositeGamepad()) {
+        mLed.setColorFlow(255, 0, 0, 0, 1, 8, ColorFlowAnimation.Direction.Backward);
         mIndexer.indexerOn(1, 1);
         mDumper.dumperSendOpposite(1);
     }
@@ -120,14 +129,17 @@ public class TeleopPeriodic {
     
     //Power Take-Off
     if(mDrivepanel.getPTOpressed()) {
+        mLed.setTwinkle(0, 0, 255, 0, 1, 8, TwinklePercent.Percent100);
         mDrive.powerTakeOff(!mDrive.pto.get());
     }
 
     //Manual Only Dumper Codes
     if(mDrivepanel.getDumperDrivepanel()){
+        mLed.setColorFlow(255, 0, 0, 0, 1, 8, ColorFlowAnimation.Direction.Forward);
         mDumper.dumperSend(1);
     }
     else if(mDrivepanel.getDumperReverseDrivepanel()){
+        mLed.setColorFlow(255, 0, 0, 0, 1, 7, ColorFlowAnimation.Direction.Backward);
         mDumper.dumperSendOpposite(1);
     }
     else{
@@ -136,9 +148,11 @@ public class TeleopPeriodic {
 
     //Manual Hang Codes 
     if(mDrivepanel.getHangMotorOn()) {
+        mLed.setColorFlow(125, 125, 0, 0, 1, 8, ColorFlowAnimation.Direction.Forward);
         mHang.simpleHangMotorUp(0.5);
     }
     else if(mDrivepanel.getHangMotorReverse()) {
+        mLed.setColorFlow(125, 125, 0, 0, 1, 8, ColorFlowAnimation.Direction.Backward);
         mHang.simpleHangMotorDown(0.5);
     }
     else{
@@ -147,9 +161,11 @@ public class TeleopPeriodic {
 
     //Reset Codes
     if(mDrivepanel.getEncoderReset()){
+        mLed.setTwinkle(0, 0, 0, 255, 1, 8, TwinklePercent.Percent100);
         mSensors.resetCANcoder();
     }
     else if(mDrivepanel.getPigeonReset()){
+        mLed.setTwinkle(0, 0, 0, 255, 1, 8, TwinklePercent.Percent100);
         mSensors.gyroReset();
     }
     else {

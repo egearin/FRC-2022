@@ -5,9 +5,13 @@
 package frc.team6429.periodics.Teleop;
 
 
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Gamepad;
+import frc.team6429.subsystems.LED;
 
 /** 
  * Teleop: Robot Drive
@@ -23,6 +27,7 @@ public class DriveTeleop {
 
     private Gamepad mGamepad;
     private Drive mDrive;
+    private LED mLed;
 
     private double rotation;
     private double speed;
@@ -33,6 +38,7 @@ public class DriveTeleop {
     public DriveTeleop(){
         mGamepad = Gamepad.getInstance();
         mDrive = Drive.getInstance();
+        mLed = LED.getInstance();
     }
     
     public void driveTeleop(){
@@ -40,11 +46,13 @@ public class DriveTeleop {
     speed = mGamepad.getForward() - mGamepad.getReverse();
 
     if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
-      rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering); 
+      rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering);
+      mLed.setColorFlow(0, 0, 255, 100, 1, 8, Direction.Forward);
     }
 
     else {
       rotation = (mGamepad.getSteering()) * (steering);
+      mLed.setColorFlow(0, 0, 255, 100, 1, 8, Direction.Forward);
     }
 
     //Drive Shifter
