@@ -101,12 +101,13 @@ public class Hang {
         preClimbPeriodic();
     
         if(timer.get() <= wantedTime){
-            mDrive.robotDrive(speed, 0);
+            mDrive.robotDrive(-speed, 0);
             //değerler ters mi emin değilim
             compressAir();
         }
         else if(ifInPosition()){
-            if(compressorForward.getPressure() == Constants.climbPressureFront){
+            if((Constants.climbPressureFront - Constants.pressureTolerance) <= compressorForward.getPressure() && 
+            (Constants.climbPressureFront + Constants.pressureTolerance) >= compressorForward.getPressure()){
                 climbForwardSolenoid.set(true);
             }
             else{

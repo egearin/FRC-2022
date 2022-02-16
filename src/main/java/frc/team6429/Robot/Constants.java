@@ -177,8 +177,8 @@ public class Constants {
     
     //Necessary Constants
     public static final double traversalAngle = 0;
-    public static final double climbPressureRear = 0;
     public static final double climbPressureFront = 0;
+    public static final double pressureTolerance = 0;
     
     //Field dimensions
     public static final double fieldLength = Utils.conversion_inchToMeters(54.0 * 12.0);
