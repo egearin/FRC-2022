@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -50,8 +51,7 @@ public class Hang {
     public Sensors mSensor;
     public Drive mDrive;
 
-    public boolean statusRear = false;
-    public boolean statusFront = false;
+    public Timer timer;
     
     public Hang(){
         hangMotor = Utils.makeTalonFX(Constants.hangMotorID, false);
@@ -75,6 +75,9 @@ public class Hang {
         compressorForward = new Compressor(PneumaticsModuleType.REVPH);
 
         mSensor = new Sensors();
+
+        timer = new Timer();
+        timer.start();
     }
 
     public void simpleHangMotorUp(double speed){
@@ -85,30 +88,39 @@ public class Hang {
         hangMotor.set(-speed);
     }
 
-    //to be filled
-    public void hangPeriodic(){
-        
+    public void preClimbPeriodic(){
+        mDrive.pto.set(true);
+        climbForwardSolenoid.set(false);
+        timer.reset();
+        timer.start();
     }
+
+    //to be filled
+    public void hangPeriodic(double speed, double wantedTime){
+
+        preClimbPeriodic();
+    
+        if(timer.get() <= wantedTime){
+            mDrive.robotDrive(speed, 0);
+            //değerler ters mi emin değilim
+            compressAir();
+        }
+        else if(ifInPosition()){
+            if(compressorForward.getPressure() == Constants.climbPressureFront){
+                climbForwardSolenoid.set(true);
+            }
+            else{
+                compressAir();
+            }
+        }
+        else{
+            mDrive.robotDrive(speed, 0);
+            //kanca kodu gelmesi gerekiyorsa gelsin
+        }
+    }
+
     public void hangStop(){
         hangMotor.stopMotor();
-    }
-
-    public void testLeftPiston(double wantedPressure){
-        
-        compressorLeft.enableDigital();
-        if(compressorLeft.getPressure() >= wantedPressure){
-            compressorLeft.disable();
-            climbLeftSolenoid.set(true);
-        }
-    }
-
-    public void testRightPiston(double wantedPressure){
-        
-        compressorLeft.enableDigital();
-        if(compressorLeft.getPressure() >= wantedPressure){
-            compressorLeft.disable();
-            climbRightSolenoid.set(true);
-        }
     }
 
     public void testForwardPiston(double wantedPressure){
@@ -118,26 +130,6 @@ public class Hang {
             compressorForward.disable();
             climbForwardSolenoid.set(true);
         }
-    }
-
-    public void closeAllSolenoids(){
-        climbLeftSolenoid.set(false);
-        climbRightSolenoid.set(false);
-        climbForwardSolenoid.set(false);
-    }
-
-    public double[] getPressureCompressors(){
-        double[] pressureList = new double[3];
-        pressureList[0] = compressorLeft.getPressure();
-        pressureList[1] = compressorRight.getPressure();
-        pressureList[2] = compressorForward.getPressure();
-
-        return pressureList;
-    }
-
-    public void releaseRear(){
-        climbLeftSolenoid.set(true);
-        climbRightSolenoid.set(true);
     }
 
     public boolean ifInPosition(){
@@ -155,24 +147,31 @@ public class Hang {
     }
 
     public void compressAir(){
-
-        compressorLeft.enableDigital();
-        compressorRight.enableDigital();
         compressorForward.enableDigital();
-
-        double[] pressure = getPressureCompressors();
-
-        if(pressure[0] == Constants.climbPressureRear && pressure[1] == Constants.climbPressureRear){
-            compressorLeft.disable();
-            compressorRight.disable();
-            statusRear = true;
-        }
-
-        if(pressure[2] == Constants.climbPressureFront){
+        if(compressorForward.getPressure() == Constants.climbPressureFront){
             compressorForward.disable();
-            statusFront = true;
         }
+        else{
 
+        }
+    }
+
+    public boolean checkFrontPressure(){
+        if(compressorForward.getPressure() == Constants.climbPressureFront){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public void activateFrontArm(){
+        if(checkFrontPressure()){
+            climbForwardSolenoid.set(true);
+        }
+        else{
+
+        }
     }
 
 
