@@ -5,6 +5,7 @@
 package frc.team6429.robot;
 
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -196,5 +197,7 @@ public class Constants {
     public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); // Length of tape marking outside of tarmac
     public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; // Length removed b/c of corner cutoff
     public static final double hubSquareLength = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
+    public static final Pose2d glassOrigin = new Pose2d(0, -4.32, new Rotation2d()); // !beware! rotation 2d here need to change if we decide to start our odometry from a spesific angle
+    public static final Pose2d pwOrigin = new Pose2d(0, -4.32, new Rotation2d());
 }   
 

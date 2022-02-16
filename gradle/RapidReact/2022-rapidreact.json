@@ -1,0 +1,10 @@
+{
+    "game": "Rapid React",
+    "field-image": "2022-field.png",
+    "field-corners": {
+      "top-left": [22.5552, 15.24],
+      "bottom-right": [540.7152, 274.32]
+    },
+    "field-size": [16.4592, 8.2296],
+    "field-unit": "meter"
+  }

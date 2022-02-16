@@ -63,6 +63,7 @@ public final class Utils {
     
         return talon;
       }
+      
     /**
      * VictorSP Constructor
      * @param port

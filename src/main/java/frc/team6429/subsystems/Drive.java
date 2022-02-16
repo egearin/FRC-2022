@@ -115,7 +115,9 @@ public class Drive {
     public NeutralMode neutralModeEEPROM;
 
 
-
+    /**
+     * Drive setup
+     */
     public Drive(){
 
         timer = new Timer();

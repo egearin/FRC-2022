@@ -23,6 +23,24 @@ public class RobotData {
         DISABLE;
     }
 
+    public enum DumperCommand{
+        DUMP,
+        OPPOSITE,
+        SLOW;
+    }
+
+    public enum IndexerCommand{
+        ON,
+        REVERSE,
+        OFF;
+    }
+
+    public enum PivotCommand{
+        APEX,
+        CASCADE,
+        HALT;
+    }
+
     public enum AnimationTypes {
         ColorFlow,
         Fire,
@@ -33,7 +51,7 @@ public class RobotData {
         Strobe,
         Twinkle,
         TwinkleOff,
-        SetAll
+        SetAll;
     }
     
     public enum DumperMode{
@@ -49,6 +67,8 @@ public class RobotData {
     }
 
     public enum CANcoderMode{
+        INTEGRATEDSENSOR,
+        CANCODER;
     }
     
     public enum LoadedTrajectory{
@@ -59,8 +79,18 @@ public class RobotData {
         FOURCARGO;
 
     }
+    
+    public enum Stop{
+        Drive,
+        Indexer,
+        Dumper,
+        DumperWithIndexer,
+        Intake,
+        Conveyor,
+        ALL;
+    }
 
-    /*public static enum UltrasonicStates{
+    public static enum UltrasonicStates{
         DEFAULT(false),
         BALLDETECTED(true);
 
@@ -73,8 +103,9 @@ public class RobotData {
     public boolean isStates(){
         return states;
       }
-    }*/
+    }   
     
+    public static Trajectory trajectory;
     public static int selectedTrajectory = -1;
 
     public static List<List<Trajectory>> listOfTrajectories = new ArrayList<>();
