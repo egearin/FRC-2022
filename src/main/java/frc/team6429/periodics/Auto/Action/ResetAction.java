@@ -27,20 +27,20 @@ public class ResetAction implements Action {
     public void reset(Reset which){
         switch(which){
             case DriveEncoder:
-            mSensors.resetLeftCANcoder();
-            mSensors.resetRightCANcoder();
-            break;
+                mSensors.resetLeftCANcoder();
+                mSensors.resetRightCANcoder();
+                break;
             case HangEncoder:
-            mSensors.resetHangEnc();
-            break;
+                mSensors.resetHangEnc();
+                break;
             case Gyro:
-            mSensors.gyroReset();
-            break;
+                mSensors.gyroReset();
+                break;
             case ALL:
-            mSensors.resetCANcoder();
-            mSensors.resetHangEnc();
-            mSensors.gyroReset();
-            break;
+                mSensors.resetCANcoder();
+                mSensors.resetHangEnc();
+                mSensors.gyroReset();
+                break;
         }
 
     }

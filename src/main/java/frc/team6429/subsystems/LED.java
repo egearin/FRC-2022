@@ -23,6 +23,7 @@ import com.ctre.phoenix.led.TwinkleOffAnimation;
 import com.ctre.phoenix.led.FireAnimation;
 
 import frc.team6429.robot.Constants;
+import frc.team6429.robot.RobotData.AnimationTypes;
 
 /** Add your docs here. */
 public class LED {
@@ -48,7 +49,10 @@ public class LED {
     public TwinkleOffAnimation twinkleOff;
     public FireAnimation fire;
     public Direction direction;
-    private Animation animation;
+    public Animation animation;
+    public AnimationTypes animationTypes;
+
+
 
     //LED Configuration
     public void configLED(){
@@ -59,19 +63,6 @@ public class LED {
         config.stripType = LEDStripType.RGB; //set the strip type to RGB
     }
 
-    public enum AnimationTypes {
-        ColorFlow,
-        Fire,
-        Larson,
-        Rainbow,
-        RgbFade,
-        SingleFade,
-        Strobe,
-        Twinkle,
-        TwinkleOff,
-        SetAll
-    }
-    
     /**
      * select and change animation type
      * @param change

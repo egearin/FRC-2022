@@ -24,6 +24,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -103,11 +104,17 @@ public class Drive {
     public DifferentialDriveOdometry odometry;
     public RamseteManager ramseteManager;
 
+    public Translation2d indexerOnCheckpoint;
+    public Translation2d indexerOffCheckpoint;
+
     public Sensors mSensors;
 
+    //Setup
     public NeutralMode neutralModeBrake;
     public NeutralMode neutralModeCoast;
     public NeutralMode neutralModeEEPROM;
+
+
 
     public Drive(){
 

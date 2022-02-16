@@ -14,8 +14,12 @@ public class DumperOppositeAction implements Action{
     public Timer timer;
     public double wanted_time;
     public double wanted_rate;
+    public double intake_speed;
+    public double conveyor_speed;
 
-    public DumperOppositeAction(double wantedRate, double wantedTime){
+    public DumperOppositeAction(double wantedRate, double wantedTime, double intakeSpeed, double conveyorSpeed){
+        intake_speed = intakeSpeed;
+        conveyor_speed = conveyorSpeed;
         wanted_rate = wantedRate;
         wanted_time = wantedTime;
         timer = new Timer();
@@ -31,7 +35,7 @@ public class DumperOppositeAction implements Action{
     @Override
     public void update() {
 
-        mDumper.dumperOppositeWithIndexer(wanted_rate);
+        mDumper.dumperOppositeWithIndexer(wanted_rate, intake_speed, conveyor_speed);
     }
 
     @Override

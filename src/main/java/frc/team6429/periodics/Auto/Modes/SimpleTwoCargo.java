@@ -32,7 +32,7 @@ public class SimpleTwoCargo extends AutoModeBase {
 
                     new SeriesAction(new DriveAction(1, -0.5, 0),
                                         new ParallelAction(
-                                            new SeriesAction(new DumperOppositeAction(1, 1),
+                                            new SeriesAction(new DumperOppositeAction(1, 1, 1, 1),
                                              new StopAllAction(1, Stop.Dumper)),
                     new SeriesAction(new DriveAction(1, 1, 0),
                                         new StopAllAction(1, Stop.Drive)

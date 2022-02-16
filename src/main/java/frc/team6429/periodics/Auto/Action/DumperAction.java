@@ -14,12 +14,16 @@ public class DumperAction implements Action{
     public Timer timer;
     public double wanted_time;
     public double wanted_rate;
+    public double intake_speed;
+    public double conveyor_speed;
 
-    public DumperAction(double wantedRate, double wantedTime){
+    public DumperAction(double wantedRate, double intakeSpeed, double conveyorSpeed, double wantedTime){
         mDumper = Dumper.getInstance();
         timer = new Timer();
         wanted_time = wantedTime;
         wanted_rate = wantedRate;
+        intake_speed = intakeSpeed;
+        conveyor_speed = conveyorSpeed;
     }
     @Override
     public void start() {
@@ -29,7 +33,7 @@ public class DumperAction implements Action{
 
     @Override
     public void update() {
-        mDumper.dumperSendWithIndexer(wanted_rate);
+        mDumper.dumperSendWithIndexer(wanted_rate, intake_speed, conveyor_speed);
     }
 
     @Override

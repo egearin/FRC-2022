@@ -23,6 +23,31 @@ public class RobotData {
         DISABLE;
     }
 
+    public enum AnimationTypes {
+        ColorFlow,
+        Fire,
+        Larson,
+        Rainbow,
+        RgbFade,
+        SingleFade,
+        Strobe,
+        Twinkle,
+        TwinkleOff,
+        SetAll
+    }
+    
+    public enum DumperMode{
+        DEFAULT,
+        OPPOSITE,
+        OFF;
+    }
+
+    public enum InSync{
+        INSYNC,
+        OPPINSYNC,
+        OFF;
+    }
+
     public enum CANcoderMode{
     }
     
@@ -35,6 +60,21 @@ public class RobotData {
 
     }
 
+    /*public static enum UltrasonicStates{
+        DEFAULT(false),
+        BALLDETECTED(true);
+
+    public final boolean states;
+
+    UltrasonicStates(boolean isStates){
+        states = isStates;
+    }
+    
+    public boolean isStates(){
+        return states;
+      }
+    }*/
+    
     public static int selectedTrajectory = -1;
 
     public static List<List<Trajectory>> listOfTrajectories = new ArrayList<>();
