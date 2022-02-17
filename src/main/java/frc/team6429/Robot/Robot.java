@@ -30,7 +30,9 @@ import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Drivepanel;
+import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Gamepad;
+import frc.team6429.subsystems.Hang;
 import frc.team6429.subsystems.Indexer;
 import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
@@ -55,6 +57,7 @@ public class Robot extends TimedRobot {
   private static final String kTwoCargoAuto = "Two Cargo";
   private static final String kThreeCargoAuto = "Three Cargo";
   private static final String kFourCargoAuto = "Four Cargo";
+  private static final String kFiveCargoAuto = "Five Cargo";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private AutoModeExecutor autoModeExecutor;
@@ -65,12 +68,15 @@ public class Robot extends TimedRobot {
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
   private Drive mDrive;
-  private Indexer mIntake;
+  private Indexer mIndexer;
+  private Dumper mDumper;
+  private Hang mHang;
   private Sensors mSensors;
   private DriveTeleop mDriveTeleop;
   private TeleopPeriodic mTeleopPeriodic;
   private Timer timer;
   private LED mLed;
+  public double prevTime;
 
   private Thread thread = new Thread(new Runnable(){
     @Override
@@ -103,20 +109,31 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    //m_chooser.setDefaultOption();
-    //m_chooser.addOption();
-    //m_chooser.addOption();
+    m_chooser.setDefaultOption("Four Cargo Autonomous", kFourCargoAuto);
+    m_chooser.addOption("Three Cargo Autonomous", kThreeCargoAuto);
+    m_chooser.addOption("Two Cargo Autonomous", kTwoCargoAuto);
+    m_chooser.addOption("Five Cargo Auto", kFiveCargoAuto);
+    m_chooser.addOption("Default Auto", kDefaultAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
     mDrive = Drive.getInstance();
     mDriveTeleop = DriveTeleop.getInstance();
     mTeleopPeriodic = TeleopPeriodic.getInstance();
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
-    mIntake = Indexer.getInstance();
+    mIndexer = Indexer.getInstance();
     mSensors = Sensors.getInstance();
+    mDumper = Dumper.getInstance();
+    mHang = Hang.getInstance();
     mLed = LED.getInstance();
-    timer = new Timer();
     autoModeExecutor = new AutoModeExecutor();
+    timer = new Timer();
+    timer.reset();
+    timer.start();
+    prevTime = timer.get();
+    mSensors.resetCANcoder();
+    mSensors.gyroReset();
+    mSensors.turnOnBothSensors();
 
   }
 
@@ -149,35 +166,37 @@ public class Robot extends TimedRobot {
     m_autoSelected = m_chooser.getSelected();
     switch (m_autoSelected) {
       case kDefaultAuto:
-        autoModeExecutor.setAutoMode(new SimpleTwoCargo());
+        autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
         break;
       case kFourCargoAuto:
         autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
-        mLed.setColorFlow(255, 0, 0, 0, 0.5, 8, Direction.Forward);//bunlar böle çalışır mı?
+        mLed.setColorFlow(255, 0, 0, 0, 0.5, 8, Direction.Forward);
         break;
       case kThreeCargoAuto:
-        autoModeExecutor.setAutoMode(new TwoCargoAuto(PathType.TWOCARGO));
+        autoModeExecutor.setAutoMode(new ThreeCargoAuto(PathType.THREECARGO));
         mLed.setColorFlow(0, 255, 0, 0, 0.5, 8, Direction.Forward);
         break;
       case kTwoCargoAuto:
-        autoModeExecutor.setAutoMode(new ThreeCargoAuto(PathType.THREECARGO));
+        autoModeExecutor.setAutoMode(new TwoCargoAuto(PathType.TWOCARGO));
         mLed.setColorFlow(0, 0, 255, 0, 0.5, 8, Direction.Forward);
         break;
       default:
-        autoModeExecutor.setAutoMode(new SimpleTwoCargo());
+        autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
         mLed.setColorFlow(0, 0, 0, 255, 0.5, 8, Direction.Forward);
         break;
     }
 
     System.out.println("Auto selected: " + m_autoSelected);
-    mSensors.resetSensors();
-    
     if (thread.isAlive()){
       DriverStation.reportWarning("Still not initialized the trajectories", false);
     }
     else{
       autoModeExecutor.start();
     }
+    
+    mSensors.resetSensors();
+    mSensors.turnOnBothSensors();
+
   }
 
   /** This function is called periodically during autonomous. */

@@ -57,11 +57,9 @@ public class Drive {
     public static Drive getInstance(){
         return mInstance;
     }
-    //Follower TalonFX
-    public WPI_TalonFX driveLOne;
-    public WPI_TalonFX driveLTwo;
-    public WPI_TalonFX driveROne;
-    public WPI_TalonFX driveRTwo;
+    //TalonFX
+    public WPI_TalonFX driveLeftMotor;
+    public WPI_TalonFX driveRightMotor;
     
     //PID 
     public PIDController PID;
@@ -74,7 +72,6 @@ public class Drive {
 
     //Trapezoid
     public TrapezoidProfile trapezoidProfile;
-    public Timer timer;
 
     //Feedforward
     public SimpleMotorFeedforward driveFeedforward;
@@ -106,14 +103,16 @@ public class Drive {
 
     public Translation2d indexerOnCheckpoint;
     public Translation2d indexerOffCheckpoint;
-
-    public Sensors mSensors;
+    public Translation2d dumperOnCheckpoint;
+    public Translation2d dumperOffCheckpoint;
 
     //Setup
     public NeutralMode neutralModeBrake;
     public NeutralMode neutralModeCoast;
     public NeutralMode neutralModeEEPROM;
 
+    public Timer timer;
+    public Sensors mSensors;
 
     /**
      * Drive setup
@@ -121,49 +120,36 @@ public class Drive {
     public Drive(){
 
         timer = new Timer();
-
         constraints = new Constraints(Constants.kMaxSpeed, Constants.kMaxAcceleration);
         PID = new PIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
-
         profiledPID = new ProfiledPIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD, constraints);
         simpleMotorFF = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV);
         driveFeedforward = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV, Constants.kDriveA);
-
+        driveLeftMotor = Utils.makeTalonFX(Constants.driveLeftMotorID, false);
+        driveRightMotor = Utils.makeTalonFX(Constants.driveRightMotorID, true);
         config = new TalonFXConfiguration();
-        
-        driveLOne = Utils.makeTalonFX(Constants.leftOneMotorID, false);
-        driveLTwo = Utils.makeTalonFX(Constants.leftTwoMotorID, false);
-        driveROne = Utils.makeTalonFX(Constants.rightOneMotorID, true);
-        driveRTwo = Utils.makeTalonFX(Constants.rightTwoMotorID, true);
-        driveROne.configAllSettings(config);
-        driveRTwo.configAllSettings(config);
-        driveLOne.configAllSettings(config);
-        driveLTwo.configAllSettings(config);
-        driveLOne.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        driveROne.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        driveROne.setSensorPhase(false);
-        driveLOne.setSensorPhase(false);
-        driveROne.setSelectedSensorPosition(0);
-        driveLOne.setSelectedSensorPosition(0);
+        driveLeftMotor.configAllSettings(config);
+        driveRightMotor.configAllSettings(config);
+        driveLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        driveRightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        driveRightMotor.setSensorPhase(false);
+        driveLeftMotor.setSensorPhase(false);
+        driveRightMotor.setSelectedSensorPosition(0);
+        driveLeftMotor.setSelectedSensorPosition(0);
         neutralModeBrake = NeutralMode.Brake;
         neutralModeCoast = NeutralMode.Coast;
         neutralModeEEPROM = NeutralMode.EEPROMSetting;
-        setNeutralMode(neutralModeBrake);
-        leftMotor = new MotorControllerGroup(driveLOne, driveLTwo);
-        rightMotor = new MotorControllerGroup(driveROne, driveRTwo);
-
+        setNaturalMode(neutralModeBrake);
+        leftMotor = new MotorControllerGroup(driveLeftMotor);
+        rightMotor = new MotorControllerGroup(driveRightMotor);
         chassis = new DifferentialDrive(leftMotor, rightMotor);
-
         pigeon = new PigeonIMU(Constants.pigeonID);
-
         shifter = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.shifterChannel);
         //shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
         shifter.setPulseDuration(Constants.shifterPulseDuration);
-
         pto = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.ptoChannel);
         //pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
         pto.setPulseDuration(Constants.ptoPulseDuration);
-
         compressor = new Compressor(0, PneumaticsModuleType.REVPH);
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 1/360, "meter", SensorTimeBase.PerSecond);
@@ -565,12 +551,24 @@ public class Drive {
      /**
      * @param neutralMode
      */
-    public void setNeutralMode(NeutralMode neutralMode) {
-		driveLOne.setNeutralMode(neutralMode);
-		driveLTwo.setNeutralMode(neutralMode);
-		driveROne.setNeutralMode(neutralMode);
-		driveRTwo.setNeutralMode(neutralMode);
+    public void neutralMode(NeutralMode neutralMode) {
+		driveLeftMotor.setNeutralMode(neutralMode);
+		driveRightMotor.setNeutralMode(neutralMode);
 	}
+
+    public void setNaturalMode(NeutralMode neutralMode) {
+        switch(neutralMode){
+            case Brake:
+                neutralMode(neutralModeBrake);
+                break;
+            case Coast:
+                neutralMode(neutralModeCoast);
+                break;
+            case EEPROMSetting:
+                neutralMode(neutralModeEEPROM);
+                break;
+        }
+    }
 
     /**
      * Stop Driving Robot

@@ -5,35 +5,24 @@
 package frc.team6429.periodics.Auto.Action;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.team6429.subsystems.Drive;
-import frc.team6429.subsystems.Dumper;
+import frc.team6429.robot.RobotData.IndexerCommand;
+import frc.team6429.robot.RobotData.PivotCommand;
+import frc.team6429.subsystems.Indexer;
 import frc.team6429.util.Sensors;
 
 /** Add your docs here. */
-public class TrajectoryDumperAction implements Action {
+public class AlternateTrajectoryIndexer implements Action{
 
-    public enum DumperCommand{
-        DUMP,
-        OPPOSITE,
-        SLOW;
-    }
-
-    public Dumper mDumper;
-    public Drive mDrive;
+    public Indexer mIndexer;
+    public IndexerCommand indexerCommand;
+    public PivotCommand pivotCommand;
     public Sensors mSensors;
     public Timer timer;
-    public boolean dumperWay;
-    public double wanted_time;
-    public double ballsToGo;
-    public DumperCommand dumperCommand;
+    public double prev_time;
+    public double ballCount;
+    public boolean canDump;
+    
 
-    //TODO:add parameters
-    public TrajectoryDumperAction(){
-        mDumper = Dumper.getInstance();
-        mDrive = Drive.getInstance();
-        mSensors = Sensors.getInstance();
-        timer = new Timer();
-    }
     @Override
     public void start() {
         // TODO Auto-generated method stub
@@ -56,5 +45,4 @@ public class TrajectoryDumperAction implements Action {
     public void done() {
         // TODO Auto-generated method stub
         
-    }
-}
+    }}

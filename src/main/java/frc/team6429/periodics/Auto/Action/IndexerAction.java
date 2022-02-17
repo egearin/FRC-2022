@@ -15,6 +15,7 @@ public class IndexerAction implements Action {
     public double intake_speed;
     public double conveyor_speed;
     public boolean finished;
+    public double ballCount;
 
     public IndexerAction(double intakeSpeed, double conveyorSpeed){
         mIndexer = Indexer.getInstance();
@@ -31,12 +32,13 @@ public class IndexerAction implements Action {
 
     @Override
     public void update(){
-        mIndexer.runWithBallCount(1, 0.3);
+        ballCount = mIndexer.runWithBallCount(1, 0.3);
+        
     }
 
     @Override
     public boolean isFinished(){
-        return mIndexer.runWithBallCount(1, 0.3) == 2;
+        return ballCount >= 2;
     }
 
     @Override

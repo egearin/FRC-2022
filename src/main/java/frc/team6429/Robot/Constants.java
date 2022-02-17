@@ -16,35 +16,30 @@ import frc.team6429.util.Utils;
 */
 public class Constants {
 
-    //Drive Motor Ports with "TalonFX"
-    public static final int rightOneMotorID = 26;
-    public static final int rightTwoMotorID = 25;
-
-    public static final int leftOneMotorID = 24;
-    public static final int leftTwoMotorID = 23;
+    //Drive Motor Ports  "TalonFX"
+    public static final int driveRightMotorID = 1;//ok
+    public static final int driveLeftMotorID = 0;//ok
 
     //Other Subsystems Motor Ports and IDs
     public static final int intakeMotorID = 22;
     public static final int conveyorMotorID = 21;
-
     public static final int dumperMotorID = 20;
-
-    //public static final int hangMotorPort = 0;
     public static final int hangMotorID = 19;
 
     //Solenoid Ports
     public static final int shifterChannel = 1; //Single Solenoid for REVPH
     public static final int ptoChannel = 3; //Single Solenoid for REVPH
-    public static final int pivotPistonChannel = 14; //Single Solenoid for REVPH
+
     public static final int pivotPistonsForwardChannel = 13; //Double Solenoid for REVPH 
     public static final int pivotPistonsReverseChannel = 12; //Double Solenoid for REVPH
+
     public static final int climbLeftPistonChannel = 0;
     public static final int climbRightPistonChannel = 0;
     public static final int climbForwardPistonChannel = 0;
 
     public static final int shifter1Port = 0; //Single Solenoid for CTREPCM
     public static final int pto1Port = 1; //Single Solenoid for CTREPCM
-    public static final int pivotPiston1Channel = 4; //Single Solenoid for CTREPCM
+    
     public static final int pivotPistons1ForwardChannel = 2; //Double Solenoid for CTREPCM
     public static final int pivotPistons1ReverseChannel = 3; //Double Solenoid for CTREPCM
 
@@ -73,7 +68,7 @@ public class Constants {
 
     public static final int hangCANcoderID = 100;
 
-    //Ultrasonic Constants
+    //Ultrasonic Ports
     public static final int trigPinHigh = 1;
     public static final int trigPinLow= 0;
     
@@ -91,7 +86,6 @@ public class Constants {
 
     public static final double shifterPulseDuration = 1;
     public static final double ptoPulseDuration = 1;
-    public static final double pivotPulseDuration = 1; //for Single Solenoid
 
     //Hub
     public static final int pdhID = 12; //REV Power Distribution Hub
@@ -193,11 +187,11 @@ public class Constants {
     public static final double tarmacInnerDiameter = Utils.conversion_inchToMeters(219.25);
     public static final double tarmacOuterDiameter = Utils.conversion_inchToMeters(237.31);
     public static final double tarmacFenderToTip = Utils.conversion_inchToMeters(84.75);
-    public static final double tarmacFullSideLength = tarmacInnerDiameter * (Math.sqrt(2.0) - 1.0); // If the tarmac formed a full octagon
-    public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); // Length of tape marking outside of tarmac
-    public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; // Length removed b/c of corner cutoff
+    public static final double tarmacFullSideLength = tarmacInnerDiameter * (Math.sqrt(2.0) - 1.0); 
+    public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); 
+    public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; 
     public static final double hubSquareLength = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
-    public static final Pose2d glassOrigin = new Pose2d(0, -4.32, new Rotation2d()); // !beware! rotation 2d here need to change if we decide to start our odometry from a spesific angle
+    public static final Pose2d glassOrigin = new Pose2d(0, -4.32, new Rotation2d()); 
     public static final Pose2d pwOrigin = new Pose2d(0, -4.32, new Rotation2d());
 }   
 

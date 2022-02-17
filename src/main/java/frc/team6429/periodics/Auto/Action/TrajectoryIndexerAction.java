@@ -82,7 +82,6 @@ public class TrajectoryIndexerAction implements Action{
                 pivotCommand = PivotCommand.APEX;
             }
             indexerCommand = IndexerCommand.OFF;
-            //canDump = true;
         }
 
         if (pivotCommand == PivotCommand.CASCADE){
@@ -104,10 +103,6 @@ public class TrajectoryIndexerAction implements Action{
             }
         }
 
-        /*if(canDump){
-            mDumper.setSyncMode(insync, dumper_speed, intake_speed, conveyor_speed);;
-        }
-        */
         switch(pivotCommand){
             case APEX:
             mIndexer.pivotUp();

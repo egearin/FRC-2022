@@ -26,7 +26,8 @@ public class CreateTrajectoryAction implements Action {
     public enum PathType{
         TWOCARGO,
         THREECARGO,                                         
-        FOURCARGO
+        FOURCARGO,
+        FIVECARGO;
     }
 
     public CreateTrajectoryAction(PathType pathType){
@@ -48,12 +49,15 @@ public class CreateTrajectoryAction implements Action {
                 RobotData.selectedTrajectory = 1;
                 break;
             case FOURCARGO:
-            trajectories = RobotData.listOfTrajectories.get(2);
+                trajectories = RobotData.listOfTrajectories.get(2);
                 RobotData.selectedTrajectory = 2;
                 break;
+            case FIVECARGO:
+                trajectories = RobotData.listOfTrajectories.get(3);
+                RobotData.selectedTrajectory = 3;
             default:
                 trajectories = RobotData.listOfTrajectories.get(0);
-                RobotData.selectedTrajectory = 0;
+                RobotData.selectedTrajectory = 2;
         }
          
         mDrive.stopDrive();

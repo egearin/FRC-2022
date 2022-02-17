@@ -23,6 +23,22 @@ public class RobotData {
         DISABLE;
     }
 
+    public enum LoadedTrajectory{
+        NONE,
+        DEFAULT,
+        TWOCARGO,
+        THREECARGO,
+        FOURCARGO,
+        FIVECARGO;
+    }
+
+    public enum PathType{
+        TWOCARGO,
+        THREECARGO,                                         
+        FOURCARGO,
+        FIVECARGO;
+    }
+
     public enum DumperCommand{
         DUMP,
         OPPOSITE,
@@ -71,15 +87,6 @@ public class RobotData {
         CANCODER;
     }
     
-    public enum LoadedTrajectory{
-        NONE,
-        DEFAULT,
-        TWOCARGO,
-        THREECARGO,
-        FOURCARGO;
-
-    }
-    
     public enum Stop{
         Drive,
         Indexer,
@@ -90,6 +97,12 @@ public class RobotData {
         ALL;
     }
 
+    public enum NeutralMode{
+        BRAKE,
+        COAST,
+        EEPROMSetting;
+    }
+    
     public static enum UltrasonicStates{
         DEFAULT(false),
         BALLDETECTED(true);

@@ -96,7 +96,7 @@ public class Sensors {
      * @return Left Speed
      */
     public double getIntegratedLeftSpeed(){
-        double leftSpeed = mDrive.driveLOne.getSelectedSensorVelocity();
+        double leftSpeed = mDrive.driveLeftMotor.getSelectedSensorVelocity();
 
         return leftSpeed;
     }
@@ -106,7 +106,7 @@ public class Sensors {
      * @return Right Speed
      */
     public double getIntegratedRightSpeed(){
-        double rightSpeed = mDrive.driveROne.getSelectedSensorVelocity();
+        double rightSpeed = mDrive.driveRightMotor.getSelectedSensorVelocity();
 
         return rightSpeed;
     }   
@@ -152,7 +152,7 @@ public class Sensors {
      * @return Left Position
      */
     public double getIntegratedLeftPos(){
-        double leftPos = mDrive.driveROne.getSelectedSensorPosition();
+        double leftPos = mDrive.driveRightMotor.getSelectedSensorPosition();
 
         return leftPos;
     }
@@ -162,7 +162,7 @@ public class Sensors {
      * @return Right Position
      */
     public double getIntegratedRightPos(){
-        double rightPos = mDrive.driveLOne.getSelectedSensorPosition();
+        double rightPos = mDrive.driveLeftMotor.getSelectedSensorPosition();
 
         return rightPos;
     }
@@ -336,7 +336,7 @@ public class Sensors {
     /**
      * Sets lower ultrasonic sensor to on and higher ultrasonic sensor to off
      */
-    public static void turnOnLowerUltrasonic(){
+    public void turnOnLowerUltrasonic(){
         lowerOn();
         higherOff();
     }
@@ -344,7 +344,7 @@ public class Sensors {
     /**
      * Sets higher ultrasonic to on and lower ultrasonic to off
      */
-    public static void turnOnHigherUltrasonic(){
+    public void turnOnHigherUltrasonic(){
         higherOn();
         lowerOff();
     }
@@ -352,9 +352,9 @@ public class Sensors {
     /**
      * Sets both sensors to on
      */
-    public static void turnOnBothSensors(){
-        higherOn();
-        lowerOn();
+    public void turnOnBothSensors(){
+        turnOnHigherUltrasonic();
+        turnOnLowerUltrasonic();
     }
 
     /**
@@ -455,6 +455,11 @@ public class Sensors {
             else{
                 status = 1;
             }
+
+        if(!isHigherCargoDetected()){
+            status = 0;
+            }
+
         }  
 
         return status;
@@ -556,14 +561,14 @@ public class Sensors {
      * Resets left Falcon-integrated sensor value
      */
     public void resetLeftEnc(){
-        mDrive.driveLOne.setSelectedSensorPosition(0);
+        mDrive.driveLeftMotor.setSelectedSensorPosition(0);
     }
 
     /**
      * Resets right Falcon-integrated sensor value
      */
     public void resetRightEnc(){
-        mDrive.driveROne.setSelectedSensorPosition(0);
+        mDrive.driveRightMotor.setSelectedSensorPosition(0);
     }
 
     /** 
