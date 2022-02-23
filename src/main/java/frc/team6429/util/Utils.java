@@ -4,7 +4,7 @@
 
 package frc.team6429.util;
 
-import java.io.*;   
+//import java.io.*;   
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public final class Utils {
         WPI_VictorSPX victorSPX = new WPI_VictorSPX(id);
         invert = victorSPX.getInverted();
 
-        victorSPX.configFactoryDefault();
+        //victorSPX.configFactoryDefault();
         victorSPX.setInverted(invert);
         victorSPX.stopMotor();
     

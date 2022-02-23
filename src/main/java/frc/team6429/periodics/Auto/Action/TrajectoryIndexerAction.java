@@ -43,20 +43,17 @@ public class TrajectoryIndexerAction implements Action{
     public boolean canDump;
     public double pivot_time;
     public double startTime;
-    public double dumper_speed;
     public double intake_speed;
     public double conveyor_speed;
 
-    public TrajectoryIndexerAction(double pivotTime, InSync inSyncMode ,double dumperSpeed, double intakeSpeed, double conveyorSpeed){
+    public TrajectoryIndexerAction(double pivotTime, double intakeSpeed, double conveyorSpeed){
         mIndexer = Indexer.getInstance();
         mDumper = Dumper.getInstance();
         mDrive = Drive.getInstance();
         timer = new Timer();
         pivot_time = pivotTime;
-        dumper_speed = dumperSpeed;
         intake_speed = intakeSpeed;
         conveyor_speed = conveyorSpeed;
-        insync = inSyncMode;
     }
 
     @Override

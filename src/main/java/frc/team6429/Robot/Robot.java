@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,33 +19,30 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.trajectory.Trajectory;
+
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
-import frc.team6429.periodics.Auto.Modes.FourCargoAuto;
-import frc.team6429.periodics.Auto.Modes.SimpleTwoCargo;
-import frc.team6429.periodics.Auto.Modes.ThreeCargoAuto;
-import frc.team6429.periodics.Auto.Modes.TwoCargoAuto;
-import frc.team6429.periodics.Teleop.DriveTeleop;
-import frc.team6429.periodics.Teleop.TeleopPeriodic;
+import frc.team6429.periodics.Auto.Modes.MainAuto.FourCargoAuto;
+import frc.team6429.periodics.Auto.Modes.MainAuto.ThreeCargoAuto;
+import frc.team6429.periodics.Auto.Modes.MainAuto.TwoCargoAuto;
+import frc.team6429.periodics.Auto.Modes.SimpleAuto.SimpleTwoCargo;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Drivepanel;
 import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Hang;
 import frc.team6429.subsystems.Indexer;
-import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.loading.MLet;
 
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -57,6 +55,7 @@ public class Robot extends TimedRobot {
   private static final String kTwoCargoAuto = "Two Cargo";
   private static final String kThreeCargoAuto = "Three Cargo";
   private static final String kFourCargoAuto = "Four Cargo";
+  private static final String kAlternateFourCargo = "Alternate Four Cargo";
   private static final String kFiveCargoAuto = "Five Cargo";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -65,17 +64,14 @@ public class Robot extends TimedRobot {
   double x = 0;
 
   //systems
-  private Gamepad mGamepad;
-  private Drivepanel mDrivepanel;
+  private Sensors mSensors;
   private Drive mDrive;
   private Indexer mIndexer;
   private Dumper mDumper;
   private Hang mHang;
-  private Sensors mSensors;
-  private DriveTeleop mDriveTeleop;
-  private TeleopPeriodic mTeleopPeriodic;
+  private Gamepad mGamepad;
+  private Drivepanel mDrivepanel;
   private Timer timer;
-  private LED mLed;
   public double prevTime;
 
   private Thread thread = new Thread(new Runnable(){
@@ -87,17 +83,32 @@ public class Robot extends TimedRobot {
       List<String> twoCargo = new ArrayList<>();
       List<String> threeCargo = new ArrayList<>();
       List<String> fourCargo = new ArrayList<>();
-      twoCargo.add("paths/TwoCargo.wpilib.json");
-      threeCargo.add("paths/ThreeCargo.wpilib.json");
-      fourCargo.add("paths/FourCargo.wpilib.json");
-      listOfTrajectoryPaths.addAll(List.of(twoCargo, threeCargo, fourCargo));
-      for(List<String> trajectoryPaths:listOfTrajectoryPaths){
-        List<Trajectory> trajectories = new ArrayList<>(); 
-        for(String trajectoryPath:trajectoryPaths){
-            trajectories.add(Utils.readTrajectoryFromPW(trajectoryPath));
+      twoCargo.addAll(List.of(
+      "paths/twoCargo00.wpilib.json",
+      "paths/twoCargo01.wpilib.json"));
+      threeCargo.addAll(List.of(
+      "paths/threeCargo00.wpilib.json",
+      "paths/threeCargo01.wpilib.json",
+      "paths/threeCargo02.wpilib.json",
+      "paths/threeCargo03.wpilib.json"));
+      fourCargo.addAll(List.of(
+      "paths/fourCargo00v2.wpilib.json",
+      "paths/fourCargo01v2.wpilib.json",
+      "paths/fourCargo02v2.wpilib.json",
+      "paths/fourCargo03v2.wpilib.json",
+      "paths/fourCargo04v2.wpilib.json",
+      "paths/fourCargo05v2.wpilib.json"));
+
+      for(String trajectoryPath:twoCargo){
+          RobotData.twoCargo.add(Utils.readTrajectoryFromPW(trajectoryPath));
         }
-        RobotData.listOfTrajectories.add(trajectories);
-      }
+      for(String trajectoryPath:threeCargo){
+          RobotData.threeCargo.add(Utils.readTrajectoryFromPW(trajectoryPath));
+        }
+      for(String trajectoryPath:fourCargo){
+          RobotData.fourCargo.add(Utils.readTrajectoryFromPW(trajectoryPath));
+        }
+      
       DriverStation.reportWarning("Trajectories created in " + (Timer.getFPGATimestamp() - startTime) + "seconds", false);
     }                          
   }
@@ -110,31 +121,25 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_chooser.setDefaultOption("Four Cargo Autonomous", kFourCargoAuto);
+    m_chooser.addOption("Alternate Four Cargo", kAlternateFourCargo);
     m_chooser.addOption("Three Cargo Autonomous", kThreeCargoAuto);
     m_chooser.addOption("Two Cargo Autonomous", kTwoCargoAuto);
-    m_chooser.addOption("Five Cargo Auto", kFiveCargoAuto);
-    m_chooser.addOption("Default Auto", kDefaultAuto);
+    m_chooser.addOption("Five Cargo Autonomous", kFiveCargoAuto);
+    m_chooser.addOption("Default Autonomous", kDefaultAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
+    mSensors = Sensors.getInstance();
     mDrive = Drive.getInstance();
-    mDriveTeleop = DriveTeleop.getInstance();
-    mTeleopPeriodic = TeleopPeriodic.getInstance();
+    mIndexer = Indexer.getInstance();
+    mHang = Hang.getInstance();
+    mDumper = Dumper.getInstance();
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
-    mIndexer = Indexer.getInstance();
-    mSensors = Sensors.getInstance();
-    mDumper = Dumper.getInstance();
-    mHang = Hang.getInstance();
-    mLed = LED.getInstance();
     autoModeExecutor = new AutoModeExecutor();
     timer = new Timer();
     timer.reset();
     timer.start();
     prevTime = timer.get();
-    mSensors.resetCANcoder();
-    mSensors.gyroReset();
-    mSensors.turnOnBothSensors();
-
   }
 
   /**
@@ -146,9 +151,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("enc", mSensors.leftCANcoder.getPosition());
-    SmartDashboard.putNumber("enc2", mSensors.rightCANcoder.getPosition());
-    mSensors.pigeonOutput();
+   
   }
 
   /**
@@ -170,19 +173,15 @@ public class Robot extends TimedRobot {
         break;
       case kFourCargoAuto:
         autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
-        mLed.setColorFlow(255, 0, 0, 0, 0.5, 8, Direction.Forward);
         break;
       case kThreeCargoAuto:
         autoModeExecutor.setAutoMode(new ThreeCargoAuto(PathType.THREECARGO));
-        mLed.setColorFlow(0, 255, 0, 0, 0.5, 8, Direction.Forward);
         break;
       case kTwoCargoAuto:
         autoModeExecutor.setAutoMode(new TwoCargoAuto(PathType.TWOCARGO));
-        mLed.setColorFlow(0, 0, 255, 0, 0.5, 8, Direction.Forward);
         break;
       default:
         autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
-        mLed.setColorFlow(0, 0, 0, 255, 0.5, 8, Direction.Forward);
         break;
     }
 
@@ -194,8 +193,8 @@ public class Robot extends TimedRobot {
       autoModeExecutor.start();
     }
     
-    mSensors.resetSensors();
-    mSensors.turnOnBothSensors();
+    //mSensors.resetSensors();
+    //mSensors.turnOnBothSensors();
 
   }
 
@@ -227,22 +226,101 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    mDriveTeleop.driveTeleop();
-    mTeleopPeriodic.teleopPeriodic();
-    /* Teleop: Robot drive
     double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
-
-    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2){
-      rotation = mGamepad.getSensetiveSteering() * 0.5;
-    }
-    else{
-      rotation = mGamepad.getSteering() * 0.75;
-    }
-    mDrive.robotDrive(speed, rotation);
+    mDrive.robotDrive(speed, mGamepad.getSteering());
+    //speed = Utils.map(speed, 0, 1, Constants.speedDeadZone, 1);
+    /*rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);*/
+    rotation = mGamepad.getSteering() * 0.75;
+    mDrive.robotDrive(speed, rotation, 1);
     mGamepad.forceFeedback(speed, rotation);
-  */
+
+    if(mGamepad.getDriveShiftOnePressed()) {
+      mDrive.driveShiftOne();
+    }
+
+    else if(mGamepad.getDriveShiftTwoPressed()) {
+      mDrive.driveShiftTwo();
+    }
+
+    if (mGamepad.getTestPTO()){
+      mDrive.powerTakeOff(!mDrive.pto.get());
+    }
+
+    //Manual Only Pivot Codes
+    if(mDrivepanel.pivotDown()) {
+      mIndexer.pivotDown();
+   }
+    else if(mDrivepanel.pivotUp()) {
+      mIndexer.pivotUp();
+    }
+    else {
+      mIndexer.pivotStall();
+    }
+    
+    
+  //Manual Only Intake and Conveyor Codes
+  if(mDrivepanel.getIntakeDrivepanel()) {
+      mIndexer.intakeOn(1);
   }
+  else if(mDrivepanel.getIntakeReverseDrivepanel()) {
+      mIndexer.intakeReverse(1);
+  }
+  else if(mDrivepanel.getConveyorDrivepanel()) {
+      mIndexer.conveyorOn(1);
+  }
+  else if(mDrivepanel.getConveyorReverseDrivepanel()) {
+      mIndexer.conveyorReverse(1);
+  }
+  else if(mDrivepanel.getIndexerDrivepanel()) {
+      mIndexer.indexerOn(1, 1);
+  }
+  else if(mDrivepanel.getIndexerReverseDrivepanel()){
+      mIndexer.indexerReverse(1, 1);
+  }
+  else {
+      mIndexer.intakeStop();
+      mIndexer.conveyorStop();
+  }
+
+  //Custom Indexer
+  /*if(mGamepad.getCustomIndexerOn()) {
+      if(mSensors.getBallCount() == 1){
+          mIndexer.conveyorStop();
+          mIndexer.intakeOn(0.5);
+      }
+      else if(mSensors.getBallCount() == 2){
+          mIndexer.customIndexerOff();
+      }
+      else{
+          mIndexer.customIndexerOn();
+      }
+  }
+  else{
+      mIndexer.indexerStop();
+  }
+*/
+  //Manual Indexer via Gamepad
+  
+
+
+
+
+
+   //Dumper Codes
+  if(mGamepad.getDumperGamepad()) {
+      mIndexer.indexerOn(1, 1);
+      mDumper.dumperSend(1);
+  }
+  else if(mGamepad.getDumperOppositeGamepad()) {
+      mIndexer.indexerOn(1, 1);
+      mDumper.dumperSendOpposite(1);
+  }
+  else{
+      mDumper.dumperStop();
+      mIndexer.indexerStop();
+  }
+}
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {}
@@ -256,19 +334,12 @@ public class Robot extends TimedRobot {
   public void testInit() {
 
     
-    mSensors.resetCANcoder();
-    mSensors.rightCANcoder.setPositionToAbsolute();
-    mSensors.leftCANcoder.setPositionToAbsolute();
-    mSensors.gyroReset();
-    mSensors.resetDriveEnc();
-    
+
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    mSensors.encoderOutputs();
-    mSensors.ultrasonicOutputs();
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();

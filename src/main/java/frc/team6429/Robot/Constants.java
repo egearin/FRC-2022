@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
 import frc.team6429.util.Utils;
 
 /** 
@@ -17,32 +18,25 @@ import frc.team6429.util.Utils;
 public class Constants {
 
     //Drive Motor Ports  "TalonFX"
-    public static final int driveRightMotorID = 1;//ok
-    public static final int driveLeftMotorID = 0;//ok
+    public static final int driveLeftMotorID = 0; //TalonFX ok
+    public static final int driveRightMotorID = 1; //TalonFX ok
 
-    //Other Subsystems Motor Ports and IDs
-    public static final int intakeMotorID = 22;
-    public static final int conveyorMotorID = 21;
-    public static final int dumperMotorID = 20;
-    public static final int hangMotorID = 19;
+    //Other Subsystems Motor Ports and IDs "both"
+    public static final int intakeMotorID = 3; //TalonFX ok
+    public static final int dumperMotorID = 2; //TalonFX ok
+    public static final int hangMotorID = 4; //TalonFX ok
+    public static final int conveyorMotorID = 6; //VictorSPX ok
 
     //Solenoid Ports
-    public static final int shifterChannel = 1; //Single Solenoid for REVPH
-    public static final int ptoChannel = 3; //Single Solenoid for REVPH
+    public static final int shifterChannel = 13; //Single Solenoid for REVPH ok (9)
+    public static final int ptoChannel = 12; //Single Solenoid for REVPH ok
 
-    public static final int pivotPistonsForwardChannel = 13; //Double Solenoid for REVPH 
-    public static final int pivotPistonsReverseChannel = 12; //Double Solenoid for REVPH
+    public static final int pivotPistonsForwardChannel = 8; //Double Solenoid for REVPH 
+    public static final int pivotPistonsReverseChannel = 10; //Double Solenoid for REVPH
 
     public static final int climbLeftPistonChannel = 0;
     public static final int climbRightPistonChannel = 0;
     public static final int climbForwardPistonChannel = 0;
-
-    public static final int shifter1Port = 0; //Single Solenoid for CTREPCM
-    public static final int pto1Port = 1; //Single Solenoid for CTREPCM
-    
-    public static final int pivotPistons1ForwardChannel = 2; //Double Solenoid for CTREPCM
-    public static final int pivotPistons1ReverseChannel = 3; //Double Solenoid for CTREPCM
-
 
     //Pigeon port 
     public static final int pigeonID = 7;
@@ -63,10 +57,10 @@ public class Constants {
     public static final double maxVoltageInput = 12;
 
     //CANcoder Ports
-    public static final int leftCANcoderID = 6;
-    public static final int rightCANcoderID = 5;
+    public static final int leftCANcoderID = 8;
+    public static final int rightCANcoderID = 9;
 
-    public static final int hangCANcoderID = 100;
+    //public static final int hangCANcoderID = 100;
 
     //Ultrasonic Ports
     public static final int trigPinHigh = 1;
@@ -77,7 +71,8 @@ public class Constants {
     
     //Drive Constants
     public static final double kTrackWidth = 0;
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
+    public static final DifferentialDriveKinematics kDriveKinematics 
+    = new DifferentialDriveKinematics(kTrackWidth);
     public static final double kMaxSpeed = 0;
     public static final double kMaxAcceleration = 0;
     public static final double kRamseteB = 0;
@@ -89,7 +84,7 @@ public class Constants {
 
     //Hub
     public static final int pdhID = 12; //REV Power Distribution Hub
-    public static final int phID = 11;  //REV Pneumatics Hub
+    public static final int phID = 5;  //REV Pneumatics Hub
 
     //Gamepad and Drivepanel Constants
     public static final int gamepadJoystick = 0;
@@ -102,9 +97,9 @@ public class Constants {
     public static final int axis_steering = 0;
     public static final int axis_sensetiveSteering = 4;
 
-    public static final int shifterButton = 6;
-    public static final int shifterOneButton = 0;
-    public static final int shifterTwoButton = 0;
+    //public static final int shifterButton = 6;
+    public static final int shifterOneButton = 6;
+    public static final int shifterTwoButton = 5;
 
     public static final int ptoButton = 5;
 
@@ -174,24 +169,68 @@ public class Constants {
     public static final double traversalAngle = 0;
     public static final double climbPressureFront = 0;
     public static final double pressureTolerance = 0;
+    public static final double speedDeadZone = 0;
+    public static final double climbTime = 0;
+    public static final double climbSpeed = 0;
     
     //Field dimensions
-    public static final double fieldLength = Utils.conversion_inchToMeters(54.0 * 12.0);
-    public static final double fieldWidth = Utils.conversion_inchToMeters(27.0 * 12.0);
-    public static final double hangarLength = Utils.conversion_inchToMeters(128.75);
-    public static final double hangarWidth = Utils.conversion_inchToMeters(116.0);
+    public static final double fieldLength 
+    = Utils.conversion_inchToMeters(54.0 * 12.0);
+    public static final double fieldWidth 
+    = Utils.conversion_inchToMeters(27.0 * 12.0);
+    public static final double hangarLength 
+    = Utils.conversion_inchToMeters(128.75);
+    public static final double hangarWidth 
+    = Utils.conversion_inchToMeters(116.0);
 
     //Dimensions of hub and tarmac
-    public static final Rotation2d centerLineAngle = Rotation2d.fromDegrees(66.0);
-    public static final Translation2d hubCenter = new Translation2d(fieldLength / 2.0, fieldWidth / 2.0);
-    public static final double tarmacInnerDiameter = Utils.conversion_inchToMeters(219.25);
-    public static final double tarmacOuterDiameter = Utils.conversion_inchToMeters(237.31);
-    public static final double tarmacFenderToTip = Utils.conversion_inchToMeters(84.75);
-    public static final double tarmacFullSideLength = tarmacInnerDiameter * (Math.sqrt(2.0) - 1.0); 
-    public static final double tarmacMarkedSideLength = Utils.conversion_inchToMeters(82.83); 
-    public static final double tarmacMissingSideLength = tarmacFullSideLength - tarmacMarkedSideLength; 
-    public static final double hubSquareLength = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
-    public static final Pose2d glassOrigin = new Pose2d(0, -4.32, new Rotation2d()); 
-    public static final Pose2d pwOrigin = new Pose2d(0, -4.32, new Rotation2d());
+    public static final Rotation2d centerLineAngle 
+    = Rotation2d.fromDegrees(66.0);
+    public static final Translation2d hubCenter 
+    = new Translation2d(fieldLength / 2.0, fieldWidth / 2.0);
+    public static final double tarmacInnerDiameter 
+    = Utils.conversion_inchToMeters(219.25);
+    public static final double tarmacOuterDiameter 
+    = Utils.conversion_inchToMeters(237.31);
+    public static final double tarmacFenderToTip 
+    = Utils.conversion_inchToMeters(84.75);
+    public static final double tarmacFullSideLength 
+    = tarmacInnerDiameter * (Math.sqrt(2.0) - 1.0); 
+    public static final double tarmacMarkedSideLength 
+    = Utils.conversion_inchToMeters(82.83); 
+    public static final double tarmacMissingSideLength 
+    = tarmacFullSideLength - tarmacMarkedSideLength; 
+    public static final double hubSquareLength 
+    = tarmacOuterDiameter - (tarmacFenderToTip * 2.0);
+    public static final Pose2d glassOrigin 
+    = new Pose2d(0, -4.32, new Rotation2d()); 
+    public static final Pose2d pwOrigin 
+    = new Pose2d(0, -4.32, new Rotation2d());
+
+    //Auto
+    public static final double dumperTime(int value){
+        final double dumperNearby = 1.5;
+        final double dumperFar = 3.0;
+
+        double[] _time = new double[2];
+        _time[0] = dumperNearby;
+        _time[1] = dumperFar;
+    
+        return _time[value];
+    }
+
+    //Auto
+    public static final double pivotTime(int value){
+        final double pivotShort = 1.5;
+        final double pivotLong = 3.0;
+    
+        double[] _time = new double[2];
+        _time[0] = pivotShort;
+        _time[1] = pivotLong;
+        
+        return _time[value];
+        }
+
+
 }   
 

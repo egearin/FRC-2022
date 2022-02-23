@@ -18,6 +18,7 @@ import frc.team6429.robot.Constants;
 import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 
+
 /** Add your docs here. */
 public class Indexer {
 
@@ -53,13 +54,13 @@ public class Indexer {
         //conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
         conveyorMotor = Utils.makeVictorSPX(Constants.conveyorMotorID, false);
 
-        pivotPistons = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
+        pivotPistons = new DoubleSolenoid(Constants.phID,PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
         //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPistons1ForwardChannel, Constants.pivotPistons1ReverseChannel);
 
         kOff = Value.kOff;
         kForward = Value.kForward;
         kReverse = Value.kReverse;
-        //pivotPistons.set(kOff);
+        pivotPistons.set(kOff);
 
         mSensors = new Sensors();
     }

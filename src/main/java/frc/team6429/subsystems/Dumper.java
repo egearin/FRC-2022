@@ -7,10 +7,12 @@ package frc.team6429.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Timer;
+
 import frc.team6429.util.Utils;
 import frc.team6429.robot.Constants;
 import frc.team6429.robot.RobotData.DumperMode;
 import frc.team6429.robot.RobotData.InSync;
+import frc.team6429.robot.RobotData.OpponentBall;
 
 /** Add your docs here. */
 public class Dumper {
@@ -60,6 +62,17 @@ public class Dumper {
             case OFF:
                 dumperStop();
                 mIndexer.indexerStop();
+        }
+    }
+
+    public void opBall(OpponentBall mode, double dumperSpeed, double intakeSpeed, double conveyorSpeed){
+        switch(mode){
+            case DEFAULT:
+
+                break;    
+            case OPPOSITE:
+                
+                break;
         }
     }
 

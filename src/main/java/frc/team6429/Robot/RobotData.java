@@ -36,7 +36,6 @@ public class RobotData {
         TWOCARGO,
         THREECARGO,                                         
         FOURCARGO,
-        FIVECARGO;
     }
 
     public enum DumperCommand{
@@ -76,6 +75,11 @@ public class RobotData {
         OFF;
     }
 
+    public enum AutoMode{
+        DEFAULT,
+        ALTERNATE;
+    }
+
     public enum InSync{
         INSYNC,
         OPPINSYNC,
@@ -103,6 +107,23 @@ public class RobotData {
         EEPROMSetting;
     }
     
+    public enum OpponentBall{
+        DEFAULT,
+        OPPOSITE;
+    }
+
+    public enum FourCargoPaths{
+        _01, _02, _03, _04, _05;
+    }
+
+    public enum ThreeCargoPaths{
+        _01, _02, _03, _04;
+    }
+
+    public enum TwoCargoPaths{
+        _01, _02;
+    }
+
     public static enum UltrasonicStates{
         DEFAULT(false),
         BALLDETECTED(true);
@@ -122,6 +143,9 @@ public class RobotData {
     public static int selectedTrajectory = -1;
 
     public static List<List<Trajectory>> listOfTrajectories = new ArrayList<>();
+    public static List<Trajectory> twoCargo = new ArrayList<>();
+    public static List<Trajectory> threeCargo = new ArrayList<>();
+    public static List<Trajectory> fourCargo = new ArrayList<>();
     public static Field2d fieldSim = new Field2d();
 
 }

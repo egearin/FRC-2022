@@ -5,12 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.Modes;
+package frc.team6429.periodics.Auto.Modes.SimpleAuto;
 
 import java.util.Arrays;
+
 import frc.team6429.periodics.Auto.AutoModeEndedException;
 import frc.team6429.periodics.Auto.Action.*;
-import frc.team6429.periodics.Auto.Action.StopAllAction.Stop;
+import frc.team6429.periodics.Auto.Action.StopAction.Stop;
+import frc.team6429.periodics.Auto.Modes.AutoModeBase;
 
 
 /**
@@ -33,9 +35,9 @@ public class SimpleTwoCargo extends AutoModeBase {
                     new SeriesAction(new DriveAction(1, -0.5, 0),
                                         new ParallelAction(
                                             new SeriesAction(new DumperOppositeAction(1, 1, 1, 1),
-                                             new StopAllAction(1, Stop.Dumper)),
+                                             new StopAction(1, Stop.Dumper)),
                     new SeriesAction(new DriveAction(1, 1, 0),
-                                        new StopAllAction(1, Stop.Drive)
+                                        new StopAction(1, Stop.Drive)
                     
                     )))
                 ))           

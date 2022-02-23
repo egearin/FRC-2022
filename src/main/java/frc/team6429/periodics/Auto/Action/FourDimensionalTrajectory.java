@@ -26,16 +26,6 @@ public class FourDimensionalTrajectory implements Action {
     }
 
     @Override
-    public void done() {
-        mDrive.stopDrive();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return finished;
-    }
-
-    @Override
     public void start() {
         currentTrajectory = 0;
         trajectories = RobotData.listOfTrajectories.get(RobotData.selectedTrajectory);
@@ -48,5 +38,15 @@ public class FourDimensionalTrajectory implements Action {
         SmartDashboard.putData(RobotData.fieldSim);
         finished = mDrive.followTrajectory();
     } 
+
+    @Override
+    public boolean isFinished() {
+        return finished;
+    }
+
+    @Override
+    public void done() {
+        mDrive.stopDrive();
+    }
 }
 
