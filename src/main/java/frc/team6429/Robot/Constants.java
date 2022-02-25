@@ -22,10 +22,26 @@ public class Constants {
     public static final int driveRightMotorID = 1; //TalonFX ok
 
     //Other Subsystems Motor Ports and IDs "both"
-    public static final int intakeMotorID = 3; //TalonFX ok
+    public static final int intakeMotorID = 3; //VictorSPX ok
     public static final int dumperMotorID = 2; //TalonFX ok
     public static final int hangMotorID = 4; //TalonFX ok
     public static final int conveyorMotorID = 6; //VictorSPX ok
+
+    //Hub
+    public static final int pdhID = 12; //REV Power Distribution Hub ok
+    public static final int phID = 5;  //REV Pneumatics Hub ok
+
+    //CANdle Port
+    public static final int candleID = 13; //CTR Candle
+
+    //Pigeon port 
+    public static final int pigeonID = 7; //Pigeon IMU ok
+
+    //CANcoder Ports
+    public static final int leftCANcoderID = 8; //CTR CANcoder ok
+    public static final int rightCANcoderID = 9; //CTR CANcoder ok
+    
+    //public static final int hangCANcoderID = 100;
 
     //Solenoid Ports
     public static final int shifterChannel = 13; //Single Solenoid for REVPH ok (9)
@@ -34,15 +50,8 @@ public class Constants {
     public static final int pivotPistonsForwardChannel = 8; //Double Solenoid for REVPH 
     public static final int pivotPistonsReverseChannel = 10; //Double Solenoid for REVPH
 
-    public static final int climbLeftPistonChannel = 0;
-    public static final int climbRightPistonChannel = 0;
-    public static final int climbForwardPistonChannel = 0;
-
-    //Pigeon port 
-    public static final int pigeonID = 7;
-
-    //CANdle Port
-    public static final int candleID = 13;
+    public static final int midRungLockChannel = 11;
+    public static final int frictionBrakeChannel = 9;
     
     //PID Constants
     public static final double kDriveP = 0;
@@ -56,18 +65,12 @@ public class Constants {
 
     public static final double maxVoltageInput = 12;
 
-    //CANcoder Ports
-    public static final int leftCANcoderID = 8;
-    public static final int rightCANcoderID = 9;
-
-    //public static final int hangCANcoderID = 100;
-
     //Ultrasonic Ports
     public static final int trigPinHigh = 1;
     public static final int trigPinLow= 0;
     
-    public static final int higherSensor = 1;
-    public static final int lowerSensor = 0;
+    public static final int higherSensor = 3;
+    public static final int lowerSensor = 2;
     
     //Drive Constants
     public static final double kTrackWidth = 0;
@@ -82,10 +85,6 @@ public class Constants {
     public static final double shifterPulseDuration = 1;
     public static final double ptoPulseDuration = 1;
 
-    //Hub
-    public static final int pdhID = 12; //REV Power Distribution Hub
-    public static final int phID = 5;  //REV Pneumatics Hub
-
     //Gamepad and Drivepanel Constants
     public static final int gamepadJoystick = 0;
     public static final int panel1Joystick = 1;
@@ -98,13 +97,13 @@ public class Constants {
     public static final int axis_sensetiveSteering = 4;
 
     //public static final int shifterButton = 6;
-    public static final int shifterOneButton = 6;
-    public static final int shifterTwoButton = 5;
+    public static final int shifterOneButton = 10;
+    public static final int shifterTwoButton = 9;
 
-    public static final int ptoButton = 5;
+    public static final int ptoButton = 6;
 
-    public static final int customIndexerOnButtonGamepad = 0;
-    public static final int customIndexerOffButtonGamepad = 0;
+    public static final int customIndexerOnButtonGamepad = 1;
+    public static final int customIndexerOffButtonGamepad = 2;
 
     public static final int intakeOnButtonGamepad = 0;
     public static final int intakeReverseButtonGamepad = 0;
@@ -112,8 +111,8 @@ public class Constants {
     public static final int conveyorOnButtonGamepad = 0;
     public static final int conveyorReverseButtonGamepad = 0;
 
-    public static final int dumperButtonGamepad = 0;
-    public static final int dumperOppositeButtonGamepad = 0;
+    public static final int dumperButtonGamepad = 3;
+    public static final int dumperOppositeButtonGamepad = 4;
 
     //---Drivepanel---
     public static final int pivotUpButtonDrivepanel = 2;
@@ -160,7 +159,7 @@ public class Constants {
         return ret_dist[value];
     }
 
-    public static final double degreeCoefficientCANcoder = 7.792562E-05;
+    public static final double degreeCoefficientCANcoder = 7.792562;
     public static final double wheelPerimeter = 0.31918581360472299303;
     public static final double canCoderCPR = 4096;
     public static final double robotMass = 35;
@@ -230,6 +229,8 @@ public class Constants {
         
         return _time[value];
         }
+
+    //Custom Led Constants
 
 
 }   

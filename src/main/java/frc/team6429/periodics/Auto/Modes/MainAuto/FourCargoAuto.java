@@ -30,11 +30,13 @@ import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction;
 
 import edu.wpi.first.math.trajectory.Trajectory;
 
-/** Add your docs here. */
+/** 
+ * Main Four Cargo Autonomous Mode. 
+ * This mode creates and follows trajectory paths. Ships four cargo ball to the hub.
+*/
 public class FourCargoAuto extends AutoModeBase{
     
     public PathType _path;
-    //public Paths paths;
 
     public FourCargoAuto(PathType path){
         _path = path;
@@ -109,7 +111,7 @@ public class FourCargoAuto extends AutoModeBase{
                         new RemasteredFourDimensional(RobotData.fourCargo.get(4)),
                         new TrajectoryIndexerAction(Constants.pivotTime(0), 1, 1)
                     )),
-                    new StopAction(10, Stop.ALL)
+                    new StopAction(1, Stop.ALL)
                 ))
         );
 
