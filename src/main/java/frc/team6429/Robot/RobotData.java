@@ -10,7 +10,9 @@ import java.util.List;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 
-/** Add your docs here. */
+/** 
+* Robot data container. Includes modes, commands, trajectories and paths. 
+*/
 public class RobotData {
 
     public enum RobotStates{
@@ -18,11 +20,19 @@ public class RobotData {
         STORAGEHALVED,
         CLEARINGSTORAGE,
         FILLINGSTORAGE,
-        HANGPERIOD,
+        CLIMBPERIOD,
         WARNING,
         DISABLE;
     }
 
+    public enum DataType{
+        STRING,
+        INT,
+        DOUBLE,
+        BOOLEAN,
+        SENDABLE
+    }
+    
     public enum LoadedTrajectory{
         NONE,
         DEFAULT,

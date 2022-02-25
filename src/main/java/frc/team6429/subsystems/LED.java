@@ -53,6 +53,9 @@ public class LED {
     public AnimationTypes animationTypes;
 
 
+    private LED(){
+      configLED();
+    }
 
     //LED Configuration
     public void configLED(){

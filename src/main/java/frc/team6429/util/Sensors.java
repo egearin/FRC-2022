@@ -4,24 +4,25 @@
 
 package frc.team6429.util;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU_ControlFrame;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.ctre.phoenix.sensors.PigeonIMU_ControlFrame;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import frc.team6429.robot.Constants;
 import frc.team6429.subsystems.Drive;
-import frc.team6429.subsystems.Hang;
+import frc.team6429.subsystems.Climb;
+
+import java.util.ArrayList;
 
 /** Add your docs here. */
 public class Sensors {
@@ -37,20 +38,21 @@ public class Sensors {
     //CANcoder
     public CANCoder leftCANcoder;
     public CANCoder rightCANcoder;
-    public CANCoder hangCANcoder;
+    //public CANCoder hangCANcoder;
 
     //Ultrasonic
-    public static DigitalOutput ultrasonicTriggerPinLow = new DigitalOutput(Constants.trigPinLow);
-    public static DigitalOutput ultrasonicTriggerPinHigh = new DigitalOutput(Constants.trigPinHigh);
-  
-    public static AnalogInput lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
-    public static AnalogInput higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
+    public static DigitalOutput ultrasonicTriggerPinLow;
+    public static DigitalOutput ultrasonicTriggerPinHigh; 
+    public static AnalogInput lowerUltrasonicSensor;
+    public static AnalogInput higherUltrasonicSensor;
 
     //Other Subsystems
     public Drive mDrive;
-    public Hang mHang;
+    public Climb mHang;
 
-    public Sensors(){
+    public static final String smart_dashboard = "SmartDashboard";
+
+    private Sensors(){
         pigeon = new PigeonIMU(Constants.pigeonID);
 
         rightCANcoder = new CANCoder(Constants.rightCANcoderID);
@@ -59,7 +61,13 @@ public class Sensors {
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
 
-        hangCANcoder = new CANCoder(Constants.hangCANcoderID);
+        ultrasonicTriggerPinHigh = new DigitalOutput(Constants.trigPinHigh);
+        ultrasonicTriggerPinLow = new DigitalOutput(Constants.trigPinLow);
+
+        lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
+        higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
+
+        //hangCANcoder = new CANCoder(Constants.hangCANcoderID);
     }
 
     //----------ENCODER----------
@@ -528,7 +536,7 @@ public class Sensors {
      * Resets all CANcoder values
      */
     public void resetCANcoder(){
-        hangCANcoder.setPosition(0);
+        //hangCANcoder.setPosition(0);
         leftCANcoder.setPosition(0);
         rightCANcoder.setPosition(0);
     }   

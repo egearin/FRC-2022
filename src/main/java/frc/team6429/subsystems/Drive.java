@@ -6,16 +6,16 @@ package frc.team6429.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.ctre.phoenix.sensors.PigeonIMU.PigeonState;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -31,17 +31,15 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj.Compressor;
 
 import frc.team6429.robot.Constants;
 import frc.team6429.util.Sensors;
@@ -49,7 +47,10 @@ import frc.team6429.util.Utils;
 
 
 
-/** Add your docs here. */
+/** 
+ * Robot drive subsystem class. 
+ * Includes PID & profiled PID controller, simple motor feedforward and differential drive odometry. 
+ */
 public class Drive {
 
     private static Drive mInstance = new Drive();
@@ -57,14 +58,16 @@ public class Drive {
     public static Drive getInstance(){
         return mInstance;
     }
+
+    //----------Setup----------\\
     //TalonFX
     public WPI_TalonFX driveLeftMotor;
     public WPI_TalonFX driveRightMotor;
     
     //PID 
     public PIDController PID;
-    public PIDController leftController = new PIDController(0, 0, 0);
-    public PIDController rightController = new PIDController(0, 0, 0);
+    public PIDController leftController;
+    public PIDController rightController;
 
     //ProfiledPID
     public Constraints constraints;
@@ -74,7 +77,7 @@ public class Drive {
     public TrapezoidProfile trapezoidProfile;
 
     //Feedforward
-    public SimpleMotorFeedforward driveFeedforward;
+    public SimpleMotorFeedforward simpleMotorFF;
 
     //Sensors 
     public PigeonIMU pigeon;
@@ -84,14 +87,10 @@ public class Drive {
     //Solenoid
     public Solenoid shifter;
     public Solenoid pto;
-    
-    public Compressor compressor;
 
     //Master
     public MotorControllerGroup leftMotor;
     public MotorControllerGroup rightMotor;
-
-    public SimpleMotorFeedforward simpleMotorFF;
 
     public DifferentialDrive chassis;
     public TalonFXConfiguration config;
@@ -106,57 +105,107 @@ public class Drive {
     public Translation2d dumperOnCheckpoint;
     public Translation2d dumperOffCheckpoint;
 
-    //Setup
+    //Motor Setup
     public NeutralMode neutralModeBrake;
     public NeutralMode neutralModeCoast;
     public NeutralMode neutralModeEEPROM;
 
-    public Timer timer;
+    //Other Subsystems
     public Sensors mSensors;
 
-    /**
-     * Drive setup
-     */
-    public Drive(){
+    //Other
+    public Timer timer;
 
-        timer = new Timer();
-        constraints = new Constraints(Constants.kMaxSpeed, Constants.kMaxAcceleration);
-        PID = new PIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
-        profiledPID = new ProfiledPIDController(Constants.kDriveP, Constants.kDriveI, Constants.kDriveD, constraints);
-        simpleMotorFF = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV);
-        driveFeedforward = new SimpleMotorFeedforward(Constants.kDriveS, Constants.kDriveV, Constants.kDriveA);
-        driveLeftMotor = Utils.makeTalonFX(Constants.driveLeftMotorID, false);
-        driveRightMotor = Utils.makeTalonFX(Constants.driveRightMotorID, true);
+    //Constants
+    double turnError;
+    double turnIntegral;
+    double turnDerivative;
+    double turnPrevError;
+    double turnRes;
+    double rotation;
+    double minMax;
+    double distanceError;
+    double prevError;
+    double distanceIntegral;
+    double distanceDerv;
+    double resDist;
+    double kP;
+    double kI;
+    double kD;
+    double previousVelocity;
+    double previousTime;
+    double acceleration;
+    
+    /**
+     * Drive Initialization
+     */
+    private Drive(){
+        driveLeftMotor = Utils.makeTalonFX
+        (Constants.driveLeftMotorID, false);
+        driveRightMotor = Utils.makeTalonFX
+        (Constants.driveRightMotorID, true);
+        leftMotor = new MotorControllerGroup(driveLeftMotor);
+        rightMotor = new MotorControllerGroup(driveRightMotor);
+        chassis = new DifferentialDrive(leftMotor, rightMotor);
         config = new TalonFXConfiguration();
-        driveLeftMotor.configAllSettings(config);
-        driveRightMotor.configAllSettings(config);
-        driveLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        driveRightMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        driveLeftMotor.configSelectedFeedbackSensor
+        (FeedbackDevice.IntegratedSensor);
+        driveRightMotor.configSelectedFeedbackSensor
+        (FeedbackDevice.IntegratedSensor);
         driveRightMotor.setSensorPhase(false);
         driveLeftMotor.setSensorPhase(false);
         driveRightMotor.setSelectedSensorPosition(0);
         driveLeftMotor.setSelectedSensorPosition(0);
+        constraints = new Constraints
+        (Constants.kMaxSpeed, Constants.kMaxAcceleration);
+        PID = new PIDController
+        (Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
+        profiledPID = new ProfiledPIDController
+        (Constants.kDriveP, Constants.kDriveI, Constants.kDriveD, constraints);
+        simpleMotorFF = new SimpleMotorFeedforward
+        (Constants.kDriveS, Constants.kDriveV);
+        simpleMotorFF = new SimpleMotorFeedforward
+        (Constants.kDriveS, Constants.kDriveV, Constants.kDriveA);
+        leftController = new PIDController
+        (Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
+        rightController = new PIDController
+        (Constants.kDriveP, Constants.kDriveI, Constants.kDriveD);
         neutralModeBrake = NeutralMode.Brake;
         neutralModeCoast = NeutralMode.Coast;
         neutralModeEEPROM = NeutralMode.EEPROMSetting;
         setNaturalMode(neutralModeBrake);
-        leftMotor = new MotorControllerGroup(driveLeftMotor);
-        rightMotor = new MotorControllerGroup(driveRightMotor);
-        chassis = new DifferentialDrive(leftMotor, rightMotor);
-        pigeon = new PigeonIMU(Constants.pigeonID);
-        shifter = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.shifterChannel);
-        //shifter = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.shifter1Port);
-        shifter.setPulseDuration(Constants.shifterPulseDuration);
-        pto = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.ptoChannel);
-        //pto = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.pto1Port);
-        pto.setPulseDuration(Constants.ptoPulseDuration);
-        compressor = new Compressor(0, PneumaticsModuleType.REVPH);
-        leftCANcoder = new CANCoder(Constants.leftCANcoderID);
-        leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 1/360, "meter", SensorTimeBase.PerSecond);
-        rightCANcoder = new CANCoder(Constants.rightCANcoderID);
-        rightCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
-        pto.close();
+        pigeon = new PigeonIMU
+        (Constants.pigeonID);
+        shifter = new Solenoid
+        (Constants.phID, PneumaticsModuleType.REVPH, Constants.shifterChannel);
+        shifter.setPulseDuration
+        (Constants.shifterPulseDuration);
+        pto = new Solenoid
+        (Constants.phID, PneumaticsModuleType.REVPH, 11);
+        pto.setPulseDuration
+        (Constants.ptoPulseDuration);
+        leftCANcoder = new CANCoder
+        (Constants.leftCANcoderID);
+        leftCANcoder.configFeedbackCoefficient
+        (Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 
+        1/360, "meter", SensorTimeBase.PerSecond);
+        rightCANcoder = new CANCoder
+        (Constants.rightCANcoderID);
+        rightCANcoder.configFeedbackCoefficient
+        (Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder * 
+        1/360, "meter", SensorTimeBase.PerSecond);
+        timer = new Timer();
+        /*pto.close();
         shifter.close();
+        driveLeftMotor = new WPI_TalonFX(Constants.driveLeftMotorID);
+        driveRightMotor = new WPI_TalonFX(Constants.driveRightMotorID);
+        driveLeftMotor.setInverted(true);
+        driveRightMotor.setInverted(false);
+        
+        driveLeftMotor.configFactoryDefault();
+        driveRightMotor.configFactoryDefault();
+        driveLeftMotor.configAllSettings(config);
+        driveRightMotor.configAllSettings(config);*/
     }
 
     public void createRamseteManager(Trajectory trajectory){
@@ -205,7 +254,10 @@ public class Drive {
             return true;
         }
     }
-
+    
+    /**
+     * Construct differential drive odometry
+     */
     public void constructOdometry(){
         constructOdometry(getFusedGyroRotation2D());
     }
@@ -218,35 +270,42 @@ public class Drive {
         odometry = new DifferentialDriveOdometry(gyroRotation, startingPos);
     }
 
+    /**
+     * Update differential drive odometry
+     */
     public void updateOdometry(){
-        updateOdometry(getFusedGyroRotation2D(), leftCANcoder.getPosition(), rightCANcoder.getPosition());
+        updateOdometry(getFusedGyroRotation2D(), 
+        leftCANcoder.getPosition(), rightCANcoder.getPosition());
     }
 
     /**
      * @param gyroRotation
-     * @param leftDistance !IN METERS!
-     * @param rightDistance !IN METERS!
+     * @param leftDistance in meters
+     * @param rightDistance in meters
      */
     public void updateOdometry(Rotation2d gyroRotation, double leftDistance, double rightDistance){
         odometry.update(gyroRotation, leftDistance, rightDistance);
     }
 
+    /**
+     * Gets robot pose
+     * @return
+     */
     public Pose2d getPose(){
         return odometry.getPoseMeters();
     }
     
     /**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
+     * Returns the current wheel speeds of the robot.
+     * @return The current wheel speeds.
+     */
     public DifferentialDriveWheelSpeeds getWheelSpeeds(){
-        return new DifferentialDriveWheelSpeeds(leftCANcoder.getVelocity(), rightCANcoder.getVelocity());
+        return new DifferentialDriveWheelSpeeds(leftCANcoder.getVelocity(), 
+        rightCANcoder.getVelocity());
     }
 
     /**
      * Resets the odometry to the specified pose.
-     *
      * @param pose The pose to which to set the odometry.
      */
     public void resetOdometry(Pose2d pose) {
@@ -254,8 +313,13 @@ public class Drive {
         odometry.resetPosition(pose, getFusedGyroRotation2D());
     }
 
+    /**
+     * Gets average speed
+     * @return
+     */
     public double getSpeed(){
-        return (leftCANcoder.getVelocity() + rightCANcoder.getVelocity()) / 2; 
+        return (leftCANcoder.getVelocity() + 
+        rightCANcoder.getVelocity()) / 2; 
     }
 
     /**
@@ -276,11 +340,13 @@ public class Drive {
     }
 
     public Rotation2d getYawGyroRotation2D(){
-        return Rotation2d.fromDegrees(Math.IEEEremainder(getYawAngle(), 360.0));
+        return Rotation2d.fromDegrees
+        (Math.IEEEremainder(getYawAngle(), 360.0));
     }
 
     public Rotation2d getFusedGyroRotation2D(){
-        return Rotation2d.fromDegrees(Math.IEEEremainder(getGyroAngle(), 360.0));
+        return Rotation2d.fromDegrees
+        (Math.IEEEremainder(getGyroAngle(), 360.0));
     }
 
     /**
@@ -311,14 +377,14 @@ public class Drive {
      * Robot Drive Using Shifter State One
      */
     public void driveShiftOne(){
-        shifter.set(false);
+        shifter.set(true);
     }
 
     /**
      * Robot Drive Using Shifter State Two
      */
     public void driveShiftTwo(){
-        shifter.set(true);
+        shifter.set(false);
     }
 
     /**
@@ -407,11 +473,14 @@ public class Drive {
         double acceleration;
 
         previousTime = Timer.getFPGATimestamp();
-        acceleration = (profiledPID.getSetpoint().velocity - previousVelocity) / (timer.get() - previousTime);
+        acceleration = (profiledPID.getSetpoint().velocity - previousVelocity) / 
+        (timer.get() - previousTime);
         
-        double drivePID = profiledPID.calculate(mSensors.getGyroAngle(), wanted_angle);
+        double drivePID = profiledPID.calculate
+        (mSensors.getGyroAngle(), wanted_angle);
         drivePID = MathUtil.clamp(drivePID, -1, 1);
-        double driveFF = simpleMotorFF.calculate(mSensors.getSpeed(), acceleration);
+        double driveFF = simpleMotorFF.calculate
+        (mSensors.getSpeed(), acceleration);
         driveFF = MathUtil.clamp(driveFF, -1, 1);
         double voltage = driveFF + drivePID;
         
@@ -463,7 +532,8 @@ public class Drive {
         distanceError = wantedDistance - getTotalX();
         distanceIntegral += distanceError * .02;
         distanceDerv = (distanceError - prevError) / .02;
-        resDist = kP * distanceError + kI * distanceIntegral + kD * distanceDerv;
+        resDist = kP * distanceError + kI * 
+        distanceIntegral + kD * distanceDerv;
         if (wantedDistance > 0 && resDist > maxSpeed) {
             resDist = maxSpeed;
         } 
@@ -531,7 +601,8 @@ public class Drive {
         turnDerivative = turnError-turnPrevError;
         turnIntegral = Utils.applyDeadband(turnIntegral, -1, 1);
 
-        turnRes = turnIntegral+(turnError*Constants.kDriveP)+(turnDerivative*Constants.kDriveD);
+        turnRes = turnIntegral+(turnError*Constants.kDriveP)+
+        (turnDerivative*Constants.kDriveD);
         turnRes = Utils.applyDeadband(turnRes, -1, 1);
         
         turnPrevError = turnError;
@@ -568,6 +639,10 @@ public class Drive {
                 neutralMode(neutralModeEEPROM);
                 break;
         }
+    }
+
+    public void talonSet(){
+        
     }
 
     /**

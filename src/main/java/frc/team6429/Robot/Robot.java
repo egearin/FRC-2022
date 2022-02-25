@@ -29,11 +29,13 @@ import frc.team6429.periodics.Auto.Modes.MainAuto.FourCargoAuto;
 import frc.team6429.periodics.Auto.Modes.MainAuto.ThreeCargoAuto;
 import frc.team6429.periodics.Auto.Modes.MainAuto.TwoCargoAuto;
 import frc.team6429.periodics.Auto.Modes.SimpleAuto.SimpleTwoCargo;
+import frc.team6429.periodics.Teleop.DriveTeleop;
+import frc.team6429.periodics.Teleop.TeleopPeriodic;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Drivepanel;
 import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Gamepad;
-import frc.team6429.subsystems.Hang;
+import frc.team6429.subsystems.Climb;
 import frc.team6429.subsystems.Indexer;
 import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
@@ -68,9 +70,11 @@ public class Robot extends TimedRobot {
   private Drive mDrive;
   private Indexer mIndexer;
   private Dumper mDumper;
-  private Hang mHang;
+  private Climb mClimb;
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
+  private DriveTeleop drivebaseTeleop;
+  private TeleopPeriodic teleopPeriodic;
   private Timer timer;
   public double prevTime;
 
@@ -112,7 +116,7 @@ public class Robot extends TimedRobot {
       DriverStation.reportWarning("Trajectories created in " + (Timer.getFPGATimestamp() - startTime) + "seconds", false);
     }                          
   }
-);
+); 
   /**
    *
    * This function is run when the robot is first started up and should be used for any
@@ -131,7 +135,7 @@ public class Robot extends TimedRobot {
     mSensors = Sensors.getInstance();
     mDrive = Drive.getInstance();
     mIndexer = Indexer.getInstance();
-    mHang = Hang.getInstance();
+    mClimb = Climb.getInstance();
     mDumper = Dumper.getInstance();
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
@@ -184,7 +188,6 @@ public class Robot extends TimedRobot {
         autoModeExecutor.setAutoMode(new FourCargoAuto(PathType.FOURCARGO));
         break;
     }
-
     System.out.println("Auto selected: " + m_autoSelected);
     if (thread.isAlive()){
       DriverStation.reportWarning("Still not initialized the trajectories", false);
@@ -195,7 +198,7 @@ public class Robot extends TimedRobot {
     
     //mSensors.resetSensors();
     //mSensors.turnOnBothSensors();
-
+    
   }
 
   /** This function is called periodically during autonomous. */
@@ -226,11 +229,42 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double speed = mGamepad.getForward() - mGamepad.getReverse();
+    double rotation;
+    double speed;
+    double sensetiveSteering = 0.5;
+    double steering = 0.75;
+    double turnPID = 0.07;
+    
+    speed = mGamepad.getForward() - mGamepad.getReverse();
+
+    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
+      rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering);
+    }
+
+    else {
+      rotation = (mGamepad.getSteering()) * (steering);
+    }
+
+    //Drive Shifter
+    /*if(mGamepad.getDriveShifterPressed()) {
+      mDrive.driveShift(!mDrive.shifter.get());
+    } */
+
+    if(mGamepad.getDriveShiftOnePressed()) {
+      mDrive.driveShiftOne();
+    }
+
+    else if(mGamepad.getDriveShiftTwoPressed()) {
+      mDrive.driveShiftTwo();
+    }
+
+    mDrive.robotDrive(speed, rotation);
+    mGamepad.forceFeedback(speed, rotation);
+    /*double speed = mGamepad.getForward() - mGamepad.getReverse();
     double rotation;
     mDrive.robotDrive(speed, mGamepad.getSteering());
     //speed = Utils.map(speed, 0, 1, Constants.speedDeadZone, 1);
-    /*rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);*/
+    rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);
     rotation = mGamepad.getSteering() * 0.75;
     mDrive.robotDrive(speed, rotation, 1);
     mGamepad.forceFeedback(speed, rotation);
@@ -300,12 +334,6 @@ public class Robot extends TimedRobot {
       mIndexer.indexerStop();
   }
 */
-  //Manual Indexer via Gamepad
-  
-
-
-
-
 
    //Dumper Codes
   if(mGamepad.getDumperGamepad()) {
@@ -340,6 +368,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    
 
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();

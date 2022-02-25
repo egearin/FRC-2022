@@ -19,7 +19,7 @@ public class Gamepad {
 
     private PS4Controller gamepad;
 
-    public Gamepad(){
+    private Gamepad(){
         gamepad = new PS4Controller(Constants.gamepadJoystick);
     }
 
@@ -59,7 +59,7 @@ public class Gamepad {
         return gamepad.getRawButton(Constants.customIndexerOnButtonGamepad);
     }
 
-    public boolean getCustomIndexerOff(){
+    public boolean getCustomIndexerReverse(){
         return gamepad.getRawButton(Constants.customIndexerOffButtonGamepad);
     }
 
@@ -79,9 +79,9 @@ public class Gamepad {
         return gamepad.getRawButton(Constants.conveyorReverseButtonGamepad);
     }
 
-    public boolean getDriveShifterPressed(){
+    /*public boolean getDriveShifterPressed(){
         return gamepad.getRawButtonReleased(Constants.shifterButton);
-    }
+    }*/
 
     public boolean getDriveShiftOnePressed(){
         return gamepad.getRawButtonReleased(Constants.shifterOneButton);
@@ -97,5 +97,9 @@ public class Gamepad {
 
     public boolean getDumperOppositeGamepad(){
         return gamepad.getRawButton(Constants.dumperOppositeButtonGamepad);
+    }
+
+    public boolean getTestPTO(){
+        return gamepad.getRawButtonReleased(2);
     }
 }

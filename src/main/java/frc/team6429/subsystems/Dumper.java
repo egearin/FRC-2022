@@ -14,9 +14,10 @@ import frc.team6429.robot.RobotData.DumperMode;
 import frc.team6429.robot.RobotData.InSync;
 import frc.team6429.robot.RobotData.OpponentBall;
 
-/** Add your docs here. */
+/** 
+ * Dumper subsystem class. Controlls top rollers and seperator wheels. 
+ */
 public class Dumper {
-
 
     private static Dumper mInstance = new Dumper();
 
@@ -24,19 +25,30 @@ public class Dumper {
         return mInstance;
     }
 
+    //VictorSPX
     public WPI_VictorSPX dumperMotor;
 
+    //Other Subsystems
     public Indexer mIndexer;
+
+    //Other
     public Timer timer;
 
-    public Dumper(){
-        //dumperMotor = new WPI_VictorSPX(Constants.dumperMotorID);
+    /**
+     * Dumper Initialization
+     */
+    private Dumper(){
         dumperMotor = Utils.makeVictorSPX(Constants.dumperMotorID, false);
-
         mIndexer = Indexer.getInstance();
         timer = new Timer();
+        //dumperMotor = new WPI_VictorSPX(Constants.dumperMotorID);
     }
 
+    /**
+     * Dumper Mode
+     * @param dumperMode
+     * @param dumperSpeed
+     */
     public void setDumperMode(DumperMode dumperMode, double dumperSpeed){
         switch(dumperMode) {
             case DEFAULT:
@@ -51,13 +63,21 @@ public class Dumper {
        }
     }
 
+    /**
+     * Dumper motor syncronized with indexer. Three modes of dumper.
+     * @param mode
+     * @param dumperSpeed
+     * @param intakeSpeed
+     * @param conveyorSpeed
+     */
     public void setSyncMode(InSync mode, double dumperSpeed, double intakeSpeed, double conveyorSpeed){
         switch(mode){
             case INSYNC:
                 dumperSendWithIndexer(dumperSpeed, intakeSpeed, conveyorSpeed);
                 break;
             case OPPINSYNC:
-                dumperOppositeWithIndexer(dumperSpeed, intakeSpeed, conveyorSpeed);
+                dumperOppositeWithIndexer
+                (dumperSpeed, intakeSpeed, conveyorSpeed);
                 break;
             case OFF:
                 dumperStop();
@@ -65,6 +85,13 @@ public class Dumper {
         }
     }
 
+    /**
+     * 
+     * @param mode
+     * @param dumperSpeed
+     * @param intakeSpeed
+     * @param conveyorSpeed
+     */
     public void opBall(OpponentBall mode, double dumperSpeed, double intakeSpeed, double conveyorSpeed){
         switch(mode){
             case DEFAULT:

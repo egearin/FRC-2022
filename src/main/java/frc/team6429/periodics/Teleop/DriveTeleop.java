@@ -35,7 +35,7 @@ public class DriveTeleop {
     private double steering = 0.75;
     private double turnPID = 0.07;
     
-    public DriveTeleop(){
+    private DriveTeleop(){
         mGamepad = Gamepad.getInstance();
         mDrive = Drive.getInstance();
         mLed = LED.getInstance();
@@ -47,20 +47,18 @@ public class DriveTeleop {
 
     if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
       rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering);
-      mLed.setColorFlow(0, 0, 255, 100, 1, 8, Direction.Forward);
     }
 
     else {
       rotation = (mGamepad.getSteering()) * (steering);
-      mLed.setColorFlow(0, 0, 255, 100, 1, 8, Direction.Forward);
     }
 
     //Drive Shifter
-    if(mGamepad.getDriveShifterPressed()) {
+    /*if(mGamepad.getDriveShifterPressed()) {
       mDrive.driveShift(!mDrive.shifter.get());
-    } 
+    } */
 
-    else if(mGamepad.getDriveShiftOnePressed()) {
+    if(mGamepad.getDriveShiftOnePressed()) {
       mDrive.driveShiftOne();
     }
 

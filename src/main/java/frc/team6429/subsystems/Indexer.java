@@ -4,6 +4,7 @@
 
 package frc.team6429.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -19,7 +20,9 @@ import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 
 
-/** Add your docs here. */
+/** 
+ * Indexer subsystem class. Includes intake rollers, conveyor rollers and intake pivot. 
+ */
 public class Indexer {
 
     private static Indexer mInstance = new Indexer();
@@ -28,18 +31,19 @@ public class Indexer {
         return mInstance;
     }
 
+    //----------Setup---------\\
     //VictorSPX
-    public WPI_VictorSPX intakeMotor;
+    public WPI_TalonFX intakeMotor;
     public WPI_VictorSPX conveyorMotor;
 
     //Speed
     public double intake_speed;
     public double conveyor_speed;
 
-    //Solenoid 
+    //Double Solenoid 
     public DoubleSolenoid pivotPistons;
     
-    //Solenoid States
+    //Double Solenoid States
     public Value kOff;
     public Value kForward;
     public Value kReverse;
@@ -47,22 +51,21 @@ public class Indexer {
     //Sensors
     public Sensors mSensors;
 
-
-    public Indexer(){
-        //intakeMotor = new WPI_VictorSPX(Constants.intakeMotorID);
-        intakeMotor = Utils.makeVictorSPX(Constants.intakeMotorID, false);
-        //conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
+    /**
+     * Indexer Initialization
+     */
+    private Indexer(){
+        intakeMotor = Utils.makeTalonFX(Constants.intakeMotorID, true);
         conveyorMotor = Utils.makeVictorSPX(Constants.conveyorMotorID, false);
-
         pivotPistons = new DoubleSolenoid(Constants.phID,PneumaticsModuleType.REVPH, Constants.pivotPistonsForwardChannel, Constants.pivotPistonsReverseChannel);
-        //pivotPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPistons1ForwardChannel, Constants.pivotPistons1ReverseChannel);
-
         kOff = Value.kOff;
         kForward = Value.kForward;
         kReverse = Value.kReverse;
         pivotPistons.set(kOff);
-
-        mSensors = new Sensors();
+        mSensors = Sensors.getInstance();
+        /*conveyorMotor = new WPI_VictorSPX(Constants.conveyorMotorID);
+        pivotPistons = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.pivotPistons1ForwardChannel, Constants.pivotPistons1ReverseChannel);
+        intakeMotor = new WPI_VictorSPX(Constants.intakeMotorID);*/
     }
 
     //Default Indexer
@@ -94,7 +97,8 @@ public class Indexer {
         intakeMotor.stopMotor();
         conveyorMotor.stopMotor();
     }   
-
+    
+    //----------Pivot----------
     /**
      * Intake Pivot Up Function Using DoubleSolenoid: pivotPistons
      */
@@ -116,6 +120,7 @@ public class Indexer {
         pivotPistons.set(kOff);
     }
 
+    //----------Manual--------
     /**
      * Sets Only Conveyor On
      */
@@ -158,7 +163,7 @@ public class Indexer {
         intakeMotor.stopMotor();
     }
     
-    //Custom Indexer
+    //----------Custom----------
     /**
      * Custom Indexer On Function: Releases Intake Pivot, sets Intake Motor and Conveyor Motor On (indexer on and pivot down)
      */
@@ -190,6 +195,12 @@ public class Indexer {
         indexerStop();
     }
 
+    /**
+     * Runs a ball counter 
+     * @param intakeSpeed
+     * @param conveyorSpeed
+     * @return
+     */
     public double runWithBallCount(double intakeSpeed, double conveyorSpeed){
         double ballCount;
         ballCount = mSensors.getBallCount();
