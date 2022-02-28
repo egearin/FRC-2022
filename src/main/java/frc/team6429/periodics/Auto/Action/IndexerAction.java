@@ -32,7 +32,7 @@ public class IndexerAction implements Action {
 
     @Override
     public void update(){
-        ballCount = mIndexer.runWithBallCount(1, 0.3);
+        ballCount = mIndexer.runWithBallCounter(1, 0.3);
         
     }
 

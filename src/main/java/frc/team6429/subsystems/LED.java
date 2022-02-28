@@ -35,7 +35,7 @@ public class LED {
     }
 
     //CANdle
-    public CANdle mCANdle;
+    public CANdle candle;
     public CANdleConfiguration config;
 
     //Animation
@@ -48,63 +48,75 @@ public class LED {
     public TwinkleAnimation twinkle;
     public TwinkleOffAnimation twinkleOff;
     public FireAnimation fire;
-    public Direction direction;
-    public Animation animation;
+    public Direction _direction;
+    public Animation _animation;
     public AnimationTypes animationTypes;
 
 
     private LED(){
-      configLED();
-    }
-
-    //LED Configuration
-    public void configLED(){
-        mCANdle = new CANdle(Constants.candleID, "CANdle");
-        mCANdle.configAllSettings(config);
-        mCANdle.getAllConfigs(config);
-        config = new CANdleConfiguration();
-        config.stripType = LEDStripType.RGB; //set the strip type to RGB
+      candle = new CANdle(Constants.candleID);
+      config = new CANdleConfiguration();
+      candle.configAllSettings(config);
+      candle.getAllConfigs(config);
+      config.stripType = LEDStripType.RGB; //set the strip type to RGB
     }
 
     /**
      * select and change animation type
-     * @param change
+     * @param option
      */
-    public void changeAnimation(AnimationTypes change) {
-        switch (change) {
-          case ColorFlow:
-            //setColorFlow(r, g, b, w, speed, numLed, direction);
+    public void 
+    select(AnimationTypes option) {
+        switch (option) {
+          case COLORFLOW:
+            setColorFlow(0, 0, 255, 0, 10, 68, Direction.Forward);
             break;
-          case Fire:
-            //setFireAnim(r, g, b, brightness, speed, numLed, sparking, cooling);
+          case COLORFLOWOPP:
+            setColorFlow(0, 0, 255, 0, 10, 68, Direction.Backward);
             break;
-          case Larson:
-            //setLarson(r, g, b, w, speed, numLed, mode, size);
+          case GREENFLOW:
+            setColorFlow(0, 255, 0, 0, 10, 68, Direction.Forward);
             break;
-          case Rainbow:
-            //setRainbow(speed, brightness, numLed);
+          case GREENFLOWOPP:
+            setColorFlow(0, 255, 0, 0, 10, 68, Direction.Backward);
+          case FIRE:
+            setFireAnim(0, 0, 0, 1, 1, 69, 1, 1);
             break;
-          case RgbFade:
-            //setRgbFade(speed, brightness, numLed);
+          case LARSON:
+            setLarson(0, 0, 100, 0, 1, 68, BounceMode.Back, 5);
             break;
-          case SingleFade:
-            //setSingleFade(r, g, b, w, speed, numLed);
+          case RAINBOW:
+            setRainbow(10, 0.7, 68);
             break;
-          case Strobe:
-            //setStrobe(r, g, b, w, speed, numLed);
+          case RGBFADE:
+            setRgbFade(10, 1, 68);
             break;
-          case Twinkle:
-            //setTwinkle(r, g, b, w, speed, numLed, divider);
+          case SINGLEFADE:
+            setSingleFade(0, 0, 200, 200, 10, 68);
             break;
-          case TwinkleOff:
-            //setTwinkleOff(r, g, b, w, speed, numLed, divider);
+          case STROBERED:
+            setStrobe(255, 0, 0, 0, 10, 68);
             break;
-          case SetAll:
-            animation = null;
+          case STROBEBLUE:
+            setStrobe(0, 0, 255, 0, 10, 68);
+            break;
+          case STROBEGREEN:
+            setStrobe(0, 255, 0, 0, 10, 68);
+            break;
+          case TWINKLE:
+            setTwinkle(0, 0, 0, 0, 0, 68, TwinklePercent.Percent100);
+            break;
+          case TWINKLEOFF:
+            setTwinkleOff(0, 0, 0, 0, 0, 68, TwinkleOffPercent.Percent100);
+            break;
+          case CUSTOM:
+            setCustom();
+            break;
+          case OFF:
+            candle.setLEDs(0, 0, 0);
             break;
         }
     }
-
     /**
      * Set Rainbow Animation
      * @param brightness The brightness of the LEDs [0, 1]
@@ -112,7 +124,7 @@ public class LED {
      * @param numLed How many LEDs are controlled by the CANdle
      */
     public void setRainbow(double speed, double brightness, int numLed){
-        mCANdle.animate(new RainbowAnimation(brightness, speed, numLed));
+        candle.animate(new RainbowAnimation(brightness, speed, numLed));
     }
 
     /**
@@ -122,7 +134,7 @@ public class LED {
      * @param numLed How many LEDs are controlled by the CANdle
      */
     public void setRgbFade(double speed, double brightness, int numLed){
-        mCANdle.animate(new RgbFadeAnimation(speed,brightness,numLed));
+        candle.animate(new RgbFadeAnimation(speed,brightness,numLed));
     }
 
     /**
@@ -136,7 +148,7 @@ public class LED {
      * @param direction What direction should the color move in
      */
     public void setColorFlow(int r, int g, int b, int w, double speed, int numLed, Direction direction){
-        mCANdle.animate(new ColorFlowAnimation(r, g, b, w, speed, numLed, direction));
+        candle.animate(new ColorFlowAnimation(r, g, b, w, speed, numLed, direction));
     }
 
     /**
@@ -151,7 +163,7 @@ public class LED {
      * @param size How large the pocket of LEDs are [0, 7]
      */
     public void setLarson(int r, int g, int b, int w, double speed, int numLed, BounceMode mode, int size){
-        mCANdle.animate(new LarsonAnimation(r, g, b, w, speed, numLed, mode, size));
+        candle.animate(new LarsonAnimation(r, g, b, w, speed, numLed, mode, size));
     }
 
     /**
@@ -164,7 +176,7 @@ public class LED {
      * @param numLed How many LEDs the CANdle controls
      */
     public void setSingleFade(int r, int g, int b, int w, double speed, int numLed){
-        mCANdle.animate(new SingleFadeAnimation(r, g, b, w, speed, numLed));
+        candle.animate(new SingleFadeAnimation(r, g, b, w, speed, numLed));
     }
 
     /**
@@ -177,7 +189,7 @@ public class LED {
      * @param numLed How many LEDs the CANdle controls
      */
     public void setStrobe(int r ,int g, int b, int w, double speed, int numLed){
-        mCANdle.animate(new StrobeAnimation(r, g, b, w, speed, numLed));
+        candle.animate(new StrobeAnimation(r, g, b, w, speed, numLed));
     }
 
     /**
@@ -191,7 +203,7 @@ public class LED {
      * @param divider What percentage of LEDs can be on at any point
      */
     public void setTwinkle(int r, int g, int b, int w, double speed, int numLed, TwinklePercent divider){
-        mCANdle.animate(new TwinkleAnimation(r, g, b, w, speed, numLed, divider));
+        candle.animate(new TwinkleAnimation(r, g, b, w, speed, numLed, divider));
     }
     
     /**
@@ -205,7 +217,7 @@ public class LED {
      * @param divider What percentage of LEDs can be on at any point
      */
     public void setTwinkleOff(int r, int g, int b, int w, double speed, int numLed, TwinkleOffPercent divider){
-        mCANdle.animate(new TwinkleOffAnimation(r, g, b, w, speed, numLed, divider));
+        candle.animate(new TwinkleOffAnimation(r, g, b, w, speed, numLed, divider));
     }
 
     /**
@@ -217,7 +229,7 @@ public class LED {
      * @param cooling The rate at which the Fire "Cools" along the travel [0, 1]
      */
     public void setFireAnim(int r, int g, int b, double brightness, double speed, int numLed, double sparking, double cooling){
-        mCANdle.animate(new FireAnimation(brightness, speed, numLed, sparking, cooling));
+        candle.animate(new FireAnimation(brightness, speed, numLed, sparking, cooling));
     }
 
     //Custom led color

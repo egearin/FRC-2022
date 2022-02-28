@@ -201,7 +201,7 @@ public class Indexer {
      * @param conveyorSpeed
      * @return
      */
-    public double runWithBallCount(double intakeSpeed, double conveyorSpeed){
+    /*public double runWithBallCount(double intakeSpeed, double conveyorSpeed){
         double ballCount;
         ballCount = mSensors.getBallCount();
 
@@ -215,5 +215,28 @@ public class Indexer {
         else{}
 
         return ballCount;
+    }*/
+
+    /**
+     * @param intakeSpeed
+     * @param conveyorSpeed
+     * @return
+     */
+    public double runWithBallCounter(double intakeSpeed, double conveyorSpeed){
+        double ballCount;
+        ballCount = mSensors.ballCounter();
+
+        if(ballCount == 2){
+            indexerStop();
+        }
+        else if(ballCount == 1){
+            conveyorStop();
+        }
+        else{
+            indexerOn(intakeSpeed, conveyorSpeed);
+        }
+
+        return ballCount;
     }
+
 }

@@ -67,16 +67,16 @@ public class RobotData {
     }
 
     public enum AnimationTypes {
-        ColorFlow,
-        Fire,
-        Larson,
-        Rainbow,
-        RgbFade,
-        SingleFade,
-        Strobe,
-        Twinkle,
-        TwinkleOff,
-        SetAll;
+        COLORFLOW,COLORFLOWOPP,
+        GREENFLOW,GREENFLOWOPP,
+        FIRE,
+        LARSON,
+        RAINBOW,
+        RGBFADE,SINGLEFADE,
+        STROBEGREEN,STROBERED,STROBEBLUE,
+        TWINKLE,TWINKLEOFF,
+        CUSTOM,
+        OFF;
     }
     
     public enum DumperMode{

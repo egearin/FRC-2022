@@ -41,10 +41,14 @@ public class Sensors {
     //public CANCoder hangCANcoder;
 
     //Ultrasonic
-    public static DigitalOutput ultrasonicTriggerPinLow;
+    /*public static DigitalOutput ultrasonicTriggerPinLow;
     public static DigitalOutput ultrasonicTriggerPinHigh; 
     public static AnalogInput lowerUltrasonicSensor;
-    public static AnalogInput higherUltrasonicSensor;
+    public static AnalogInput higherUltrasonicSensor;*/
+
+    //Beam Sensor
+    public DigitalInput beamSensorHigh;
+    public DigitalInput beamSensorLow;
 
     //Other Subsystems
     public Drive mDrive;
@@ -61,12 +65,14 @@ public class Sensors {
         leftCANcoder = new CANCoder(Constants.leftCANcoderID);
         leftCANcoder.configFeedbackCoefficient(Constants.wheelPerimeter * Constants.degreeCoefficientCANcoder / 360, "meter", SensorTimeBase.PerSecond);
 
-        ultrasonicTriggerPinHigh = new DigitalOutput(Constants.trigPinHigh);
-        ultrasonicTriggerPinLow = new DigitalOutput(Constants.trigPinLow);
+        //ultrasonicTriggerPinHigh = new DigitalOutput(Constants.trigPinHigh);
+        //ultrasonicTriggerPinLow = new DigitalOutput(Constants.trigPinLow);
 
-        lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
-        higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
+        //lowerUltrasonicSensor = new AnalogInput(Constants.lowerSensor);
+        //higherUltrasonicSensor = new AnalogInput(Constants.higherSensor);
 
+        beamSensorHigh = new DigitalInput(Constants.higherBeamChannel);
+        beamSensorLow = new DigitalInput(Constants.lowerBeamChannel);
         //hangCANcoder = new CANCoder(Constants.hangCANcoderID);
     }
 
@@ -377,35 +383,35 @@ public class Sensors {
      * Only sets higher ultrasonic sensor to on
      */
     public static void higherOn(){
-        ultrasonicTriggerPinHigh.set(true);
+        //ultrasonicTriggerPinHigh.set(true);
     }
 
     /**
      * Only sets lower ultrasonic sensor to on
      */
     public static void lowerOn(){
-        ultrasonicTriggerPinLow.set(true);
+        //ultrasonicTriggerPinLow.set(true);
     }
 
     /**
      * Only sets higher ultrasonic sensor to off
      */
     public static void higherOff(){
-        ultrasonicTriggerPinHigh.set(false);
+        //ultrasonicTriggerPinHigh.set(false);
     }
 
     /**
      * Only sets lower ultrasonic sensor to off
      */
     public static void lowerOff(){
-        ultrasonicTriggerPinHigh.set(false);
+        //ultrasonicTriggerPinHigh.set(false);
     }
     
     /**
      * Gets distance in centimeters of the target returned from the higher ultrasonic sensor.
      * @return higherMeasuredDistance
      */
-    public double getDistanceHigherCM(){
+    /*public double getDistanceHigherCM(){
         double higherMeasuredDistance;
         double voltageScaleFactor;
         higherOn();
@@ -413,25 +419,25 @@ public class Sensors {
         higherMeasuredDistance = (higherUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
         return higherMeasuredDistance;
-    }
+    }*/
 
     /**
      * Gets distance in millimeters of the target returned from the higher ultrasonic sensor.
      * @return higherDistanceMM
      */
-    public double getDistanceHigherMM(){
+    /*public double getDistanceHigherMM(){
         double higherDistanceMM;
         higherOn();
         higherDistanceMM = getDistanceHigherCM() * 10;
 
         return higherDistanceMM;
-    }  
+    } */
 
     /**
      * Gets distance in centimeters of the target returned from the lower ultrasonic sensor.
      * @return lowerMeasuredDistance
      */
-    public double getDistanceLowerCM(){
+    /*public double getDistanceLowerCM(){
         double lowerMeasuredDistance;
         double voltageScaleFactor;
         lowerOn();
@@ -439,21 +445,21 @@ public class Sensors {
         lowerMeasuredDistance = (lowerUltrasonicSensor.getValue()) * (voltageScaleFactor) * 0.125;
 
         return lowerMeasuredDistance;
-    }  
+    } */
 
     /**
      * Gets distance in millimeters of the target returned from the lower ultrasonic sensor.
      * @return lowerDistanceMM
      */
-    public double getDistanceLowerMM(){
+    /*public double getDistanceLowerMM(){
         double lowerDistanceMM;
         lowerOn();
         lowerDistanceMM = getDistanceLowerCM() * 10;
 
         return lowerDistanceMM;
-    }
+    }*/
 
-    public double getBallCount(){
+    /*public double getBallCount(){
         double status = 0;
         turnOnBothSensors();
         if(isHigherCargoDetected()){
@@ -471,7 +477,7 @@ public class Sensors {
         }  
 
         return status;
-    }
+    }*/
 
     public static enum UltrasonicStates{
         DEFAULT(false),
@@ -492,7 +498,7 @@ public class Sensors {
      * Checks if lower ball is detected or not
      * @return is lower cargo ball detected
      */ 
-    public boolean isLowerCargoDetected(){
+    /*public boolean isLowerCargoDetected(){
         boolean state;
         lowerOn();
 
@@ -501,13 +507,13 @@ public class Sensors {
         //state = (getDistanceLowerCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
-    }
+    }*/
 
     /**
      * Checks if lower ball is detected or not
      * @return is higher cargo ball detected
      */
-    public boolean isHigherCargoDetected(){
+    /*public boolean isHigherCargoDetected(){
         boolean state;
         higherOn();
         
@@ -516,19 +522,69 @@ public class Sensors {
         //state = (getDistanceHigherCM()) < (Constants.ultrasonicDistanceAcross - Constants.subtractedDistance(2));
 
         return state;
-    }
+    }*/
 
     /** 
     * Ultrasonic sensor outputs using SmartDashboard
     */
     public void ultrasonicOutputs(){
-        SmartDashboard.putNumber("Lower Sensor Output in MM", getDistanceLowerMM());
+        /*SmartDashboard.putNumber("Lower Sensor Output in MM", getDistanceLowerMM());
         SmartDashboard.putNumber("Lower Sensor Output in CM", getDistanceLowerCM());
         SmartDashboard.putNumber("Higher Sensor Output in MM", getDistanceHigherMM());
         SmartDashboard.putNumber("Higher Sensor Output in MM", getDistanceHigherMM());
 
         SmartDashboard.putBoolean("Is Lower Ball Detected", isLowerCargoDetected());
-        SmartDashboard.putBoolean("Is Highter Ball Detected", isHigherCargoDetected());
+        SmartDashboard.putBoolean("Is Highter Ball Detected", isHigherCargoDetected());*/
+    }
+
+    // -------BEAM SENSOR-------
+    public boolean detectHigherCargo(){
+        boolean state;
+        state = beamSensorHigh.get();
+
+        return state;
+    }
+
+    public boolean detectLowerCargo(){
+        boolean state;
+        state = beamSensorLow.get();
+
+        return state;
+    }
+
+    public double ballCounter(){
+        double status = 0;
+
+        if(detectHigherCargo()){
+            if(detectLowerCargo()){
+                status = 2;
+            }
+            else{
+                status = 1;
+            }
+
+        if(!detectHigherCargo()){
+            status = 0;
+            }
+
+        }  
+
+        return status;
+    }
+
+    public static enum BeamStates{
+        DEFAULT(false),
+        BALLDETECTED(true);
+
+    public final boolean states;
+
+    BeamStates(boolean isStates){
+        states = isStates;
+    }
+    
+    public boolean isStates(){
+        return states;
+      }
     }
 
     //----------RESET----------

@@ -8,26 +8,22 @@ package frc.team6429.subsystems;
  * <p> Uses motion profiling, pid, feedforward to build custom high accuracy positioning and velocity control systems.
  * <p> Has different mode for different drive styles including hand brake, brake, gas, no dead zone controls and more.
 */
-public class DimensionalDrive {
+public interface DimensionalDrive {
 
     /**
      * Greater control with 
      */
-    public void hyperDrive(){
+    void hyperDrive();
 
-    }
 
     /**
      * PID assisted drive
      */
-    public void dimensionalDrive(){
-
-    }
+    void dimensionalDrive();
 
     /**
      * Combines hyper and dimensional drive controls for maximum control.
      */
-    public void hyperDimensionalDrive(){
-
-    }
+    void hyperDimensionalDrive();
+    
 }

@@ -45,13 +45,11 @@ import frc.team6429.robot.Constants;
 import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 
-
-
 /** 
  * Robot drive subsystem class. 
  * Includes PID & profiled PID controller, simple motor feedforward and differential drive odometry. 
  */
-public class Drive {
+public class Drive implements DimensionalDrive{
 
     private static Drive mInstance = new Drive();
 
@@ -374,17 +372,17 @@ public class Drive {
         
     }
     /**
-     * Robot Drive Using Shifter State One
+     * Robot Drive Using Shifter Status: Speed
      */
     public void driveShiftOne(){
-        shifter.set(true);
+        shifter.set(false);
     }
 
     /**
-     * Robot Drive Using Shifter State Two
+     * Robot Drive Using Shifter Status: Torque
      */
     public void driveShiftTwo(){
-        shifter.set(false);
+        shifter.set(true);
     }
 
     /**
@@ -394,7 +392,21 @@ public class Drive {
     public void powerTakeOff(boolean shift){
         pto.set(shift);
     }
+
+    /**
+     * Power Take-Off State One
+     */
+    public void ptoShiftOne(){
+        pto.set(true);
+    }
     
+    /**
+     * Power Take-Off State Two
+     */
+    public void ptoShiftTwo(){
+        pto.set(false);
+    }
+
     /** 
      * Robot Drive Using Arcade Drive
      * @param speed
@@ -650,6 +662,48 @@ public class Drive {
      */
     public void stopDrive(){
         chassis.tankDrive(0, 0);
+    }
+
+    public enum DimensionalDrive{
+        HYPER,
+        DIMENSIONAL,
+        HYPERDIMENSIONAL,
+        OFF;
+    }
+
+    public void setDimension(DimensionalDrive dimensional){
+        switch(dimensional){
+            case HYPER:
+                hyperDrive();
+                break;
+            case DIMENSIONAL:
+                dimensionalDrive();
+                break;
+            case HYPERDIMENSIONAL:
+                hyperDimensionalDrive();
+                break;
+            case OFF:
+                stopDrive();
+                break;
+        }
+    }
+    
+    @Override
+    public void hyperDrive() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void dimensionalDrive() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void hyperDimensionalDrive() {
+        // TODO Auto-generated method stub
+        
     }
 
 

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.team6429.periodics.Auto.Modes.MainAuto;
+package frc.team6429.periodics.Auto.AutoModes.MainAuto;
 
 import java.util.Arrays;
 
@@ -19,7 +19,7 @@ import frc.team6429.periodics.Auto.Action.StopAction;
 import frc.team6429.periodics.Auto.Action.TrajectoryIndexerAction;
 import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
 import frc.team6429.periodics.Auto.Action.StopAction.Stop;
-import frc.team6429.periodics.Auto.Modes.AutoModeBase;
+import frc.team6429.periodics.Auto.AutoModes.AutoModeBase;
 import frc.team6429.robot.Constants;
 import frc.team6429.robot.Robot;
 import frc.team6429.robot.RobotData;

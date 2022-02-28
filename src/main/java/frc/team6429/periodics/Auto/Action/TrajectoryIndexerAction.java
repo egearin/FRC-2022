@@ -73,7 +73,9 @@ public class TrajectoryIndexerAction implements Action{
         if (Utils.isRobotInPosition(currentPos, mDrive.indexerOnCheckpoint, new Translation2d(0.5, 0.5))){
             indexerCommand = IndexerCommand.ON; 
         }
-        else if (Utils.isRobotInPosition(currentPos, mDrive.indexerOffCheckpoint.plus(new Translation2d(-0.75, 0)), new Translation2d(0.1, 0.1))){
+        else if (Utils.isRobotInPosition(currentPos, mDrive.indexerOffCheckpoint.plus(
+            new Translation2d(-0.75, 0)), 
+            new Translation2d(0.1, 0.1))){
             if (startTime == -2){
                 startTime = timer.get();
                 pivotCommand = PivotCommand.APEX;

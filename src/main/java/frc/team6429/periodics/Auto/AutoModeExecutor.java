@@ -7,7 +7,7 @@
 
 package frc.team6429.periodics.Auto;
 
-import frc.team6429.periodics.Auto.Modes.AutoModeBase;
+import frc.team6429.periodics.Auto.AutoModes.AutoModeBase;
 
 /**
  * This class selects, runs, and (if necessary) stops a specified autonomous mode.

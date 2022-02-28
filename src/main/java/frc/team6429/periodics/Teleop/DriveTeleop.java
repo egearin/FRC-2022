@@ -11,7 +11,6 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Gamepad;
-import frc.team6429.subsystems.LED;
 
 /** 
  * Teleop: Robot Drive
@@ -27,7 +26,6 @@ public class DriveTeleop {
 
     private Gamepad mGamepad;
     private Drive mDrive;
-    private LED mLed;
 
     private double rotation;
     private double speed;
@@ -38,7 +36,6 @@ public class DriveTeleop {
     private DriveTeleop(){
         mGamepad = Gamepad.getInstance();
         mDrive = Drive.getInstance();
-        mLed = LED.getInstance();
     }
     
     public void driveTeleop(){

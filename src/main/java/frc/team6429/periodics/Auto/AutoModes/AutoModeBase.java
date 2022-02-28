@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.Modes;
+package frc.team6429.periodics.Auto.AutoModes;
  
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.team6429.periodics.Auto.AutoModeEndedException;

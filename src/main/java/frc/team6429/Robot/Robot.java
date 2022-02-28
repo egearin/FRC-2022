@@ -20,28 +20,35 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import frc.team6429.periodics.Auto.AutoModeExecutor;
 import frc.team6429.periodics.Auto.Action.CreateTrajectoryAction.PathType;
-import frc.team6429.periodics.Auto.Modes.MainAuto.FourCargoAuto;
-import frc.team6429.periodics.Auto.Modes.MainAuto.ThreeCargoAuto;
-import frc.team6429.periodics.Auto.Modes.MainAuto.TwoCargoAuto;
-import frc.team6429.periodics.Auto.Modes.SimpleAuto.SimpleTwoCargo;
+import frc.team6429.periodics.Auto.AutoModes.MainAuto.FourCargoAuto;
+import frc.team6429.periodics.Auto.AutoModes.MainAuto.ThreeCargoAuto;
+import frc.team6429.periodics.Auto.AutoModes.MainAuto.TwoCargoAuto;
+import frc.team6429.periodics.Auto.AutoModes.SimpleAuto.SimpleTwoCargo;
 import frc.team6429.periodics.Teleop.DriveTeleop;
 import frc.team6429.periodics.Teleop.TeleopPeriodic;
+import frc.team6429.robot.RobotData.AnimationTypes;
 import frc.team6429.subsystems.Drive;
 import frc.team6429.subsystems.Drivepanel;
 import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Climb;
+import frc.team6429.subsystems.ClimbRemastered;
 import frc.team6429.subsystems.Indexer;
+import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
 import frc.team6429.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.management.loading.MLet;
+import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
 
 
 
@@ -63,14 +70,23 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private AutoModeExecutor autoModeExecutor;
   private List<List<String>> listOfTrajectoryPaths;
-  double x = 0;
+  private double x = 0;
+  private boolean led = true;
+  private double rotation;
+  private double speed;
+  private double sensetiveSteering = 0.5;
+  private double steering = 0.75;
+  private double turnPID = 0.07;
+  
 
   //systems
   private Sensors mSensors;
   private Drive mDrive;
   private Indexer mIndexer;
   private Dumper mDumper;
-  private Climb mClimb;
+  private LED mLED;
+  //private Climb mClimb;
+  private ClimbRemastered mRemaster;
   private Gamepad mGamepad;
   private Drivepanel mDrivepanel;
   private DriveTeleop drivebaseTeleop;
@@ -123,7 +139,7 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   @Override
-  public void robotInit() {
+  public void robotInit(){
     m_chooser.setDefaultOption("Four Cargo Autonomous", kFourCargoAuto);
     m_chooser.addOption("Alternate Four Cargo", kAlternateFourCargo);
     m_chooser.addOption("Three Cargo Autonomous", kThreeCargoAuto);
@@ -135,10 +151,14 @@ public class Robot extends TimedRobot {
     mSensors = Sensors.getInstance();
     mDrive = Drive.getInstance();
     mIndexer = Indexer.getInstance();
-    mClimb = Climb.getInstance();
+    //mClimb = Climb.getInstance();
+    mRemaster = ClimbRemastered.getInstance();
     mDumper = Dumper.getInstance();
+    mLED = LED.getInstance();
     mDrivepanel = Drivepanel.getInstance();
     mGamepad = Gamepad.getInstance();
+    drivebaseTeleop = DriveTeleop.getInstance();
+    teleopPeriodic = TeleopPeriodic.getInstance();
     autoModeExecutor = new AutoModeExecutor();
     timer = new Timer();
     timer.reset();
@@ -224,130 +244,91 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     autoModeExecutor.stop();
+    
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double rotation;
-    double speed;
-    double sensetiveSteering = 0.5;
-    double steering = 0.75;
-    double turnPID = 0.07;
     
     speed = mGamepad.getForward() - mGamepad.getReverse();
-
-    if (Math.abs(mGamepad.getSensetiveSteering()) > 0.2) {
-      rotation = (mGamepad.getSensetiveSteering()) * (sensetiveSteering);
-    }
-
-    else {
-      rotation = (mGamepad.getSteering()) * (steering);
-    }
+    rotation = (mGamepad.getSteering()) * (steering);
 
     //Drive Shifter
-    /*if(mGamepad.getDriveShifterPressed()) {
-      mDrive.driveShift(!mDrive.shifter.get());
-    } */
-
     if(mGamepad.getDriveShiftOnePressed()) {
-      mDrive.driveShiftOne();
+            mDrive.driveShiftOne();
     }
 
     else if(mGamepad.getDriveShiftTwoPressed()) {
-      mDrive.driveShiftTwo();
+            mDrive.driveShiftTwo();
+    }
+  
+    //Test
+    if(mGamepad.getTestPTO()){
+            mDrive.powerTakeOff(!mDrive.pto.get());
+    }
+
+    if(mGamepad.getTestBrake()){
+            mRemaster.brake(!mRemaster.frictionBrake.get());
     }
 
     mDrive.robotDrive(speed, rotation);
     mGamepad.forceFeedback(speed, rotation);
-    /*double speed = mGamepad.getForward() - mGamepad.getReverse();
-    double rotation;
-    mDrive.robotDrive(speed, mGamepad.getSteering());
-    //speed = Utils.map(speed, 0, 1, Constants.speedDeadZone, 1);
-    rotation = Utils.map(rotation, 0, 1, Constants.rotationDeadZone, 1);
-    rotation = mGamepad.getSteering() * 0.75;
-    mDrive.robotDrive(speed, rotation, 1);
-    mGamepad.forceFeedback(speed, rotation);
 
-    if(mGamepad.getDriveShiftOnePressed()) {
-      mDrive.driveShiftOne();
+    //Indexer 
+    if(mGamepad.getCustomIndexerOn()){
+          //mIndexer.runWithBallCounter(1, 1);
+          //mIndexer.pivotDown();
+
+          if(mSensors.ballCounter() == 2){
+              mLED.select(AnimationTypes.STROBEGREEN);
+          }
+
+          else if(mSensors.ballCounter() == 1){
+              mLED.select(AnimationTypes.STROBEBLUE);
+          }
+
+          else{
+              mLED.select(AnimationTypes.COLORFLOW);
+          }
     }
 
-    else if(mGamepad.getDriveShiftTwoPressed()) {
-      mDrive.driveShiftTwo();
-    }
+    else if(mGamepad.getCustomIndexerReverse()){
+               //mIndexer.indexerReverse(1, 1);
+               //mIndexer.pivotDown();
 
-    if (mGamepad.getTestPTO()){
-      mDrive.powerTakeOff(!mDrive.pto.get());
-    }
+              if(mSensors.ballCounter() == 2){
+                  mLED.select(AnimationTypes.STROBEGREEN);
+              }
 
-    //Manual Only Pivot Codes
-    if(mDrivepanel.pivotDown()) {
-      mIndexer.pivotDown();
-   }
-    else if(mDrivepanel.pivotUp()) {
-      mIndexer.pivotUp();
-    }
-    else {
-      mIndexer.pivotStall();
+              else if(mSensors.ballCounter() == 1){
+                  mLED.select(AnimationTypes.STROBEBLUE);
+              }
+
+              else{
+                  mLED.select(AnimationTypes.COLORFLOWOPP);
+              }
     }
     
-    
-  //Manual Only Intake and Conveyor Codes
-  if(mDrivepanel.getIntakeDrivepanel()) {
-      mIndexer.intakeOn(1);
-  }
-  else if(mDrivepanel.getIntakeReverseDrivepanel()) {
-      mIndexer.intakeReverse(1);
-  }
-  else if(mDrivepanel.getConveyorDrivepanel()) {
-      mIndexer.conveyorOn(1);
-  }
-  else if(mDrivepanel.getConveyorReverseDrivepanel()) {
-      mIndexer.conveyorReverse(1);
-  }
-  else if(mDrivepanel.getIndexerDrivepanel()) {
-      mIndexer.indexerOn(1, 1);
-  }
-  else if(mDrivepanel.getIndexerReverseDrivepanel()){
-      mIndexer.indexerReverse(1, 1);
-  }
-  else {
-      mIndexer.intakeStop();
-      mIndexer.conveyorStop();
-  }
+    else if(mGamepad.getDumperGamepad()){
+              //mDumper.dumperSendWithIndexer(1, 1, 1);
 
-  //Custom Indexer
-  /*if(mGamepad.getCustomIndexerOn()) {
-      if(mSensors.getBallCount() == 1){
-          mIndexer.conveyorStop();
-          mIndexer.intakeOn(0.5);
-      }
-      else if(mSensors.getBallCount() == 2){
-          mIndexer.customIndexerOff();
-      }
-      else{
-          mIndexer.customIndexerOn();
-      }
-  }
-  else{
-      mIndexer.indexerStop();
-  }
-*/
+              mLED.select(AnimationTypes.GREENFLOW);
+    }
 
-   //Dumper Codes
-  if(mGamepad.getDumperGamepad()) {
-      mIndexer.indexerOn(1, 1);
-      mDumper.dumperSend(1);
-  }
-  else if(mGamepad.getDumperOppositeGamepad()) {
-      mIndexer.indexerOn(1, 1);
-      mDumper.dumperSendOpposite(1);
-  }
-  else{
-      mDumper.dumperStop();
-      mIndexer.indexerStop();
-  }
+    else if(mGamepad.getDumperOppositeGamepad()){
+              //mDumper.dumperOppositeWithIndexer(1, 1, 1);
+              //mIndexer.pivotUp();
+
+              mLED.select(AnimationTypes.GREENFLOWOPP);
+    }
+
+    else{
+              mDumper.dumperStopWithIndexer();
+              mIndexer.pivotUp();
+              mLED.candle.setLEDs(0, 0, 0);
+    }
+
 }
   /** This function is called once when the robot is disabled. */
   @Override
@@ -355,21 +336,23 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
-
+  public void disabledPeriodic() {
+    
+  }
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
 
-    
 
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    
-
+    mLED.candle.animate(new RainbowAnimation(1, 1, 68));
+    //mIndexer.conveyorOn(1);
+    //mDumper.dumperMotor.set(1);
+    //SmartDashboard.putNumber("ball", mSensors.getBallCount());
     //mDriveTeleop.driveTeleop();
     //mTeleopPeriodic.teleopPeriodic();
 

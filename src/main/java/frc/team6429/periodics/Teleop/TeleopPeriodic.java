@@ -15,7 +15,6 @@ import frc.team6429.subsystems.Dumper;
 import frc.team6429.subsystems.Gamepad;
 import frc.team6429.subsystems.Climb;
 import frc.team6429.subsystems.Indexer;
-import frc.team6429.subsystems.LED;
 import frc.team6429.util.Sensors;
 /** 
  * Teleop Period
@@ -31,7 +30,6 @@ public class TeleopPeriodic {
 
     //Subsystems
     public Drive mDrive;
-    public LED mLed;
     public Indexer mIndexer;
     public Dumper mDumper;
     public Climb mHang;
@@ -75,9 +73,9 @@ public class TeleopPeriodic {
             mDumper.dumperStopWithIndexer();
         }
 
-        if(mGamepad.getTestPTO()){
+        /*if(mGamepad.getTestPTO()){
             mDrive.powerTakeOff(!mDrive.pto.get());
-        }
+        }*/
 
     }
 }

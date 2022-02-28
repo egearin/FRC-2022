@@ -32,7 +32,7 @@ public class Constants {
     public static final int phID = 5;  //REV Pneumatics Hub ok
 
     //CANdle Port
-    public static final int candleID = 13; //CTR Candle
+    public static final int candleID = 10; //CTR Candle
 
     //Pigeon port 
     public static final int pigeonID = 7; //Pigeon IMU ok
@@ -44,10 +44,10 @@ public class Constants {
     //public static final int hangCANcoderID = 100;
 
     //Solenoid Ports
-    public static final int shifterChannel = 13; //Single Solenoid for REVPH ok (9)
-    public static final int ptoChannel = 12; //Single Solenoid for REVPH ok
+    public static final int shifterChannel = 8; //Single Solenoid for REVPH ok (9)
+    public static final int ptoChannel = 13; //Single Solenoid for REVPH ok
 
-    public static final int pivotPistonsForwardChannel = 8; //Double Solenoid for REVPH 
+    public static final int pivotPistonsForwardChannel = 12; //Double Solenoid for REVPH 
     public static final int pivotPistonsReverseChannel = 10; //Double Solenoid for REVPH
 
     public static final int midRungLockChannel = 11;
@@ -66,12 +66,16 @@ public class Constants {
     public static final double maxVoltageInput = 12;
 
     //Ultrasonic Ports
-    public static final int trigPinHigh = 1;
-    public static final int trigPinLow= 0;
+    public static final int trigPinHigh = 8;
+    public static final int trigPinLow= 9;
     
-    public static final int higherSensor = 3;
-    public static final int lowerSensor = 2;
+    public static final int higherSensor = 2;
+    public static final int lowerSensor = 3;
     
+    //Beam Ports
+    public static final int higherBeamChannel = 5;
+    public static final int lowerBeamChannel = 6;
+
     //Drive Constants
     public static final double kTrackWidth = 0;
     public static final DifferentialDriveKinematics kDriveKinematics 
@@ -87,6 +91,7 @@ public class Constants {
 
     //Gamepad and Drivepanel Constants
     public static final int gamepadJoystick = 0;
+    public static final int gamepad2Joystick = 1;
     public static final int panel1Joystick = 1;
     public static final int panel2Joystick = 2;
 
@@ -96,7 +101,7 @@ public class Constants {
     public static final int axis_steering = 0;
     public static final int axis_sensetiveSteering = 4;
 
-    //public static final int shifterButton = 6;
+    public static final int shifterButton = 6;
     public static final int shifterOneButton = 10;
     public static final int shifterTwoButton = 9;
 
@@ -229,9 +234,6 @@ public class Constants {
         
         return _time[value];
         }
-
-    //Custom Led Constants
-
 
 }   
 

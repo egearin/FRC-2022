@@ -57,7 +57,7 @@ public class ClimbRemastered {
         hangMotor = new WPI_TalonFX(Constants.hangMotorID);
         hangMotor.setNeutralMode(NeutralMode.Brake);
         hangMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        midRungLock = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.midRungLockChannel);
+        //midRungLock = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.midRungLockChannel);
         frictionBrake = new Solenoid(Constants.phID, PneumaticsModuleType.REVPH, Constants.frictionBrakeChannel);
         config = new TalonFXConfiguration();
         mSensors = Sensors.getInstance();
@@ -100,9 +100,8 @@ public class ClimbRemastered {
 
     /**
      * Auto-climb periodic
-     * @param traversalRate
      */
-    public void climbPeriodic(double traversalRate){
+    public void climbPeriodic(){
         if(timer.get() <= 1.5){
             mDrive.robotDrive(1, 0);
         }
@@ -110,6 +109,17 @@ public class ClimbRemastered {
         else{
             midRungLock.set(true);
             mDrive.stopDrive();
+        }
+    }
+
+    public void traverse(double traversalPosition){
+        if(hangMotor.getSelectedSensorPosition() <= traversalPosition){
+            hangMotor.set(1);
+        }
+
+        else{
+            brake(true);
+            hangMotor.stopMotor();
         }
     }
 }

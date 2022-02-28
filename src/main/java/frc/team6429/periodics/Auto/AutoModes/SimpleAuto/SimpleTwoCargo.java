@@ -5,14 +5,14 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.team6429.periodics.Auto.Modes.SimpleAuto;
+package frc.team6429.periodics.Auto.AutoModes.SimpleAuto;
 
 import java.util.Arrays;
 
 import frc.team6429.periodics.Auto.AutoModeEndedException;
 import frc.team6429.periodics.Auto.Action.*;
 import frc.team6429.periodics.Auto.Action.StopAction.Stop;
-import frc.team6429.periodics.Auto.Modes.AutoModeBase;
+import frc.team6429.periodics.Auto.AutoModes.AutoModeBase;
 
 
 /**
